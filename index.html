@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Portal by Dwarkesh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Loader Styles --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #111827; /* Dark background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .loader-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #3b82f6; /* Blue */
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- General Styles --- */
+        .hidden {
+            display: none !important;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .btn {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- Test Mode Option Styles --- */
+        .option-btn {
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            color: #374151;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .option-btn.correct {
+            background-color: #22c55e !important;
+            border-color: #16a34a !important;
+            color: white !important;
+        }
+        .option-btn.incorrect {
+            background-color: #ef4444 !important;
+            border-color: #dc2626 !important;
+            color: white !important;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="loader-content">
+            <div class="loader-logo">Dwarkesh</div>
+            <div class="loader-spinner"></div>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <!-- Menu Screen -->
+        <div id="menu-screen">
+            <header class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-slate-900 mb-2">MCQ Portal</h1>
+                <p class="text-lg text-slate-600">Choose a mode to get started</p>
+            </header>
+            <div class="grid md:grid-cols-2 gap-8">
+                <button onclick="showScreen('view-mode')" class="btn bg-white p-8 rounded-xl shadow-lg border border-slate-200 text-left">
+                    <h2 class="text-2xl font-semibold text-blue-600 mb-2">View PB MCQs</h2>
+                    <p class="text-slate-500">Practice mode. Review all questions with their options and correct answers revealed.</p>
+                </button>
+                <button onclick="showScreen('test-mode')" class="btn bg-white p-8 rounded-xl shadow-lg border border-slate-200 text-left">
+                    <h2 class="text-2xl font-semibold text-green-600 mb-2">PB MCQ Test</h2>
+                    <p class="text-slate-500">Test your knowledge. Answer questions and get immediate feedback.</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- View Mode Screen -->
+        <div id="view-mode-screen" class="hidden">
+             <header class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-slate-900">Practice Questions</h1>
+                <button onclick="showScreen('menu')" class="btn bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md">Back to Menu</button>
+            </header>
+            <div id="view-questions-container" class="space-y-6">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Test Mode Screen -->
+        <div id="test-mode-screen" class="hidden">
+            <header class="mb-8">
+                 <div class="flex justify-between items-center mb-4">
+                    <h1 class="text-3xl font-bold text-slate-900">MCQ Test</h1>
+                    <button onclick="showScreen('menu')" class="btn bg-slate-200 text-slate-800 font-semibold py-2 px-5 rounded-lg">Exit Test</button>
+                 </div>
+                 <div class="w-full bg-slate-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+                <p id="progress-text" class="text-center text-sm text-slate-500 mt-2">Question 1/100</p>
+            </header>
+
+            <div id="test-card" class="bg-white p-8 rounded-2xl shadow-lg">
+                 <!-- Test content will be loaded here -->
+            </div>
+            
+            <div id="test-results" class="hidden text-center bg-white p-8 rounded-2xl shadow-lg">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Test Complete!</h2>
+                <p class="text-5xl font-bold text-blue-600 mb-6" id="score-text">10/100</p>
+                <div class="flex justify-center gap-4">
+                     <button onclick="startTest()" class="btn bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">Restart Test</button>
+                     <button onclick="showScreen('menu')" class="btn bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">Back to Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 left-0 w-full text-center py-4 text-sm text-slate-500 bg-slate-100">
+        Created by: Dwarkesh Savaliya
+    </footer>
+
+    <script>
+        const questions = [
+            {"No": "1", "question_text": "How HTTP is a stateless protocol?", "MCQ Answer": "D", "option A": "Client and server can relate two consecutive requests", "option B": "Client and server know each other only during current request", "option C": "Client and server do not retain information between various requests of web page.", "option D": "Only B & C"},
+            {"No": "2", "question_text": "URL stands for", "MCQ Answer": "B", "option A": "Universal Resource Locator", "option B": "Uniform Resource Locator", "option C": "Universal Resource Library", "option D": "Uniform Resource Library"},
+            {"No": "3", "question_text": "Which of the following is the correct sequence to specify URL?", "MCQ Answer": "D", "option A": "Method//:Path/Host:Port", "option B": "Method://Host:Path/Port", "option C": "Method://Path:Port/Host", "option D": "Method://Host:Port/Path"},
+            {"No": "4", "question_text": "Which of the following is used to read an HTML. page and render it?", "MCQ Answer": "C", "option A": "Web server", "option B": "Web network", "option C": "Web browser", "option D": "Web matrix"},
+            {"No": "5", "question_text": "What does DNS stand for?", "MCQ Answer": "B", "option A": "Domain Name Server", "option B": "Domain Name System", "option C": "Domain Network System", "option D": "Domain Node System"},
+            {"No": "6", "question_text": "Which of the following points are for designing effective navigation?", "MCQ Answer": "D", "option A": "Don't make your users guess", "option B": "Consistency is a key", "option C": "Add a Home button", "option D": "ALL"},
+            {"No": "7", "question_text": "The first line of HTTP response message is called", "MCQ Answer": "C", "option A": "Request line", "option B": "Header line", "option C": "Status line", "option D": "Entity line"},
+            {"No": "8", "question_text": "Which of the following is present in both an HTTP request line and a status line?", "MCQ Answer": "A", "option A": "HTTP version number", "option B": "URL", "option C": "Method", "option D": "None of the mentioned"},
+            {"No": "9", "question_text": "Why HTTP is stateless?", "MCQ Answer": "B", "option A": "It has less no of state.", "option B": "It does not maintain any connection information on previous transaction", "option C": "It is out of state", "option D": "It is less efficient"},
+            {"No": "10", "question_text": "The first network that planted seeds of internet was", "MCQ Answer": "C", "option A": "NSFNet", "option B": "Vnet", "option C": "ARPANET", "option D": "interanet"},
+            {"No": "11", "question_text": "What does W3C stand for?", "MCQ Answer": "C", "option A": "Web Council", "option B": "Work on Web Council", "option C": "World Wide Web Consortium", "option D": "World Wide Web Community"},
+            {"No": "12", "question_text": "What is 200 Ok HTTP response code?", "MCQ Answer": "B", "option A": "request is unsuccessful", "option B": "request is successful", "option C": "request is pending", "option D": "there is an error"},
+            {"No": "13", "question_text": "A piece of icon or image on a web page associated with another webpage is called as", "MCQ Answer": "B", "option A": "URL", "option B": "Hyperlink", "option C": "Plugin", "option D": "Extension"},
+            {"No": "14", "question_text": "HTTP stands for?", "MCQ Answer": "B", "option A": "Hidden text transfer protocol", "option B": "Hyper text transfer protocol", "option C": "Hyper text transition protocol", "option D": "Hidden text transition protocol"},
+            {"No": "15", "question_text": "Which organization was founded by Tim Berners Lee?", "MCQ Answer": "B", "option A": "IBM", "option B": "W3C", "option C": "Microsoft", "option D": "Google"},
+            {"No": "17", "question_text": "A web page is located using a", "MCQ Answer": "A", "option A": "Uniform Resource Locator", "option B": "Universal Record Linking", "option C": "Universal Record Locator", "option D": "Uniformly Reachable Links"},
+            {"No": "18", "question_text": "Which protocol is used to send information over the web?", "MCQ Answer": "D", "option A": "SMTP", "option B": "FTP", "option C": "POP", "option D": "HTTP"},
+            {"No": "19", "question_text": "Which of the following HTTP status codes means 'Forbidden-client is authenticated but not allowed'?", "MCQ Answer": "C", "option A": "200", "option B": "301", "option C": "403", "option D": "500"},
+            {"No": "20", "question_text": "In an HTTP request message, which line specifies the method, resource, and protocol version?", "MCQ Answer": "B", "option A": "Status Line", "option B": "Request Line", "option C": "Header Line", "option D": "Entity Body"},
+            {"No": "28", "question_text": "Which attribute of meta tag is used to automatically refresh the page?", "MCQ Answer": "A", "option A": "http-equiv", "option B": "refresh", "option C": "content", "option D": "name"},
+            {"No": "29", "question_text": "(A+B)^2 Which tag is used to display power in expression?", "MCQ Answer": "C", "option A": "<big>", "option B": "<sup>", "option C": "<sup>", "option D": "<sub>"},
+            {"No": "31", "question_text": "In HTML, which attribute is used to create a link that opens in a new window tab?", "MCQ Answer": "B", "option A": "src=\"blank\"", "option B": "target=\"_blank\"", "option C": "alt=\"blank\"", "option D": "target=\"_self\""},
+            {"No": "32", "question_text": "Which of the following is way to start an ordered list with capital alphabets starting from C?", "MCQ Answer": "B", "option A": "<ol type=\"1\" start=\"3\">", "option B": "<ol type=\"A\" start=\"3\">", "option C": "<ol type=\"a\" new=\"3\">", "option D": "<ol type=\"A\" begin=\"4\">"},
+            {"No": "33", "question_text": "Which attribute is used to define the space between a table cell's border and the content present in it?", "MCQ Answer": "C", "option A": "caption", "option B": "cellspacing", "option C": "cellpadding", "option D": "margin"},
+            {"No": "34", "question_text": "Which of the following is way to start an ordered list with capital alphabets with the count of numeric value 4?", "MCQ Answer": "D", "option A": "<ol type=\"A\" begin=\"4\">", "option B": "<ol type=\"a\" new=\"4\">", "option C": "<ol type=\"A\" start=\"4\">", "option D": "<ol type=\"A\" start=\"4\">"},
+            {"No": "35", "question_text": "Which of the following type is not supported in <ol> tag?", "MCQ Answer": "A", "option A": "type=\"$\"", "option B": "type=\"I\"", "option C": "type=\"i\"", "option D": "type=\"a\""},
+            {"No": "36", "question_text": "Which of the following is the correct specification of <meta> tag?", "MCQ Answer": "D", "option A": "<meta name=\"http-equiv\" content=\"refresh\" time=\"8\">", "option B": "<meta name=\"keyword\" value=\"Full Stack\">", "option C": "<meta name=\"description\" value=\"about full stack\"/>", "option D": "<meta http-equiv=\"refresh\" content=\"8\"/>"},
+            {"No": "38", "question_text": "Which is allowed attribute value to start numbers from 3 in ordered list?", "MCQ Answer": "A", "option A": "<ol start=\"3\">", "option B": "<ol starting=\"3\">", "option C": "<ol st=\"3\">", "option D": "<ol start-no=\"3\">"},
+            {"No": "39", "question_text": "If the image you are loading in the web page is not available, then you want a text to appear in the image placeholder, which attribute lets you define this text?", "MCQ Answer": "C", "option A": "src", "option B": "align", "option C": "alt", "option D": "text"},
+            {"No": "40", "question_text": "The correct sequence of HTML tags for starting a web page is", "MCQ Answer": "C", "option A": "head, title, html, body", "option B": "html, head, body, title", "option C": "html, head, title, body", "option D": "html, body, title, head"},
+            {"No": "41", "question_text": "Which tag is used to render bold text?", "MCQ Answer": "C", "option A": "<em>", "option B": "<strong>", "option C": "Both B and D", "option D": "<b>"},
+            {"No": "42", "question_text": "Which tag is used to insert largest heading?", "MCQ Answer": "A", "option A": "<h1>", "option B": "<h4>", "option C": "<h2>", "option D": "<h3>"},
+            {"No": "43", "question_text": "Which of the following is the correct syntax for YouTube video?", "MCQ Answer": "A", "option A": "<iframe width=\"500\" height=\"500\" src=\"https://www.youtube.com/embed/Q-qeBOqKTU\"></iframe>", "option B": "<iframe width=\"500\" height=\"500\" src=\"https://www.youtube.com/Q-qeBOqKTU\"></iframe>", "option C": "<video width=\"500\" height=\"500\" src=\"https://www.youtube.com/embed/Q-qeBOqKTU\"></video>", "option D": "<iframe width=\"500\" height=\"500\" href=\"https://www.google.com/embed/Q-qeBOqKTU\"></iframe>"},
+            {"No": "44", "question_text": "Which Boolean attribute if specified, will allow video automatically seek back to the start after reaching at the end?", "MCQ Answer": "C", "option A": "controls", "option B": "autoplay", "option C": "loop", "option D": "embed"},
+            {"No": "45", "question_text": "Which of the following is/are Non semantic elements?", "MCQ Answer": "B", "option A": "<span>", "option B": "<div>", "option C": "<article>", "option D": "<footer>"},
+            {"No": "47", "question_text": "If user want to add multiple media file as audio & video then which element is used for it?", "MCQ Answer": "D", "option A": "<audio>", "option B": "<canvas>", "option C": "<svg>", "option D": "<source>"},
+            {"No": "48", "question_text": "If this attribute is present, it will allow the user to control audio playback, including volume, seeking, and pause/resume playback.", "MCQ Answer": "A", "option A": "controls", "option B": "src", "option C": "source", "option D": "autoplay"},
+            {"No": "49", "question_text": "Which HTML5 element defines video or movie content?", "MCQ Answer": "A", "option A": "<video>", "option B": "<media>", "option C": "<audio>", "option D": "<movie>"},
+            {"No": "50", "question_text": "Which browser does the HTML5 supports?", "MCQ Answer": "D", "option A": "Firefox", "option B": "Safari", "option C": "Internet Explorer", "option D": "All the mentioned"},
+            {"No": "51", "question_text": "The following elements <aside>, <article> are the new elements in HTML5. These elements are called,", "MCQ Answer": "A", "option A": "Semantic elements", "option B": "Graphic elements", "option C": "Control attributes", "option D": "Multimedia elements"},
+            {"No": "52", "question_text": "Which boolean attribute if specified, the audio will automatically begin to play back as soon as it can do so without stopping to finish loading the data?", "MCQ Answer": "D", "option A": "loop", "option B": "preload", "option C": "autobuffer", "option D": "autoplay"},
+            {"No": "54", "question_text": "____ is the attribute of video element which mutes the video on loading.", "MCQ Answer": "B", "option A": "mute", "option B": "muted", "option C": "audio", "option D": "voice"},
+            {"No": "55", "question_text": "To insert a video, we use a video tag and set its src attribute to a local or remote URL containing a playable movie. State True/False", "MCQ Answer": "A", "option A": "TRUE", "option B": "FALSE"},
+            {"No": "56", "question_text": "HTML5 brings to the Web video and audio tracks without needing plugins. State True/False.", "MCQ Answer": "A", "option A": "TRUE", "option B": "FALSE"},
+            {"No": "58", "question_text": "Which element is used for YouTube videos?", "MCQ Answer": "B", "option A": "<frame>", "option B": "<iframe>", "option C": "<samp>", "option D": "<small>"},
+            {"No": "60", "question_text": "Which tag represents a piece of content that is only slightly related to the rest of the page in HTML5?", "MCQ Answer": "B", "option A": "<header>", "option B": "<aside>", "option C": "<article>", "option D": "<section>"},
+            {"No": "61", "question_text": "Which of the following element is used as a container for content?", "MCQ Answer": "C", "option A": "<footer>", "option B": "<header>", "option C": "<aside>", "option D": "<article>"},
+            {"No": "62", "question_text": "Which element represents self-contained composition in document?", "MCQ Answer": "C", "option A": "<footer>", "option B": "<header>", "option C": "<article>", "option D": "<meter>"},
+            {"No": "63", "question_text": "An Article element contains -", "MCQ Answer": "D", "option A": "Image", "option B": "Video", "option C": "Text or embedded content", "option D": "ALL the mentioned"},
+            {"No": "64", "question_text": "Which element is used to define a discrete unit of content such as a blogpost, comment, and so on?", "MCQ Answer": "B", "option A": "aside", "option B": "article", "option C": "header", "option D": "area"},
+            {"No": "65", "question_text": "How to create hyperlink in HTML?", "MCQ Answer": "A", "option A": "<a href=\"www.ljuniversity.com\"> LJ University</a>", "option B": "<a link=\"www.ljuniversity.com\"> LJ University</a>", "option C": "<a src=\"www.ljuniversity.com\"> LJ University</a>", "option D": "<a> LJ University </a>"},
+            {"No": "67", "question_text": "How to create hyperlink in image?", "MCQ Answer": "B", "option A": "<a href=\"#\"><img herf=\"image_path\"/></a>", "option B": "<a href=\"#\"><img src=\"image_path\"/></a>", "option C": "<a link=\"#\"><img src=\"image_path\"/></a>", "option D": "<a src=\"#\"><img src=\"image_path\"/></a>"},
+            {"No": "68", "question_text": "Which attribute is used to give index to <ol> tag?", "MCQ Answer": "C", "option A": "index", "option B": "number", "option C": "type", "option D": "position"},
+            {"No": "70", "question_text": "Which of the following is not a standalone tag?", "MCQ Answer": "C", "option A": "<hr>", "option B": "<img>", "option C": "<a>", "option D": "<br>"},
+            {"No": "71", "question_text": "Which is allowed attribute value to render small roman no. in ordered list?", "MCQ Answer": "C", "option A": "<ol type=\"I\">", "option B": "<ol type=\"roman\">", "option C": "<ol type=\"i\">", "option D": "<ol type=\"number\">"},
+            {"No": "72", "question_text": "<hr> tag in HTML is used for", "MCQ Answer": "D", "option A": "New line", "option B": "Vertical rule", "option C": "New paragraph", "option D": "Horizontal Rule"},
+            {"No": "73", "question_text": "Which of the following is the correct way to create list using lowercase letters?", "MCQ Answer": "B", "option A": "<ol alpha=\"a\">", "option B": "<ol type=\"a\">", "option C": "<ol letter=\"a\">", "option D": "None of the mentioned"},
+            {"No": "74", "question_text": "Which of the following is way to start an ordered list with the count of numeric value 4?", "MCQ Answer": "A", "option A": "<ol type=\"1\" start=\"4\">", "option B": "<ol type=\"1\" begin=\"4\">", "option C": "<ol type=\"1\" num=\"4\">", "option D": "<ol type=\"1\" initial=\"4\">"},
+            {"No": "75", "question_text": "Which is the correct way to comment something in HTML?", "MCQ Answer": "B", "option A": "Using ##and#", "option B": "Using ", "option C": "Using / and */", "option D": "Using <!-and ->"},
+            {"No": "76", "question_text": "Which type attribute value is not allowed in unordered list?", "MCQ Answer": "D", "option A": "disc", "option B": "circle", "option C": "square", "option D": "bullet"},
+            {"No": "77", "question_text": "Which tag helps to display underlined text?", "MCQ Answer": "A", "option A": "<u>", "option B": "<underline>", "option C": "<br>", "option D": "<below-line>"},
+            {"No": "78", "question_text": "Which element displays superscript text?", "MCQ Answer": "A", "option A": "<sup>", "option B": "<superscript>", "option C": "<superscripted>", "option D": "<super>"},
+            {"No": "79", "question_text": "Which of the following tags do not require a terminator?", "MCQ Answer": "A", "option A": "<br>", "option B": "<u>", "option C": "<b>", "option D": "none"},
+            {"No": "80", "question_text": "To get the ordered list we use", "MCQ Answer": "B", "option A": "<ul>", "option B": "<ol>", "option C": "<li>", "option D": "<ml>"},
+            {"No": "81", "question_text": "for unordered list, we use __ tag", "MCQ Answer": "C", "option A": "<ol>", "option B": "<li>", "option C": "<ul>", "option D": "<th>"},
+            {"No": "82", "question_text": "__ tag is used before beginning of the paragraph text.", "MCQ Answer": "D", "option A": "<textarea>", "option B": "<sup>", "option C": "<b>", "option D": "<p>"},
+            {"No": "83", "question_text": "which tag add row in table?", "MCQ Answer": "B", "option A": "<td></td>", "option B": "<tr></tr>", "option C": "<th></th>", "option D": "<tr></td>"},
+            {"No": "84", "question_text": "Which tag is used for numbered list?", "MCQ Answer": "B", "option A": "<ul>", "option B": "<ol>", "option C": "<list>", "option D": "none"},
+            {"No": "85", "question_text": "choose the HTML tag for smallest size heading.", "MCQ Answer": "C", "option A": "<h1>", "option B": "<h4>", "option C": "<h6>", "option D": "<h2>"},
+            {"No": "86", "question_text": "Which HTML tag is used to insert an image?", "MCQ Answer": "C", "option A": "<img url=\"htmllogo.jpg\" alt=\"htmllogo.jpg\">", "option B": "<img alt=\"htmllogo.jpg\">", "option C": "<img src=\"htmllogo.jpg\">", "option D": "<img link=\"htmllogo.jpg\">"},
+            {"No": "87", "question_text": "HTML tags are surrounded by which type of brackets.", "MCQ Answer": "D", "option A": "{}", "option B": "()", "option C": "[]", "option D": "<>"},
+            {"No": "88", "question_text": "What does the abbreviation HTML stand for?", "MCQ Answer": "C", "option A": "High Text Machine Language", "option B": "HyperText and links Markup Language", "option C": "HyperText Markup Language", "option D": "None of these"},
+            {"No": "89", "question_text": "What is the main purpose of the <meta> tag in HTML?", "MCQ Answer": "A", "option A": "To provide metadata about the webpage", "option B": "To create hyperlinks", "option C": "To insert images", "option D": "To display bold text"},
+            {"No": "90", "question_text": "Which <meta> attribute is used to define the character encoding of a webpage?", "MCQ Answer": "B", "option A": "http-equiv", "option B": "charset", "option C": "name", "option D": "content"},
+            {"No": "92", "question_text": "Which element is used inside <figure> to provide a caption or description?", "MCQ Answer": "D", "option A": "<label>", "option B": "<legend>", "option C": "<caption>", "option D": "<figcaption>"},
+            {"No": "93", "question_text": "Which of the following correctly represents a figure with a caption?", "MCQ Answer": "D", "option A": "<figure><figcaption>HTML Logo</figcaption><img src=\"html.png\"></figure>", "option B": "<fig><caption>HTML Logo</caption><img src=\"html.png\"></fig>", "option C": "<figure><caption HTML Logo></caption><img src=\"html.png\"></figure>", "option D": "<figure><img src=\"html.png\"><figcaption>HTML Logo</figcaption></figure>"},
+            {"No": "122", "question_text": "Which of the following is the correct code to design a dropdown menu with two contents \"Surat\", \"Rajkot\" as items and \"Gujarat\" as a category?", "MCQ Answer": "D", "option A": "<select><optgroup>Gujarat</optgroup><option>Surat</option><option>Rajkot</option></select>", "option B": "<select><optgroup value=\"Gujarat\"></optgroup><option>Surat</option><option>Rajkot</option></select>", "option C": "<select label=\"Gujarat\"><option>Surat</option><option>Rajkot</option></select>", "option D": "<select><optgroup label=\"Gujarat\"><option>Surat</option><option>Rajkot</option></optgroup></select>"},
+            {"No": "123", "question_text": "Which amongst the following is the correct HTML code for creating a dropdown list?", "MCQ Answer": "D", "option A": "<input type=\"dropdown\">", "option B": "<input type=\"list\">", "option C": "<input type=\"drop\">", "option D": "<select>"},
+            {"No": "124", "question_text": "Which attribute is used to group two or more radio button in form.", "MCQ Answer": "A", "option A": "name", "option B": "option", "option C": "radio", "option D": "id"},
+            {"No": "125", "question_text": "To display multiline textfield which tag will you use?", "MCQ Answer": "C", "option A": "<input type=\"textarea\" row=\"5\" col=\"5\"/>", "option B": "<input type=\"textarea\" row=\"5\" col=\"5\">", "option C": "<textarea rows=\"5\" cols=\"20\"></textarea>", "option D": "<textarea type=\"text\" row=\"5\" col=\"6\"></textarea>"},
+            {"No": "126", "question_text": "To create a combo box (drop down box) which tag will you use?", "MCQ Answer": "A", "option A": "<select>", "option B": "<list>", "option C": "<input type=\"dropdown\">", "option D": "<option type=\"dropdown\">"},
+            {"No": "127", "question_text": "Which of following is correct to specify optgroup tag?", "MCQ Answer": "D", "option A": "<optgroup text=\"india\">", "option B": "<optgroup \"india\">", "option C": "<optgroup id=\"india\">", "option D": "<optgroup label=\"india\">"},
+            {"No": "128", "question_text": "How to create a checkbox in HTML Form?", "MCQ Answer": "C", "option A": "<input type=\"text\">", "option B": "<input type=\"textarea\">", "option C": "<input type=\"checkbox\">", "option D": "<input type=\"button\">"},
+            {"No": "129", "question_text": "Which of the following correct for display drop down list?", "MCQ Answer": "D", "option A": "<select><option1>Apple</option1></select>", "option B": "<option><select>Apple</select></option>", "option C": "<option><select1>Apple</select1></option>", "option D": "<select><option>Apple</option></select>"},
+            {"No": "130", "question_text": "An HTML form is to be designed to enable the purchase of office stationery... Which one of the given options would suit sending the data to the sever?", "MCQ Answer": "D", "option A": "Either GET or POST", "option B": "Only GET", "option C": "Neither GET nor POST", "option D": "Only POST"},
+            {"No": "131", "question_text": "Which of the following are correct input types?", "MCQ Answer": "D", "option A": "text, list, password, reset", "option B": "submit, reset, list, password", "option C": "radio, reset, list, password", "option D": "submit, reset, checkbox, password"},
+            {"No": "132", "question_text": "Which of the following is used to render textarea?", "MCQ Answer": "D", "option A": "<text></text>", "option B": "<input type=\"text\"/>", "option C": "<input type=\"textarea\"/>", "option D": "<textarea></textarea>"},
+            {"No": "133", "question_text": "Which attribute of optgroup is used to specify its value?", "MCQ Answer": "B", "option A": "value", "option B": "label", "option C": "placeholder", "option D": "content"},
+            {"No": "134", "question_text": "Which attribute of <img> tag is used to define its coordinates and mapping?", "MCQ Answer": "D", "option A": "src", "option B": "shape", "option C": "coords", "option D": "usemap"},
+            {"No": "135", "question_text": "Identify correct code to draw a rounded rectangle with green border and red inner color.", "MCQ Answer": "A", "option A": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" stroke-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>", "option B": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" stroke-width=\"4\" fill=\"red\"/></svg>", "option C": "<svg width=\"400\" height=\"700\"><rect stroke=\"green\" border-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>", "option D": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" border-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>"}
+        ];
+
+        let currentScreen = 'loader';
+        let currentTestIndex = 0;
+        let score = 0;
+        
+        const screens = {
+            'loader': document.getElementById('loader'),
+            'menu': document.getElementById('menu-screen'),
+            'view-mode': document.getElementById('view-mode-screen'),
+            'test-mode': document.getElementById('test-mode-screen')
+        };
+
+        // --- Core Functions ---
+        function showScreen(screenId) {
+            Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+            screens[screenId].classList.remove('hidden');
+            currentScreen = screenId;
+
+            if (screenId === 'view-mode') {
+                initViewMode();
+            } else if (screenId === 'test-mode') {
+                startTest();
+            }
+        }
+        
+        function escapeHTML(str) {
+            if (!str) return "";
+            const p = document.createElement("p");
+            p.textContent = str;
+            return p.innerHTML;
+        }
+
+        // --- View Mode ---
+        function initViewMode() {
+            const container = document.getElementById('view-questions-container');
+            container.innerHTML = '';
+            questions.forEach(q => {
+                const correctAnswer = q["MCQ Answer"];
+                const optionsHTML = ['A', 'B', 'C', 'D'].map(opt => {
+                    const optionText = q[`option ${opt}`];
+                    if (!optionText) return '';
+                    const isCorrect = opt === correctAnswer;
+                    return `<div class="p-3 rounded-lg ${isCorrect ? 'bg-green-100 border-l-4 border-green-500 font-semibold' : 'bg-slate-100'}">
+                                <strong>${opt}.</strong> ${escapeHTML(optionText)}
+                            </div>`;
+                }).join('');
+
+                const questionCard = `
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                        <h3 class="font-semibold text-lg mb-4">Q${q.No}: ${escapeHTML(q.question_text)}</h3>
+                        <div class="space-y-3">${optionsHTML}</div>
+                    </div>
+                `;
+                container.innerHTML += questionCard;
+            });
+        }
+
+        // --- Test Mode ---
+        function startTest() {
+            currentTestIndex = 0;
+            score = 0;
+            document.getElementById('test-card').classList.remove('hidden');
+            document.getElementById('test-results').classList.add('hidden');
+            loadTestQuestion();
+        }
+
+        function loadTestQuestion() {
+            if (currentTestIndex >= questions.length) {
+                showResults();
+                return;
+            }
+
+            const q = questions[currentTestIndex];
+            const testCard = document.getElementById('test-card');
+            const progress = ((currentTestIndex + 1) / questions.length) * 100;
+
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `Question ${currentTestIndex + 1}/${questions.length}`;
+
+            const optionsHTML = ['A', 'B', 'C', 'D'].map(opt => {
+                const optionText = q[`option ${opt}`];
+                if (!optionText) return '';
+                return `<button class="option-btn text-left w-full p-4 font-medium rounded-lg" onclick="selectAnswer(this, '${opt}', '${q['MCQ Answer']}')">
+                            <strong>${opt}.</strong> ${escapeHTML(optionText)}
+                        </button>`;
+            }).join('');
+
+            testCard.innerHTML = `
+                <p class="text-xl font-medium text-slate-800 mb-6">${escapeHTML(q.question_text)}</p>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${optionsHTML}
+                </div>
+                <div class="mt-8 text-right">
+                     <button id="next-btn" onclick="nextQuestion()" class="btn bg-blue-600 text-white font-bold py-2 px-8 rounded-lg hidden">Next</button>
+                </div>
+            `;
+        }
+        
+        function selectAnswer(btn, selectedOpt, correctOpt) {
+            const optionsContainer = document.getElementById('options-container');
+            const allOptions = optionsContainer.querySelectorAll('button');
+
+            allOptions.forEach(optBtn => {
+                optBtn.disabled = true;
+                const optionLetter = optBtn.textContent.trim().split('.')[0];
+                if (optionLetter === correctOpt) {
+                    optBtn.classList.add('correct');
+                }
+            });
+
+            if (selectedOpt === correctOpt) {
+                score++;
+            } else {
+                btn.classList.add('incorrect');
+            }
+
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentTestIndex++;
+            loadTestQuestion();
+        }
+
+        function showResults() {
+             document.getElementById('test-card').classList.add('hidden');
+             const resultsContainer = document.getElementById('test-results');
+             resultsContainer.classList.remove('hidden');
+             document.getElementById('score-text').textContent = `${score}/${questions.length}`;
+             document.getElementById('progress-bar').style.width = '100%';
+             document.getElementById('progress-text').textContent = `Test Complete!`;
+        }
+
+        // --- Initial Load ---
+        window.onload = () => {
+            setTimeout(() => {
+                screens.loader.style.opacity = '0';
+                setTimeout(() => showScreen('menu'), 500); // Show menu after fade out
+            }, 1500); // Show loader for 1.5 seconds
+        };
+    </script>
+</body>
+</html>
