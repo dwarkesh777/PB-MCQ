@@ -105,7 +105,6 @@
 </head>
 <body class="bg-slate-50 text-slate-800">
 
-    <!-- Loader -->
     <div id="loader">
         <div class="loader-content">
             <div class="loader-logo">Dwarkesh</div>
@@ -115,7 +114,6 @@
 
     <div class="main-container">
 
-        <!-- Menu Screen -->
         <div id="menu-screen">
             <header class="text-center mb-12">
                 <h1 class="text-4xl font-bold text-slate-900 mb-2">MCQ Portal</h1>
@@ -133,18 +131,15 @@
             </div>
         </div>
 
-        <!-- View Mode Screen -->
         <div id="view-mode-screen" class="hidden">
              <header class="flex justify-between items-center mb-8">
                 <h1 class="text-3xl font-bold text-slate-900">Practice Questions</h1>
                 <button onclick="showScreen('menu')" class="btn bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md">Back to Menu</button>
             </header>
             <div id="view-questions-container" class="space-y-6">
-                <!-- Questions will be dynamically inserted here -->
-            </div>
+                </div>
         </div>
 
-        <!-- Test Mode Screen -->
         <div id="test-mode-screen" class="hidden">
             <header class="mb-8">
                  <div class="flex justify-between items-center mb-4">
@@ -158,8 +153,7 @@
             </header>
 
             <div id="test-card" class="bg-white p-8 rounded-2xl shadow-lg">
-                 <!-- Test content will be loaded here -->
-            </div>
+                 </div>
             
             <div id="test-results" class="hidden text-center bg-white p-8 rounded-2xl shadow-lg">
                 <h2 class="text-3xl font-bold text-slate-800 mb-4">Test Complete!</h2>
@@ -172,7 +166,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="fixed bottom-0 left-0 w-full text-center py-4 text-sm text-slate-500 bg-slate-100">
         Created by: Dwarkesh Savaliya
     </footer>
@@ -194,12 +187,14 @@
             {"No": "13", "question_text": "A piece of icon or image on a web page associated with another webpage is called as", "MCQ Answer": "B", "option A": "URL", "option B": "Hyperlink", "option C": "Plugin", "option D": "Extension"},
             {"No": "14", "question_text": "HTTP stands for?", "MCQ Answer": "B", "option A": "Hidden text transfer protocol", "option B": "Hyper text transfer protocol", "option C": "Hyper text transition protocol", "option D": "Hidden text transition protocol"},
             {"No": "15", "question_text": "Which organization was founded by Tim Berners Lee?", "MCQ Answer": "B", "option A": "IBM", "option B": "W3C", "option C": "Microsoft", "option D": "Google"},
+            {"No": "16", "question_text": "Which of the following statements about URLs are correct? 1) URL stands for Universal Resource Locator. 2) A URL is a global address to access resources on the Web. 3) Resources accessed by a URL can be an HTML file, CSS file, etc.", "MCQ Answer": "B", "option A": "Statements 1 and 2", "option B": "Statements 2 and 3", "option C": "Statements 1, 2, and 3", "option D": "None of the above"},
             {"No": "17", "question_text": "A web page is located using a", "MCQ Answer": "A", "option A": "Uniform Resource Locator", "option B": "Universal Record Linking", "option C": "Universal Record Locator", "option D": "Uniformly Reachable Links"},
             {"No": "18", "question_text": "Which protocol is used to send information over the web?", "MCQ Answer": "D", "option A": "SMTP", "option B": "FTP", "option C": "POP", "option D": "HTTP"},
             {"No": "19", "question_text": "Which of the following HTTP status codes means 'Forbidden-client is authenticated but not allowed'?", "MCQ Answer": "C", "option A": "200", "option B": "301", "option C": "403", "option D": "500"},
             {"No": "20", "question_text": "In an HTTP request message, which line specifies the method, resource, and protocol version?", "MCQ Answer": "B", "option A": "Status Line", "option B": "Request Line", "option C": "Header Line", "option D": "Entity Body"},
             {"No": "28", "question_text": "Which attribute of meta tag is used to automatically refresh the page?", "MCQ Answer": "A", "option A": "http-equiv", "option B": "refresh", "option C": "content", "option D": "name"},
-            {"No": "29", "question_text": "(A+B)^2 Which tag is used to display power in expression?", "MCQ Answer": "C", "option A": "<big>", "option B": "<sup>", "option C": "<sup>", "option D": "<sub>"},
+            {"No": "29", "question_text": "(A+B)² Which tag is used to display power in expression?", "MCQ Answer": "C", "option A": "<big>", "option B": "<sup>", "option C": "<sup>", "option D": "<sub>"},
+            {"No": "30", "question_text": "(C₂H₃O₂)₂ Which is the correct HTML statement to display this formula in a paragraph?", "MCQ Answer": "A", "option A": "<p>(C<sub>2</sub>H<sub>3</sub>O<sub>2</sub>)<sup>2</sup></p>", "option B": "<p>(C<sup>2</sup>H<sup>3</sup>O<sup>2</sup>)<sub>2</sub></p>", "option C": "<p>(C<sub>2</sub>H<sub>3</sub>O<sub>2</sub>)<sub>2</sub></p>", "option D": "<p>(C<sup>2</sup>H<sup>3</sup>O<sup>2</sup>)<sup>2</sup></p>"},
             {"No": "31", "question_text": "In HTML, which attribute is used to create a link that opens in a new window tab?", "MCQ Answer": "B", "option A": "src=\"blank\"", "option B": "target=\"_blank\"", "option C": "alt=\"blank\"", "option D": "target=\"_self\""},
             {"No": "32", "question_text": "Which of the following is way to start an ordered list with capital alphabets starting from C?", "MCQ Answer": "B", "option A": "<ol type=\"1\" start=\"3\">", "option B": "<ol type=\"A\" start=\"3\">", "option C": "<ol type=\"a\" new=\"3\">", "option D": "<ol type=\"A\" begin=\"4\">"},
             {"No": "33", "question_text": "Which attribute is used to define the space between a table cell's border and the content present in it?", "MCQ Answer": "C", "option A": "caption", "option B": "cellspacing", "option C": "cellpadding", "option D": "margin"},
@@ -214,6 +209,7 @@
             {"No": "43", "question_text": "Which of the following is the correct syntax for YouTube video?", "MCQ Answer": "A", "option A": "<iframe width=\"500\" height=\"500\" src=\"https://www.youtube.com/embed/Q-qeBOqKTU\"></iframe>", "option B": "<iframe width=\"500\" height=\"500\" src=\"https://www.youtube.com/Q-qeBOqKTU\"></iframe>", "option C": "<video width=\"500\" height=\"500\" src=\"https://www.youtube.com/embed/Q-qeBOqKTU\"></video>", "option D": "<iframe width=\"500\" height=\"500\" href=\"https://www.google.com/embed/Q-qeBOqKTU\"></iframe>"},
             {"No": "44", "question_text": "Which Boolean attribute if specified, will allow video automatically seek back to the start after reaching at the end?", "MCQ Answer": "C", "option A": "controls", "option B": "autoplay", "option C": "loop", "option D": "embed"},
             {"No": "45", "question_text": "Which of the following is/are Non semantic elements?", "MCQ Answer": "B", "option A": "<span>", "option B": "<div>", "option C": "<article>", "option D": "<footer>"},
+            {"No": "46", "question_text": "Which of the following element is not a semantic element?", "MCQ Answer": "C", "option A": "<header>", "option B": "<footer>", "option C": "<a>", "option D": "<aside>"},
             {"No": "47", "question_text": "If user want to add multiple media file as audio & video then which element is used for it?", "MCQ Answer": "D", "option A": "<audio>", "option B": "<canvas>", "option C": "<svg>", "option D": "<source>"},
             {"No": "48", "question_text": "If this attribute is present, it will allow the user to control audio playback, including volume, seeking, and pause/resume playback.", "MCQ Answer": "A", "option A": "controls", "option B": "src", "option C": "source", "option D": "autoplay"},
             {"No": "49", "question_text": "Which HTML5 element defines video or movie content?", "MCQ Answer": "A", "option A": "<video>", "option B": "<media>", "option C": "<audio>", "option D": "<movie>"},
@@ -224,20 +220,23 @@
             {"No": "55", "question_text": "To insert a video, we use a video tag and set its src attribute to a local or remote URL containing a playable movie. State True/False", "MCQ Answer": "A", "option A": "TRUE", "option B": "FALSE"},
             {"No": "56", "question_text": "HTML5 brings to the Web video and audio tracks without needing plugins. State True/False.", "MCQ Answer": "A", "option A": "TRUE", "option B": "FALSE"},
             {"No": "58", "question_text": "Which element is used for YouTube videos?", "MCQ Answer": "B", "option A": "<frame>", "option B": "<iframe>", "option C": "<samp>", "option D": "<small>"},
+            {"No": "59", "question_text": "Which value of the 'loop' parameter should be set for looping a YouTube video in an iframe?", "MCQ Answer": "B", "option A": "0", "option B": "1", "option C": "infinite", "option D": "loop"},
             {"No": "60", "question_text": "Which tag represents a piece of content that is only slightly related to the rest of the page in HTML5?", "MCQ Answer": "B", "option A": "<header>", "option B": "<aside>", "option C": "<article>", "option D": "<section>"},
             {"No": "61", "question_text": "Which of the following element is used as a container for content?", "MCQ Answer": "C", "option A": "<footer>", "option B": "<header>", "option C": "<aside>", "option D": "<article>"},
             {"No": "62", "question_text": "Which element represents self-contained composition in document?", "MCQ Answer": "C", "option A": "<footer>", "option B": "<header>", "option C": "<article>", "option D": "<meter>"},
             {"No": "63", "question_text": "An Article element contains -", "MCQ Answer": "D", "option A": "Image", "option B": "Video", "option C": "Text or embedded content", "option D": "ALL the mentioned"},
             {"No": "64", "question_text": "Which element is used to define a discrete unit of content such as a blogpost, comment, and so on?", "MCQ Answer": "B", "option A": "aside", "option B": "article", "option C": "header", "option D": "area"},
             {"No": "65", "question_text": "How to create hyperlink in HTML?", "MCQ Answer": "A", "option A": "<a href=\"www.ljuniversity.com\"> LJ University</a>", "option B": "<a link=\"www.ljuniversity.com\"> LJ University</a>", "option C": "<a src=\"www.ljuniversity.com\"> LJ University</a>", "option D": "<a> LJ University </a>"},
+            {"No": "66", "question_text": "Which element renders italic text?", "MCQ Answer": "A", "option A": "<i>", "option B": "<italic>", "option C": "<em>", "option D": "<pre>"},
             {"No": "67", "question_text": "How to create hyperlink in image?", "MCQ Answer": "B", "option A": "<a href=\"#\"><img herf=\"image_path\"/></a>", "option B": "<a href=\"#\"><img src=\"image_path\"/></a>", "option C": "<a link=\"#\"><img src=\"image_path\"/></a>", "option D": "<a src=\"#\"><img src=\"image_path\"/></a>"},
             {"No": "68", "question_text": "Which attribute is used to give index to <ol> tag?", "MCQ Answer": "C", "option A": "index", "option B": "number", "option C": "type", "option D": "position"},
-            {"No": "70", "question_text": "Which of the following is not a standalone tag?", "MCQ Answer": "C", "option A": "<hr>", "option B": "<img>", "option C": "<a>", "option D": "<br>"},
+            {"No": "69", "question_text": "Which of the following makes an image clickable?", "MCQ Answer": "D", "option A": "<a href=\"...\">Image Link Text</a>", "option B": "<a href=\"...\"><img src=\"...\">", "option C": "<img src=\"...\"><a href=\"...\">...</a>", "option D": "<a href=\"...\"><img src=\"...\"></a>"},
+            {"No": "70", "question_text": "Which of the following is not a standalone tag?", "MCQ Answer": "C", "option A": "<hr>", "option B": "<img>", "option C": "<b>", "option D": "<br>"},
             {"No": "71", "question_text": "Which is allowed attribute value to render small roman no. in ordered list?", "MCQ Answer": "C", "option A": "<ol type=\"I\">", "option B": "<ol type=\"roman\">", "option C": "<ol type=\"i\">", "option D": "<ol type=\"number\">"},
             {"No": "72", "question_text": "<hr> tag in HTML is used for", "MCQ Answer": "D", "option A": "New line", "option B": "Vertical rule", "option C": "New paragraph", "option D": "Horizontal Rule"},
             {"No": "73", "question_text": "Which of the following is the correct way to create list using lowercase letters?", "MCQ Answer": "B", "option A": "<ol alpha=\"a\">", "option B": "<ol type=\"a\">", "option C": "<ol letter=\"a\">", "option D": "None of the mentioned"},
             {"No": "74", "question_text": "Which of the following is way to start an ordered list with the count of numeric value 4?", "MCQ Answer": "A", "option A": "<ol type=\"1\" start=\"4\">", "option B": "<ol type=\"1\" begin=\"4\">", "option C": "<ol type=\"1\" num=\"4\">", "option D": "<ol type=\"1\" initial=\"4\">"},
-            {"No": "75", "question_text": "Which is the correct way to comment something in HTML?", "MCQ Answer": "B", "option A": "Using ##and#", "option B": "Using ", "option C": "Using / and */", "option D": "Using <!-and ->"},
+            {"No": "75", "question_text": "Which is the correct way to comment something in HTML?", "MCQ Answer": "D", "option A": "Using ##and#", "option B": "Using ", "option C": "Using / and */", "option D": "Using<!--and-->"},
             {"No": "76", "question_text": "Which type attribute value is not allowed in unordered list?", "MCQ Answer": "D", "option A": "disc", "option B": "circle", "option C": "square", "option D": "bullet"},
             {"No": "77", "question_text": "Which tag helps to display underlined text?", "MCQ Answer": "A", "option A": "<u>", "option B": "<underline>", "option C": "<br>", "option D": "<below-line>"},
             {"No": "78", "question_text": "Which element displays superscript text?", "MCQ Answer": "A", "option A": "<sup>", "option B": "<superscript>", "option C": "<superscripted>", "option D": "<super>"},
@@ -253,8 +252,10 @@
             {"No": "88", "question_text": "What does the abbreviation HTML stand for?", "MCQ Answer": "C", "option A": "High Text Machine Language", "option B": "HyperText and links Markup Language", "option C": "HyperText Markup Language", "option D": "None of these"},
             {"No": "89", "question_text": "What is the main purpose of the <meta> tag in HTML?", "MCQ Answer": "A", "option A": "To provide metadata about the webpage", "option B": "To create hyperlinks", "option C": "To insert images", "option D": "To display bold text"},
             {"No": "90", "question_text": "Which <meta> attribute is used to define the character encoding of a webpage?", "MCQ Answer": "B", "option A": "http-equiv", "option B": "charset", "option C": "name", "option D": "content"},
+            {"No": "91", "question_text": "Which <meta> tag is used to provide a description of the webpage for search engines?", "MCQ Answer": "B", "option A": "<meta charset=\"UTF-8\">", "option B": "<meta name=\"description\" content=\"...\">", "option C": "<meta http-equiv=\"refresh\" content=\"5\">", "option D": "<meta name=\"viewport\" content=\"width=device-width\">"},
             {"No": "92", "question_text": "Which element is used inside <figure> to provide a caption or description?", "MCQ Answer": "D", "option A": "<label>", "option B": "<legend>", "option C": "<caption>", "option D": "<figcaption>"},
             {"No": "93", "question_text": "Which of the following correctly represents a figure with a caption?", "MCQ Answer": "D", "option A": "<figure><figcaption>HTML Logo</figcaption><img src=\"html.png\"></figure>", "option B": "<fig><caption>HTML Logo</caption><img src=\"html.png\"></fig>", "option C": "<figure><caption HTML Logo></caption><img src=\"html.png\"></figure>", "option D": "<figure><img src=\"html.png\"><figcaption>HTML Logo</figcaption></figure>"},
+            {"No": "121", "question_text": "Which statement correctly renders a textarea with pre-filled content that a user must manually erase?", "MCQ Answer": "A", "option A": "<textarea>Initial content</textarea>", "option B": "<textarea value=\"Initial content\"></textarea>", "option C": "<textarea placeholder=\"Initial content\"></textarea>", "option D": "<textarea text=\"Initial content\"></textarea>"},
             {"No": "122", "question_text": "Which of the following is the correct code to design a dropdown menu with two contents \"Surat\", \"Rajkot\" as items and \"Gujarat\" as a category?", "MCQ Answer": "D", "option A": "<select><optgroup>Gujarat</optgroup><option>Surat</option><option>Rajkot</option></select>", "option B": "<select><optgroup value=\"Gujarat\"></optgroup><option>Surat</option><option>Rajkot</option></select>", "option C": "<select label=\"Gujarat\"><option>Surat</option><option>Rajkot</option></select>", "option D": "<select><optgroup label=\"Gujarat\"><option>Surat</option><option>Rajkot</option></optgroup></select>"},
             {"No": "123", "question_text": "Which amongst the following is the correct HTML code for creating a dropdown list?", "MCQ Answer": "D", "option A": "<input type=\"dropdown\">", "option B": "<input type=\"list\">", "option C": "<input type=\"drop\">", "option D": "<select>"},
             {"No": "124", "question_text": "Which attribute is used to group two or more radio button in form.", "MCQ Answer": "A", "option A": "name", "option B": "option", "option C": "radio", "option D": "id"},
@@ -268,8 +269,244 @@
             {"No": "132", "question_text": "Which of the following is used to render textarea?", "MCQ Answer": "D", "option A": "<text></text>", "option B": "<input type=\"text\"/>", "option C": "<input type=\"textarea\"/>", "option D": "<textarea></textarea>"},
             {"No": "133", "question_text": "Which attribute of optgroup is used to specify its value?", "MCQ Answer": "B", "option A": "value", "option B": "label", "option C": "placeholder", "option D": "content"},
             {"No": "134", "question_text": "Which attribute of <img> tag is used to define its coordinates and mapping?", "MCQ Answer": "D", "option A": "src", "option B": "shape", "option C": "coords", "option D": "usemap"},
-            {"No": "135", "question_text": "Identify correct code to draw a rounded rectangle with green border and red inner color.", "MCQ Answer": "A", "option A": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" stroke-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>", "option B": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" stroke-width=\"4\" fill=\"red\"/></svg>", "option C": "<svg width=\"400\" height=\"700\"><rect stroke=\"green\" border-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>", "option D": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" border-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>"}
-        ];
+            {"No": "135", "question_text": "Identify correct code to draw a rounded rectangle with green border and red inner color.", "MCQ Answer": "A", "option A": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" stroke-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>", "option B": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" stroke-width=\"4\" fill=\"red\"/></svg>", "option C": "<svg width=\"400\" height=\"700\"><rect stroke=\"green\" border-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>", "option D": "<svg width=\"400\" height=\"700\"><rect width=\"100\" height=\"200\" stroke=\"green\" border-width=\"4\" rx=\"12\" ry=\"22\" fill=\"red\"/></svg>"},
+            , // Add a comma after the last existing question object
+            // New questions from ufsd.pdf (Sr. No. 136 to 161)
+            {
+                "No": "136",
+                "question_text": "Which of following is correct to draw a square in SVG",
+                "MCQ Answer": "B",
+                "option A": "<square x=\"50\" y \"50\" height=\"100\" width=\"200\" stroke \"red\">",
+                "option B": "rect x  50\" y \"50\" width=\"100\" height=\"100\" stroke \"red\" fill \"green\"",
+                "option C": "<rect x=\"50\" y=\"50\" height=\"100\" width=\"200\" stroke \"red\">",
+                "option D": "<square height=\"100\" width=\"200\" stroke \"red\" fill=\"green\"/>"
+            },
+            {
+                "No": "137",
+                "question_text": "SVG stands for:",
+                "MCQ Answer": "C",
+                "option A": "Scalable Vector Group",
+                "option B": "Scalable Vast Graphics",
+                "option C": "Scalable Vector Graphics",
+                "option D": "Scale Vector Group"
+            },
+            {
+                "No": "138",
+                "question_text": "Which of the following is the correct combination of <area>, <map> & <img> tags?",
+                "MCQ Answer": "A",
+                "option A": "<img src=\"combo.jpg\" usemap=\"#abc\"/> <map name=\"abc\"> <area cords 3,55,66,77\" href=\"coffee.jpg\" shape \"rect\" target \"blank\"/> </map>",
+                "option B": "<img src=\"combo.jpg\" usemap=\"#abc\"> <map name \"abc\"> <area cords \"3.55.66.77\" sre=\"coffee.jpg\" shape \"rect\" destination\" blank\"/> </map>",
+                "option C": "<img href=\"combo.jpg\" usemap \"#abc\"/> <map name abe\"> area cords 3,55,66,77\" src=\"coffee.jpg\" shape \"rect\"/> </map>",
+                "option D": "<img link \"combo.jpg\" usemap \"#abe\"/> <map name=\"abc\"> <area cords \"3,55,66,77\" src=\"coffee.jpg/\"/> </map>"
+            },
+            {
+                "No": "139",
+                "question_text": "Consider the following code: <svg height \"500\" width=\"500\"> <rect x=\"40\" y=\"30\" rx=\"20\" ry \"30\" width=\"200\" height=\"200\" fill=\"red\" stroke-\"orange\" stroke-width=\"20\"/> </svg> When would you use the above code?",
+                "MCQ Answer": "C",
+                "option A": "while defining an image map",
+                "option B": "while referring to world map",
+                "option C": "while embedding a rounded rectangle using SVG",
+                "option D": "while aligning an image on web page using SVG"
+            },
+            {
+                "No": "140",
+                "question_text": "Being vector images, SVG image never loses quality no matter how they are zoomed out or resized. State True/False",
+                "MCQ Answer": "A",
+                "option A": "Yes",
+                "option B": "No",
+                "option C": "",
+                "option D": ""
+            },
+            {
+                "No": "141",
+                "question_text": "The rx and the ry attributes _____ the corners of the rectangle",
+                "MCQ Answer": "B",
+                "option A": "bends",
+                "option B": "rounds",
+                "option C": "clears",
+                "option D": "sharps"
+            },
+            {
+                "No": "142",
+                "question_text": "Which of the following is attribute of SVG line?",
+                "MCQ Answer": "D",
+                "option A": "x2",
+                "option B": "y2",
+                "option C": "All the mentioned",
+                "option D": "All the mentioned"
+            },
+            {
+                "No": "143",
+                "question_text": "Which of the following is used to pass values to draw a polygon?",
+                "MCQ Answer": "B",
+                "option A": "d",
+                "option B": "points",
+                "option C": "path",
+                "option D": "None of the mentioned"
+            },
+            {
+                "No": "144",
+                "question_text": "Which element is used to create a circle?",
+                "MCQ Answer": "B",
+                "option A": "round",
+                "option B": "circle",
+                "option C": "cir",
+                "option D": "ellipse"
+            },
+            {
+                "No": "145",
+                "question_text": "The x1 attribute defines the ____ of the line on the x-axis",
+                "MCQ Answer": "A",
+                "option A": "start",
+                "option B": "middle",
+                "option C": "end",
+                "option D": "Some point"
+            },
+            {
+                "No": "146",
+                "question_text": "Which is true about SVG?",
+                "MCQ Answer": "D",
+                "option A": "SVG images supports interactivity and animation.",
+                "option B": "SVG is intended to display images over the web.",
+                "option C": "Being vector images, SVG image never loses quality no matter how they are zoomed out or resized.",
+                "option D": "All the mentioned"
+            },
+            {
+                "No": "147",
+                "question_text": "Which of the following represents x-axis co-ordinate of top left of the rectangle?",
+                "MCQ Answer": "B",
+                "option A": "X",
+                "option B": "x",
+                "option C": "width",
+                "option D": "None of the mentioned"
+            },
+            {
+                "No": "148",
+                "question_text": "Which of the following is/are the property of SVG images?",
+                "MCQ Answer": "D",
+                "option A": "SVG is an open standard to draw graphics, on the fly, via scripting.",
+                "option B": "SVG images are scalable",
+                "option C": "SVG images are zoomable",
+                "option D": "All the mentioned"
+            },
+            {
+                "No": "149",
+                "question_text": "<area> tag is used in HTML document",
+                "MCQ Answer": "B",
+                "option A": "to draw graphics, on the fly, via scripting.",
+                "option B": "to map a portion of an. image to make it clickable by the end-user.",
+                "option C": "to define an image map.",
+                "option D": "to defines the title of a creative work."
+            },
+            {
+                "No": "150",
+                "question_text": "Which attribute is used to specifies the coordinates of the area?",
+                "MCQ Answer": "D",
+                "option A": "coordinates",
+                "option B": "coordinate",
+                "option C": "coord",
+                "option D": "coords"
+            },
+            {
+                "No": "151",
+                "question_text": "Which attribute is used to specifies an alternate text for the area?",
+                "MCQ Answer": "C",
+                "option A": "Text",
+                "option B": "alter",
+                "option C": "alt",
+                "option D": "alttext"
+            },
+            {
+                "No": "152",
+                "question_text": "map tag is used",
+                "MCQ Answer": "C",
+                "option A": "to draw graphics, on the fly, via scripting.",
+                "option B": "to map a portion of an image to make it clickable by the end-user.",
+                "option C": "to define an image map.",
+                "option D": "to defines the title of a creative work."
+            },
+            {
+                "No": "153",
+                "question_text": "How many area tag can contain by map tag?",
+                "MCQ Answer": "D",
+                "option A": "7",
+                "option B": "3",
+                "option C": "n",
+                "option D": "n"
+            },
+            {
+                "No": "154",
+                "question_text": "HTML5 element <canvas> gives you an easy and powerful way to draw graphics using JavaScript.",
+                "MCQ Answer": "A",
+                "option A": "TRUE",
+                "option B": "FALSE",
+                "option C": "",
+                "option D": ""
+            },
+            {
+                "No": "155",
+                "question_text": "What is the purpose of the fill attribute in SVG?",
+                "MCQ Answer": "B",
+                "option A": "It sets the border color of an element",
+                "option B": "It defines the color inside a shape",
+                "option C": "It defines the stroke color of a shape",
+                "option D": "It sets the opacity of the shape"
+            },
+            {
+                "No": "156",
+                "question_text": "How do you create a polygon in SVG?",
+                "MCQ Answer": "D",
+                "option A": "polyline points 50.150 75,200 100,150\">",
+                "option B": "polygon vertices \"50,150 75,200 100.150\" />",
+                "option C": "<polygon coords=\"50.150 75.200 100,150\" />",
+                "option D": "<polygon points \"50,150 75,200 100,150\" />"
+            },
+            {
+                "No": "157",
+                "question_text": "Which input type is used to enter a telephone number?",
+                "MCQ Answer": "A",
+                "option A": "<input type=\"tel\">",
+                "option B": "<input type  number>\"",
+                "option C": "<input type=\"text\">",
+                "option D": "<input type=\"call\">"
+            },
+            {
+                "No": "158",
+                "question_text": "What is the purpose of <input type=\"hidden\">?",
+                "MCQ Answer": "B",
+                "option A": "To hide the form completely",
+                "option B": "To store data that should not be visible but still sent with the form",
+                "option C": "To hide passwords while typing",
+                "option D": "To disable user input"
+            },
+            {
+                "No": "159",
+                "question_text": "Which  input type provides a calendar Ul for selecting a date?",
+                "MCQ Answer": "C",
+                "option A": "<input type \"time>\"",
+                "option B": "<input type=\"month>\"",
+                "option C": "<input type=\"date\">",
+                "option D": "<input type=\"datetime\">"
+            },
+            {
+                "No": "160",
+                "question_text": "Which attribute is commonly used with <input type=\"range\"> to set the minimum and maximum values?",
+                "MCQ Answer": "A",
+                "option A": "min and max",
+                "option B": "step",
+                "option C": "limit and bound",
+                "option D": "start and end"
+            },
+            {
+                "No": "161",
+                "question_text": "Which  input type provides a color picker tool in HTML forms?",
+                "MCQ Answer": "D",
+                "option A": "<input type=\"rgb\">",
+                "option B": "<input type \"palette\">",
+                "option C": "<input type=\"text\">",
+                "option D": "<input type \"color\">"
+            }
+        ].sort((a, b) => parseInt(a.No) - parseInt(b.No));
 
         let currentScreen = 'loader';
         let currentTestIndex = 0;
