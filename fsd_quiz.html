@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCQ Portal by D S SAVALIYA</title>
+    <title>FSD MCQ Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,6 +15,19 @@
             font-family: 'Inter', sans-serif;
         }
         
+        pre.code-block {
+          background: #f5f5f5;
+          padding: 10px;
+          font-size: 16px;
+          border-radius: 6px;
+          font-family: monospace;
+          white-space: pre-wrap;  /* wrap long lines */
+          word-wrap: break-word;  /* break long words */
+          overflow-x: auto;       /* scroll only if really long */
+          line-height: 1.5;
+          margin: 10px 0;
+          text-align: left;
+        }
 
         /* --- Loader Styles --- */
         #loader {
@@ -115,7 +128,7 @@
                  class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-600"
                  id="loader-image">
             
-            <div class="loader-logo">Dwarkesh</div>
+            <div class="loader-logo">D S SAVALIYA</div>
             <div class="loader-spinner"></div>
         </div>
     </div>
@@ -125,24 +138,24 @@
 
         <div id="menu-screen">
             <header class="text-center mb-12">
-                <h1 class="text-4xl font-bold text-slate-900 mb-2">MCQ Portal</h1>
+                <h1 class="text-4xl font-bold text-slate-900 mb-2">FSD-1 MCQ Portal</h1>
                 <p class="text-lg text-slate-600">Choose a mode to get started</p>
             </header>
             <div class="grid md:grid-cols-2 gap-8">
                 <button onclick="showScreen('view-mode')" class="btn bg-white p-8 rounded-xl shadow-lg border border-slate-200 text-left">
-                    <h2 class="text-2xl font-semibold text-blue-600 mb-2">View PB MCQs</h2>
-                    <p class="text-slate-500">Practice mode. Review all questions with their options and correct answers revealed.</p>
+                    <h2 class="text-2xl font-semibold text-blue-600 mb-2">View FSD-1 MCQs</h2>
+                    <p class="text-slate-500">Practice mode. Review all questions (Units 4 & 5) with their options and correct answers revealed.</p>
                 </button>
                 <button onclick="showScreen('test-mode')" class="btn bg-white p-8 rounded-xl shadow-lg border border-slate-200 text-left">
-                    <h2 class="text-2xl font-semibold text-green-600 mb-2">PB MCQ Test</h2>
-                    <p class="text-slate-500">Test your knowledge. Answer questions and get immediate feedback.</p>
+                    <h2 class="text-2xl font-semibold text-green-600 mb-2">FSD-1 MCQ Test</h2>
+                    <p class="text-slate-500">Test your knowledge. Answer questions (Units 4 & 5) and get immediate feedback.</p>
                 </button>
             </div>
         </div>
 
         <div id="view-mode-screen" class="hidden">
              <header class="flex justify-between items-center mb-8">
-                <h1 class="text-3xl font-bold text-slate-900">Practice Questions</h1>
+                <h1 class="text-3xl font-bold text-slate-900">Practice Questions (Units 4 & 5)</h1>
                 <button onclick="showScreen('menu')" class="btn bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md">Back to Menu</button>
             </header>
             <div id="view-questions-container" class="space-y-6">
@@ -152,13 +165,13 @@
         <div id="test-mode-screen" class="hidden">
             <header class="mb-8">
                  <div class="flex justify-between items-center mb-4">
-                    <h1 class="text-3xl font-bold text-slate-900">MCQ Test</h1>
+                    <h1 class="text-3xl font-bold text-slate-900">FSD-1 MCQ Test (Units 4 & 5)</h1>
                     <button onclick="showScreen('menu')" class="btn bg-slate-200 text-slate-800 font-semibold py-2 px-5 rounded-lg">Exit Test</button>
                  </div>
                  <div class="w-full bg-slate-200 rounded-full h-2.5">
                     <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
                 </div>
-                <p id="progress-text" class="text-center text-sm text-slate-500 mt-2">Question 1/100</p>
+                <p id="progress-text" class="text-center text-sm text-slate-500 mt-2">Question 1/88</p>
             </header>
 
             <div id="test-card" class="bg-white p-8 rounded-2xl shadow-lg">
@@ -166,7 +179,7 @@
             
             <div id="test-results" class="hidden text-center bg-white p-8 rounded-2xl shadow-lg">
                 <h2 class="text-3xl font-bold text-slate-800 mb-4">Test Complete!</h2>
-                <p class="text-5xl font-bold text-blue-600 mb-6" id="score-text">10/100</p>
+                <p class="text-5xl font-bold text-blue-600 mb-6" id="score-text">10/88</p>
                 <div class="flex justify-center gap-4">
                      <button onclick="startTest()" class="btn bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">Restart Test</button>
                      <button onclick="showScreen('menu')" class="btn bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">Back to Menu</button>
@@ -181,179 +194,276 @@
 
     <script>
                
-
-       // === QUESTIONS FROM MODDE.PDF - DIGITAL ELECTRONICS (Q. 1 to 12) ===
+// === QUESTIONS FROM PB_FSD-1_SEM-III_2025 (1).pdf - Unit 4 & 5 ===
 const questions = [
-    {"No": "1", "question_text": "The given hexadecimal number (1E53)₁₆ is equivalent to", "MCQ Answer": "B", "option A": "(35.684)₈", "option B": "(34.340)₈", "option C": "(36.246)₈", "option D": "(35.599)₈"},
-    {"No": "2", "question_text": "The octal number (651.124)₈ is equivalent to", "MCQ Answer": "C", "option A": "(149.2A)₁₆", "option B": "(1A8.A3)₁₆", "option C": "(1A9.2A)₁₆", "option D": "(180.90)₁₆"},
-    {"No": "3", "question_text": "The octal equivalent of the decimal number (417)₁₀ is", "MCQ Answer": "A", "option A": "(641)₈", "option B": "(640)₈", "option C": "(619)₈", "option D": "(598)₈"},
-    {"No": "4"
-, "question_text": "(170)₁₀ is equivalent to", "MCQ Answer": "D", "option A": "(FD)₁₆", "option B": "(AA)₁₆", "option C": "(DF)₁₆", "option D": "(AF)₁₆"},
-    {"No": "5", "question_text": "Convert (214)₈ into decimal", "MCQ Answer": "B", "option A": "(140)₁₀", "option B": "(142)₁₀", "option C": "(141)₁₀", "option D": "(130)₁₀"},
-    {"No": "6", "question_text": "Convert (0.345)₁₀ into an octal number.", "MCQ Answer": "A", "option A": "(0.26050)₈", "option B": "(0.19450)₈", "option C": "(0.260503)₈", "option D": "(0.24040)₈"},
-    {"No": "7", "question_text": "Convert decimal number (0.6875)₁₀ into a binary number.", "MCQ Answer": "B", "option A": "(0.1001)₂", "option B": "(0.1011)₂", "option C": "(0.1111)₂", "option D": "(0.1000)₂"},
-    {"No": "8", "question_text": "Convert decimal number (0.62)₁₀ into an octal number.", "MCQ Answer": "C", "option A": "(0.417)₈", "option B": "(0.473)₈", "option C": "(0.475)₈", "option D": "(0.415)₈"},
-    {"No": "9", "question_text": "Which of the following is not a positional number system?", "MCQ Answer": "A", "option A": "Roman Number System", "option B": "Octal Number System", "option C": "Binary Number System", "option D": "Hexadecimal Number System"},
-    {"No": "10", "question_text": "The value of radix in binary number system is", "MCQ Answer": "C", "option A": "4", "option B": "10", "option C": "2", "option D": "1101"},
-    {"No": "11", "question_text": "The binary equivalent of the decimal number 10 is", "MCQ Answer": "B", "option A": "10", "option B": "1010", "option C": "100", "option D": "1101"},
-    {"No": "12", "question_text": "The octal equivalent of 1100101.001010 is", "MCQ Answer": "B", "option A": "624.12", "option B": "145.12", "option C": "154.12", "option D": "145.21"},
-    // === QUESTIONS FROM MODDE.PDF - DIGITAL ELECTRONICS (Q. 17, 29, 36, 37, 45, 54-68, 71-75) ===
-    {"No": "17", "question_text": "The decimal equivalent of the binary number (10110.111)₂ is", "MCQ Answer": "B", "option A": "(22.875)₁₀", "option B": "(22.975)₁₀", "option C": "(22.999)₁₀", "option D": "(22.795)₁₀"},
-    {"No": "29", "question_text": "The number of bits in BCD code is", "MCQ Answer": "C", "option A": "3", "option B": "2", "option C": "4", "option D": "5"},
-    {"No": "36", "question_text": "Nibble means", "MCQ Answer": "C", "option A": "2 bit", "option B": "8 bit", "option C": "4 bit", "option D": "16 bit"},
-    {"No": "37", "question_text": "A byte is a string of", "MCQ Answer": "B", "option A": "16 bits", "option B": "8 bits", "option C": "6 bits", "option D": "4 bits"},
-    {"No": "45", "question_text": "Excess-3 code is a/an", "MCQ Answer": "B", "option A": "Binary code", "option B": "Self-complementary code", "option C": "Gray code", "option D": "Alphanumeric code"},
-    {"No": "54", "question_text": "The term 'digital' is derived from the word...", "MCQ Answer": "A", "option A": "Digit", "option B": "Dig", "option C": "Digt", "option D": "All of the above"},
-    {"No": "55", "question_text": "The base (or radix) of the hexadecimal system is", "MCQ Answer": "C", "option A": "10", "option B": "8", "option C": "16", "option D": "2"},
-    {"No": "56", "question_text": "Which of the following number is not allowed in radix-7 (base 7) system?", "MCQ Answer": "B", "option A": "1666", "option B": "739", "option C": "461", "option D": "124"},
-    {"No": "57", "question_text": "If (2.3)₄ + (1.2)₄ = y₄, then value of y in base 4 system.", "MCQ Answer": "A", "option A": "10.1", "option B": "10.01", "option C": "10.2", "option D": "1.02"},
-    {"No": "58", "question_text": "The 1's complement of the number (1001010)₂ is", "MCQ Answer": "A", "option A": "0110101", "option B": "0010010", "option C": "1001010", "option D": "1001011"},
-    {"No": "59", "question_text": "The 2's complement of the number (1001010)₂ is", "MCQ Answer": "B", "option A": "0110101", "option B": "0110110", "option C": "1001010", "option D": "1001011"},
-    {"No": "60", "question_text": "Which number system has a base 16?", "MCQ Answer": "D", "option A": "Octal", "option B": "Decimal", "option C": "Binary", "option D": "Hexadecimal"},
-    {"No": "61", "question_text": "What is Digital Electronics?", "MCQ Answer": "D", "option A": "Engineering of devices that produce digital signal", "option B": "Field of electronics involving the study of digital signal", "option C": "Engineering of devices that accepts digital signals", "option D": "All of the mentioned"},
-    {"No": "62", "question_text": "Convert the following numbers as directed: (130)₁₀ to (?)₂", "MCQ Answer": "B", "option A": "(10000011)₂", "option B": "(10000010)₂", "option C": "(10000111)₂", "option D": "(111001)₂"},
-    {"No": "63", "question_text": "Convert the following numbers as directed: (1011011)₂ to (?)₁₀", "MCQ Answer": "D", "option A": "(91)₈", "option B": "(52)₁₀", "option C": "(41)₁₀", "option D": "(91)₁₀"},
-    {"No": "64", "question_text": "Convert the following numbers as directed: (10111)₂ to (?)₈", "MCQ Answer": "C", "option A": "(26)₈", "option B": "(25)₈", "option C": "(27)₈", "option D": "(29)₈"},
-    {"No": "65", "question_text": "Convert the following numbers as directed: (57)₁₆ to (?)₂", "MCQ Answer": "A", "option A": "(01010111)₂", "option B": "(10001111)₂", "option C": "(11100111)₂", "option D": "(00101111)₂"},
-    {"No": "66", "question_text": "Convert decimal number (43)₁₀ to binary.", "MCQ Answer": "C", "option A": "(110110)₂", "option B": "(1010101)₂", "option C": "(101011)₂", "option D": "(111001)₂"},
-    {"No": "67", "question_text": "Convert octal number (234)₈ to hexadecimal.", "MCQ Answer": "A", "option A": "(9C)₁₆", "option B": "(8C)₁₆", "option C": "(9C)₈", "option D": "(9C)₂"},
-    {"No": "68", "question_text": "Convert decimal number (0.252)₁₀ to binary.", "MCQ Answer": "B", "option A": "(0.00001)₂", "option B": "(0.010000)₂", "option C": "(1.010000)₂", "option D": "(10.00100)₂"},
-    {"No": "71", "question_text": "Find 2's complement of 10000100.", "MCQ Answer": "B", "option A": "01111011", "option B": "01111100", "option C": "01110100", "option D": "01010101"},
-    {"No": "72", "question_text": "Find 1's complement of 11100101.", "MCQ Answer": "B", "option A": "00011001", "option B": "00011010", "option C": "00011011", "option D": "00011000"},
-    {"No": "73", "question_text": "The complement of 1010 is", "MCQ Answer": "C", "option A": "1001", "option B": "1010", "option C": "0101", "option D": "1101"},
-    {"No": "74", "question_text": "Convert the decimal fraction 0.4375 to binary.", "MCQ Answer": "A", "option A": "0.0111", "option B": "0.1011", "option C": "0.1101", "option D": "0.1111"},
-    {"No": "75", "question_text": "How many bits are in a byte?", "MCQ Answer": "A", "option A": "8", "option B": "16", "option C": "4", "option D": "1"},
-    // === QUESTIONS FROM MODDE.PDF - DIGITAL ELECTRONICS (Q. 77-82, 85, 104, 105, 117-128, 131, 146-156, 163, 169, 172-178) ===
-    {"No": "77", "question_text": "The 1's complement of the number (0111)₂ is", "MCQ Answer": "B", "option A": "1110", "option B": "1000", "option C": "1100", "option D": "0001"},
-    {"No": "78", "question_text": "The 2's complement of the number (1001)₂ is", "MCQ Answer": "D", "option A": "0110", "option B": "0111", "option C": "1001", "option D": "0111"},
-    {"No": "79", "question_text": "The 1's complement of the number (1101)₂ is", "MCQ Answer": "A", "option A": "0010", "option B": "0001", "option C": "1101", "option D": "1010"},
-    {"No": "80", "question_text": "Which of the following is the 2's complement of (10111000)₂?", "MCQ Answer": "A", "option A": "01001000", "option B": "01000111", "option C": "10111001", "option D": "10110111"},
-    {"No": "81", "question_text": "The minimum number of bits required to represent the octal number (157)₈ in binary is", "MCQ Answer": "C", "option A": "7", "option B": "8", "option C": "9", "option D": "10"},
-    {"No": "82", "question_text": "A logic circuit that converts binary data to its complement is a/an", "MCQ Answer": "A", "option A": "Inverter", "option B": "Subtractor", "option C": "Adder", "option D": "Transistor"},
-    {"No": "85", "question_text": "The smallest unit of storage is a", "MCQ Answer": "B", "option A": "Nibble", "option B": "Bit", "option C": "Byte", "option D": "Word"},
-    {"No": "104", "question_text": "The minimum number of two-input NAND gates required to implement the function F = (X' + Y')(Z + W) is", "MCQ Answer": "C", "option A": "3", "option B": "4", "option C": "5", "option D": "6"},
-    {"No": "105", "question_text": "The minimum number of two-input NOR gates required to implement the function F = (X + Y) * (Z + W) is", "MCQ Answer": "C", "option A": "3", "option B": "4", "option C": "5", "option D": "6"},
-    {"No": "117", "question_text": "Which gate is equivalent to bubbled OR gate?", "MCQ Answer": "D", "option A": "AND", "option B": "XOR", "option C": "NOT", "option D": "NAND"},
-    {"No": "118", "question_text": "A NOT gate has...", "MCQ Answer": "A", "option A": "1 input and 1 output", "option B": "2 input 1 output", "option C": "1 input 2 output", "option D": "None of above"},
-    {"No": "119", "question_text": "The only function of a NOT gate is to", "MCQ Answer": "A", "option A": "Invert the input", "option B": "Stop the signal", "option C": "Act as a buffer", "option D": "Act as a switch"},
-    {"No": "120", "question_text": "The output of an OR gate is LOW when", "MCQ Answer": "C", "option A": "Any input is LOW", "option B": "Any input is HIGH", "option C": "All inputs are LOW", "option D": "All inputs are HIGH"},
-    {"No": "121", "question_text": "The output of a NAND gate is HIGH if", "MCQ Answer": "A", "option A": "Any input is LOW", "option B": "All inputs are HIGH", "option C": "All inputs are LOW", "option D": "Only one input is HIGH"},
-    {"No": "122", "question_text": "The output of a gate is only 1 when all of its inputs are 1.", "MCQ Answer": "C", "option A": "OR", "option B": "NOT", "option C": "AND", "option D": "EXOR"},
-    {"No": "123", "question_text": "The inputs of a NAND gate are connected together. The resulting circuit is", "MCQ Answer": "C", "option A": "OR", "option B": "AND", "option C": "NOT", "option D": "NONE OF ABOVE"},
-    {"No": "124", "question_text": "The NOR gate is OR gate followed by", "MCQ Answer": "C", "option A": "AND", "option B": "NAND", "option C": "NOT", "option D": "NONE OF ABOVE"},
-    {"No": "125", "question_text": "The NAND gate is AND gate followed by", "MCQ Answer": "A", "option A": "NOT", "option B": "OR", "option C": "NOR", "option D": "NONE OF ABOVE"},
-    {"No": "126", "question_text": "Which basic gate is used to construct a NOT gate?", "MCQ Answer": "A", "option A": "NAND, NOR", "option B": "AND, OR", "option C": "XOR, XNOR", "option D": "All of the above"},
-    {"No": "127", "question_text": "The basic logic gate whose output is the complement of the input is", "MCQ Answer": "C", "option A": "OR", "option B": "AND", "option C": "INVERTER", "option D": "NONE OF ABOVE"},
-    {"No": "128", "question_text": "The universal gate is", "MCQ Answer": "D", "option A": "EXOR", "option B": "NAND", "option C": "NOR", "option D": "BOTH (B) AND (C)"},
-    {"No": "131", "question_text": "A signal passing through a gate is inhibited by sending a LOW into one of the inputs, and the output is HIGH, the gate is a(n):", "MCQ Answer": "D", "option A": "AND", "option B": "NAND", "option C": "OR", "option D": "NOR"},
-    {"No": "146", "question_text": "A logic gate which has a HIGH output only when all its inputs are HIGH is a/an", "MCQ Answer": "B", "option A": "OR gate", "option B": "AND gate", "option C": "NOR gate", "option D": "XOR gate"},
-    {"No": "147", "question_text": "Which gate is called an inverter?", "MCQ Answer": "C", "option A": "AND", "option B": "OR", "option C": "NOT", "option D": "XOR"},
-    {"No": "148", "question_text": "Which of the following is an example of a universal gate?", "MCQ Answer": "C", "option A": "XOR", "option B": "OR", "option C": "NAND", "option D": "AND"},
-    {"No": "149", "question_text": "The AND function can be realised by NOR gates.", "MCQ Answer": "A", "option A": "Two", "option B": "Three", "option C": "Four", "option D": "Five"},
-    {"No": "150", "question_text": "The minimum number of two-input NAND gates required to implement a two-input EX-OR gate is", "MCQ Answer": "C", "option A": "4", "option B": "5", "option C": "3", "option D": "2"},
-    {"No": "151", "question_text": "The logic function F = A'B + AB' is the logic function of", "MCQ Answer": "D", "option A": "X-NOR gate", "option B": "OR gate", "option C": "AND gate", "option D": "X-OR gate"},
-    {"No": "152", "question_text": "The number of two-input NAND gates required to implement a two-input XOR gate is", "MCQ Answer": "B", "option A": "2", "option B": "4", "option C": "5", "option D": "6"},
-    {"No": "153", "question_text": "Which of the following Boolean expressions is incorrect?", "MCQ Answer": "B", "option A": "A' + A = 1", "option B": "A + B = A.B", "option C": "A + A = A", "option D": "A.A' = 0"},
-    {"No": "154", "question_text": "How many NOT gates are required to implement a half adder circuit?", "MCQ Answer": "A", "option A": "1", "option B": "2", "option C": "3", "option D": "4"},
-    {"No": "155", "question_text": "De Morgan's theorem states that", "MCQ Answer": "B", "option A": "(A + B)' = A' + B'", "option B": "(A + B)' = A' . B'", "option C": "(A . B)' = A' . B'", "option D": "(A . B)' = A . B"},
-    {"No": "156", "question_text": "The expression for an OR gate is", "MCQ Answer": "A", "option A": "Y = A + B", "option B": "Y = A . B", "option C": "Y = A' + B'", "option D": "Y = (A + B)'"},
-    {"No": "163", "question_text": "The Boolean expression Y = AB + BC + CA is minimized to", "MCQ Answer": "D", "option A": "AB + AC", "option B": "A'B + BC", "option C": "A'B + C", "option D": "No minimization possible"},
-    {"No": "169", "question_text": "The consensus theorem is represented as", "MCQ Answer": "C", "option A": "XY + XZ + Y'Z = XY + XZ", "option B": "XY + XZ + YZ = XY + XZ", "option C": "XY + X'Z + YZ = XY + X'Z", "option D": "XY + X'Z + YZ = X'Y + XZ"},
-    {"No": "172", "question_text": "The minimum number of two-input NAND gates required to implement a two-input OR gate is", "MCQ Answer": "C", "option A": "2", "option B": "4", "option C": "3", "option D": "5"},
-    {"No": "173", "question_text": "The minimum number of two-input NOR gates required to implement a two-input AND gate is", "MCQ Answer": "C", "option A": "2", "option B": "4", "option C": "3", "option D": "5"},
-    {"No": "174", "question_text": "Which one is not a property of Boolean algebra?", "MCQ Answer": "D", "option A": "Associative law", "option B": "Distributive law", "option C": "Commutative law", "option D": "Probability law"},
-    {"No": "175", "question_text": "Boolean algebra is also known as", "MCQ Answer": "B", "option A": "Decimal logic", "option B": "Binary logic", "option C": "Digital logic", "option D": "None of the above"},
-    {"No": "176", "question_text": "According to the idempotent law of Boolean algebra", "MCQ Answer": "A", "option A": "A + A = A", "option B": "A + A = 1", "option C": "A + A = A'", "option D": "A + A = 0"},
-    {"No": "177", "question_text": "Which of the following is true according to the Annulment law?", "MCQ Answer": "B", "option A": "A + 1 = 1", "option B": "A . 0 = 0", "option C": "A . 1 = 1", "option D": "A + 0 = 0"},
-    {"No": "178", "question_text": "According to the Absorption law, A + AB is equal to", "MCQ Answer": "A", "option A": "A", "option B": "B", "option C": "AB", "option D": "A + B"},
-// === QUESTIONS FROM MODDE.PDF - DIGITAL ELECTRONICS (Q. 180-183, 185, 186, 191-199) ===
-    {"No": "180", "question_text": "If two Boolean variables A and B are ORed, the result is 1, so the combination of the values of A and B can be", "MCQ Answer": "D", "option A": "A=0, B=0", "option B": "A=0, B=1", "option C": "A=1, B=0", "option D": "Any of B or C"},
-    {"No": "181", "question_text": "According to the property of 0, A + 0 is equal to", "MCQ Answer": "A", "option A": "A", "option B": "0", "option C": "1", "option D": "A'"},
-    {"No": "182", "question_text": "The minimum number of two-input NAND gates required to implement a two-input NOR gate is", "MCQ Answer": "C", "option A": "2", "option B": "4", "option C": "3", "option D": "5"},
-    {"No": "183", "question_text": "The minimum number of two-input NOR gates required to implement a two-input OR gate is", "MCQ Answer": "C", "option A": "2", "option B": "4", "option C": "3", "option D": "5"},
-    {"No": "185", "question_text": "Commutative law is", "MCQ Answer": "D", "option A": "A + A = A", "option B": "A + 1 = 1", "option C": "A + B = A", "option D": "A + B = B + A"},
-    {"No": "186", "question_text": "Associative law is", "MCQ Answer": "A", "option A": "A + (B + C) = (A + B) + C", "option B": "A + A = A", "option C": "A + 1 = 1", "option D": "A + 0 = A"},
-    {"No": "191", "question_text": "A full adder circuit adds", "MCQ Answer": "C", "option A": "One bit", "option B": "Two bits", "option C": "Three bits", "option D": "Four bits"},
-    {"No": "192", "question_text": "The output of a half-adder is:", "MCQ Answer": "A", "option A": "Sum and Carry", "option B": "Sum and Difference", "option C": "Carry and Difference", "option D": "None of the above"},
-    {"No": "193", "question_text": "A full-adder circuit has", "MCQ Answer": "C", "option A": "One input and one output", "option B": "Two inputs and one output", "option C": "Three inputs and two outputs", "option D": "Three inputs and one output"},
-    {"No": "194", "question_text": "Which gates are generally used to construct a half adder?", "MCQ Answer": "D", "option A": "AND, OR", "option B": "NAND, NOR", "option C": "NOT, AND", "option D": "EX-OR, AND"},
-    {"No": "195", "question_text": "The output of a full adder circuit is:", "MCQ Answer": "A", "option A": "Sum and Carry", "option B": "Sum and Difference", "option C": "Carry and Difference", "option D": "None of the above"},
-    {"No": "196", "question_text": "The output of a half-subtractor is:", "MCQ Answer": "B", "option A": "Sum and Carry", "option B": "Difference and Borrow", "option C": "Carry and Borrow", "option D": "None of the above"},
-    {"No": "197", "question_text": "The half-subtractor has", "MCQ Answer": "A", "option A": "Two inputs and two outputs", "option B": "Three inputs and two outputs", "option C": "One input and one output", "option D": "Two inputs and three outputs"},
-    {"No": "198", "question_text": "The full-subtractor has", "MCQ Answer": "B", "option A": "Two inputs and two outputs", "option B": "Three inputs and two outputs", "option C": "One input and one output", "option D": "Two inputs and three outputs"},
-    {"No": "199", "question_text": "Which gates are generally used to construct a half-subtractor?", "MCQ Answer": "C", "option A": "AND, OR", "option B": "NAND, NOR", "option C": "EX-OR, NOT, AND", "option D": "None of the above"},
-// === QUESTIONS FROM MODDE.PDF - DIGITAL ELECTRONICS (Q. 203 to 228) ===
-    {"No": "203", "question_text": "A full adder can be constructed by using", "MCQ Answer": "A", "option A": "Two half adders and one OR gate", "option B": "Two full adders", "option C": "Two half adders and one AND gate", "option D": "One half adder and one OR gate"},
-    {"No": "204", "question_text": "A full-subtractor is constructed by using", "MCQ Answer": "B", "option A": "One half subtractor and one AND gate", "option B": "Two half subtractors and one OR gate", "option C": "Two half subtractors and one NOT gate", "option D": "None of the above"},
-    {"No": "205", "question_text": "The carry generated in a full adder circuit is", "MCQ Answer": "C", "option A": "C_in", "option B": "A XOR B", "option C": "AB + BC_in + CA", "option D": "A + B + C_in"},
-    {"No": "206", "question_text": "The sum generated in a full adder circuit is", "MCQ Answer": "D", "option A": "A + B + C", "option B": "A AND B AND C", "option C": "A XOR B", "option D": "A XOR B XOR C"},
-    {"No": "207", "question_text": "A decoder has 'n' inputs and 'm' outputs. If the decoder is designed to work as a min-term generator, then", "MCQ Answer": "D", "option A": "m = n", "option B": "m = 2n", "option C": "m = 2n-1", "option D": "m = 2^n"},
-    {"No": "208", "question_text": "A full adder logic can be realized using", "MCQ Answer": "B", "option A": "Three AND gates and two OR gates", "option B": "Two half adders and one OR gate", "option C": "Two full adders", "option D": "None of the above"},
-    {"No": "209", "question_text": "A 4-to-16 line decoder will have", "MCQ Answer": "C", "option A": "16 inputs and 4 outputs", "option B": "4 outputs and 4 inputs", "option C": "4 inputs and 16 outputs", "option D": "16 inputs and 16 outputs"},
-    {"No": "210", "question_text": "The output lines of a decoder are called", "MCQ Answer": "A", "option A": "Minterms", "option B": "Maxterms", "option C": "Output terms", "option D": "Address terms"},
-    {"No": "211", "question_text": "A multiplexer has", "MCQ Answer": "B", "option A": "One data input and one output", "option B": "Many data inputs and one output", "option C": "Many data inputs and many outputs", "option D": "One data input and many outputs"},
-    {"No": "212", "question_text": "A multiplexer is also called as", "MCQ Answer": "A", "option A": "Data selector", "option B": "Data distributor", "option C": "Encoder", "option D": "Decoder"},
-    {"No": "213", "question_text": "A demultiplexer has", "MCQ Answer": "A", "option A": "One data input and many outputs", "option B": "Many data inputs and one output", "option C": "Many data inputs and many outputs", "option D": "One data input and one output"},
-    {"No": "214", "question_text": "A demultiplexer is also called as", "MCQ Answer": "D", "option A": "Data selector", "option B": "Encoder", "option C": "Multiplexer", "option D": "Data distributor"},
-    {"No": "215", "question_text": "A 4-to-1 multiplexer has", "MCQ Answer": "C", "option A": "4 data inputs, 4 select lines and 1 output", "option B": "4 data inputs, 2 select lines and 2 outputs", "option C": "4 data inputs, 2 select lines and 1 output", "option D": "4 data inputs, 1 select line and 1 output"},
-    {"No": "216", "question_text": "A 1-to-8 demultiplexer has", "MCQ Answer": "B", "option A": "1 data input, 8 select lines and 8 outputs", "option B": "1 data input, 3 select lines and 8 outputs", "option C": "8 data inputs, 3 select lines and 1 output", "option D": "3 data inputs, 8 select lines and 1 output"},
-    {"No": "217", "question_text": "The term used to describe a multiplexer in short is", "MCQ Answer": "A", "option A": "MUX", "option B": "DMUX", "option C": "DECODE", "option D": "DATA SELECTOR"},
-    {"No": "218", "question_text": "The term used to describe a demultiplexer in short is", "MCQ Answer": "B", "option A": "MUX", "option B": "DMUX", "option C": "ENCODE", "option D": "DATA SELECTOR"},
-    {"No": "219", "question_text": "A combinational circuit that converts binary information from 'n' input lines to a maximum of 2^n unique output lines is a/an", "MCQ Answer": "B", "option A": "Encoder", "option B": "Decoder", "option C": "Multiplexer", "option D": "Demultiplexer"},
-    {"No": "220", "question_text": "An encoder has", "MCQ Answer": "D", "option A": "2^n inputs and n outputs", "option B": "n inputs and 2^n outputs", "option C": "n inputs and n outputs", "option D": "2^n outputs and n inputs"},
-    {"No": "221", "question_text": "An 8-to-3 encoder has", "MCQ Answer": "A", "option A": "8 inputs and 3 outputs", "option B": "3 inputs and 8 outputs", "option C": "8 inputs and 8 outputs", "option D": "3 inputs and 3 outputs"},
-    {"No": "222", "question_text": "A binary encoder is a combinational circuit that converts binary information from", "MCQ Answer": "A", "option A": "2^n input lines to n output lines", "option B": "n input lines to 2^n output lines", "option C": "2^n output lines to n input lines", "option D": "n output lines to 2^n input lines"},
-    {"No": "223", "question_text": "A priority encoder is used to encode a number based on the", "MCQ Answer": "B", "option A": "Lowest input line", "option B": "Highest input line", "option C": "Middle input line", "option D": "Random input line"},
-    {"No": "224", "question_text": "A 4-to-2 encoder has", "MCQ Answer": "A", "option A": "4 inputs and 2 outputs", "option B": "2 inputs and 4 outputs", "option C": "4 inputs and 4 outputs", "option D": "2 inputs and 2 outputs"},
-    {"No": "225", "question_text": "A BCD-to-seven segment decoder is a combinational circuit that converts the BCD input code to an output code for driving a", "MCQ Answer": "C", "option A": "Full adder", "option B": "Multiplexer", "option C": "Seven-segment display", "option D": "Flip flop"},
-    {"No": "226", "question_text": "A BCD-to-seven segment decoder has", "MCQ Answer": "A", "option A": "4 inputs and 7 outputs", "option B": "7 inputs and 4 outputs", "option C": "4 inputs and 4 outputs", "option D": "7 inputs and 7 outputs"},
-    {"No": "227", "question_text": "A binary-to-Gray code converter is a type of", "MCQ Answer": "B", "option A": "Encoder", "option B": "Combinational circuit", "option C": "Sequential circuit", "option D": "Flip-flop"},
-    {"No": "228", "question_text": "A Gray-to-binary code converter is a type of", "MCQ Answer": "A", "option A": "Combinational circuit", "option B": "Sequential circuit", "option C": "Encoder", "option D": "Decoder"},
-// === QUESTIONS FROM MODDE.PDF - DIGITAL ELECTRONICS (Q. 236 to 249) ===
+    {"No": "195", "question_text": "In the below code snippet, in what order will the margins be added?\np {margin: 25px 50px 75px 100px; }", "MCQ Answer": "B", "option A": "Top, left, right, bottom", "option B": "Top, Right, Bottom, Left", "option C": "Top, bottom, right, Left", "option D": "Left, Right, Bottom, top"},
+    {"No": "196", "question_text": "Which CSS selectors are used to specify a group of elements?", "MCQ Answer": "B", "option A": "id", "option B": "class", "option C": "tag", "option D": "attribute"},
+    {"No": "197", "question_text": "Which of the following is/are not a pseudo element?", "MCQ Answer": "D", "option A": "::first-word", "option B": "::first-letter", "option C": "::select", "option D": "Only (A) and (C)"},
+    {"No": "198", "question_text": "______property renders 1st letters of all words capital.", "MCQ Answer": "B", "option A": "text-decoration", "option B": "text-transform", "option C": "text-variant", "option D": "text-capitalize"},
+    {"No": "199", "question_text": "Which CSS property is used to make the text bold?", "MCQ Answer": "C", "option A": "text-align: bold", "option B": "text-decoration: bold", "option C": "font-weight: bold", "option D": "font-style: bold"},
+    {"No": "200", "question_text": "What will be the output of below mentioned code snippet?\np strong {background-color: yellow;}", "MCQ Answer": "A", "option A": "Strong element within a p \nelement have a yellow \nbackground", "option B": "Strong element out side p \nelement have yellow \nbackground", "option C": "Both p and strong have \nyellow background", "option D": "both (a) and (c) are true"},
+    {"No": "201", "question_text": "Which of the following selectors select direct descendants?", "MCQ Answer": "D", "option A": "OL<B", "option B": "OL B", "option C": "OL ~ B", "option D": "OL>B"},
+    {"No": "202", "question_text": "Which one is the correct syntax to link an external style sheet in the HTML file?", "MCQ Answer": "C", "option A": "<link src=”demo.css” type=”stylesheet”/>", "option B": "<style src=”demo.css” type=”stylesheet”/>", "option C": "<link href=”demo.css” rel=”stylesheet”/>", "option D": "<style href=”demo.css” rel=”stylesheet”/>"},
+    {"No": "203", "question_text": "The CSS property that is primarily used for giving a line over a text would be:", "MCQ Answer": "B", "option A": "text-rule:underline;", "option B": "text-decoration:overline;", "option C": "text-rule:overline;", "option D": "text-decoration:underline;"},
+    {"No": "204", "question_text": "Which is the correct inline CSS for p tag to define paragraph's text and background colors?", "MCQ Answer": "D", "option A": "<p css=\"color: red; \nbackground-color: \nyellow;\">", "option B": "<p type=\"color: red; \nbackground-color: \nyellow;\">", "option C": "<p inline=\"color: red; \nbackground-color: \nyellow;\">", "option D": "<p style=\"color: red; \nbackground-color: \nyellow;\">"},
+    {"No": "205", "question_text": "If you want to use a green dotted border around an image, which CSS property is used for that?", "MCQ Answer": "D", "option A": "border-style", "option B": "border-color", "option C": "border-decoration", "option D": "Both A and B"},
+    {"No": "206", "question_text": "What does 'padding: 50px 20px;' specifies?", "MCQ Answer": "D", "option A": "top padding is 50px", "option B": "bottom padding is 20px", "option C": "right padding is 20px", "option D": "Both A and C"},
+    {"No": "207", "question_text": "What is CSS?", "MCQ Answer": "D", "option A": "CSS is a style sheet language", "option B": "CSS is the language used to style the HTML documents", "option C": "CSS is designed to separate \nthe presentation and \ncontent, including layout, \ncolors, and fonts", "option D": "All the mentioned"},
+    {"No": "208", "question_text": "Which has introduced text, list, box, margin, border, color, and background properties?", "MCQ Answer": "B", "option A": "PHP", "option B": "CSS", "option C": "HTML", "option D": "Ajax"},
+    {"No": "209", "question_text": "Select the CSS property that sets the width of an element’s bottom border.", "MCQ Answer": "B", "option A": "border-width-down", "option B": "border-bottom-width", "option C": "border-width", "option D": "border-bottom"},
+    {"No": "210", "question_text": "Which CSS property sets the color of an element’s all borders?", "MCQ Answer": "A", "option A": "border-color", "option B": "border-background", "option C": "border-background-color", "option D": "border-bgcolor"},
+    {"No": "211", "question_text": "Which is not the property of the CSS box model?", "MCQ Answer": "C", "option A": "margin", "option B": "padding", "option C": "color", "option D": "border"},
+    {"No": "212", "question_text": "Which property adds padding to the top of an element?", "MCQ Answer": "C", "option A": "padding-height", "option B": "height", "option C": "padding-top", "option D": "top"},
+    {"No": "213", "question_text": "Which property sets a consistent margin on all four sides of the affected element?", "MCQ Answer": "C", "option A": "padding", "option B": "border", "option C": "margin", "option D": "none of the mentioned"},
+    {"No": "214", "question_text": "Which of the following are parts of the CSS box model?", "MCQ Answer": "D", "option A": "Padding", "option B": "Borders", "option C": "Margin", "option D": "All of the mentioned"},
+    {"No": "215", "question_text": "Which CSS property is used to set the color of the text?", "MCQ Answer": "C", "option A": "pallet", "option B": "text-decoration", "option C": "color", "option D": "colour"},
+    {"No": "216", "question_text": "Which of the following are valid ways to represent a colour in CSS?", "MCQ Answer": "D", "option A": "RGB Values", "option B": "HEX Values", "option C": "A valid color name", "option D": "All of the mentioned"},
+    {"No": "217", "question_text": "Which of the following property sets an element’s background color?", "MCQ Answer": "C", "option A": "background-position", "option B": "background-image", "option C": "background-color", "option D": "background-colors"},
+    {"No": "218", "question_text": "Which CSS property sets what kind of line decorations are added to an element, such as underlines, overlines, etc?", "MCQ Answer": "B", "option A": "text-decoration-link", "option B": "text-decoration", "option C": "text-line", "option D": "text-style"},
+    {"No": "219", "question_text": "How can we specify the spacing between each letter in a text in CSS?", "MCQ Answer": "A", "option A": "letter-spacing", "option B": "alpha-spacing", "option C": "character-spacing", "option D": "None of the mentioned"},
+    {"No": "220", "question_text": "What type of CSS is the following code snippet?\n<h1 style=\"color:blue;\">A Blue Heading</h1>", "MCQ Answer": "A", "option A": "Inline", "option B": "Internal", "option C": "External", "option D": "None of the mentioned"},
+    {"No": "221", "question_text": "Which HTML tag is used to declare internal CSS?", "MCQ Answer": "C", "option A": "<link>", "option B": "<script>", "option C": "<style>", "option D": "None of the mentioned"},
+    {"No": "222", "question_text": "Which tag is used to embed css in html page?", "MCQ Answer": "B", "option A": "<!DOCTYPE html>", "option B": "<style>", "option C": "<css>", "option D": "<script>"},
+    {"No": "223", "question_text": "Which CSS property sets the font size of text?", "MCQ Answer": "B", "option A": "text-size", "option B": "font-size", "option C": "size", "option D": "text"},
+    {"No": "224", "question_text": "Which CSS Property controls how an element is positioned?", "MCQ Answer": "A", "option A": "position", "option B": "static", "option C": "set", "option D": "fix"},
+    {"No": "225", "question_text": "Which of the following are valid CSS position property values?", "MCQ Answer": "D", "option A": "relative", "option B": "static", "option C": "fixed", "option D": "All of the mentioned"},
+    {"No": "226", "question_text": "What type of selector is used in this case?\np {line-height: 150%;}", "MCQ Answer": "D", "option A": "id Selectors", "option B": "Attribute Selector", "option C": "class Selectors", "option D": "element Selector"},
+    {"No": "227", "question_text": "How can we select an element with a specific ID in CSS?", "MCQ Answer": "B", "option A": ".", "option B": "#", "option C": "^", "option D": "None of the mentioned"},
+    {"No": "228", "question_text": "How can we select an element with a specific Class in CSS?", "MCQ Answer": "A", "option A": ".", "option B": "#", "option C": "^", "option D": "None of the mentioned"},
+    {"No": "229", "question_text": "Which of the following CSS selector is used to specify a rule to bind a particular unique element?", "MCQ Answer": "A", "option A": "id", "option B": "class", "option C": "tag", "option D": "bind"},
+    {"No": "230", "question_text": "Which of the following CSS style property is used to specify an italic text?", "MCQ Answer": "C", "option A": "Fonts", "option B": "style", "option C": "font-style", "option D": "font-weight"},
+    {"No": "231", "question_text": "Which is the correct way to apply CSS Styles?", "MCQ Answer": "D", "option A": "inside an HTML element", "option B": "in an external CSS file", "option C": "inside the <head> section of an HTML page", "option D": "All the mentioned"},
+    {"No": "232", "question_text": "Setting an inline-block in CSS requires which one of the following properties?", "MCQ Answer": "B", "option A": "position", "option B": "display", "option C": "visibility", "option D": "text-align"},
+    {"No": "233", "question_text": "___________ syntax helps to put an image before the content starts?", "MCQ Answer": "B", "option A": "content: (“e:/image/17.jpg”);", "option B": "content:url(“e:/image/17.jpg”);", "option C": "background:url (“e:/image/17.jpg”);", "option D": "image:url(“e:/image/17.jpg”);"},
+    {"No": "234", "question_text": "Which of the following collection of statements are used to render bold, italic and verdana fonts.", "MCQ Answer": "D", "option A": "font:verdana; font \nstyle:bold; font \nweight:italic;", "option B": "font-style:verdana; font \nfamily:italic;\nfont-style: \nbold;", "option C": "font-family:verdana; font \nstyle:bold; font \nweight:italic;", "option D": "font-family:verdana; font \nstyle:italic; font \nweight:bold;"},
+    {"No": "235", "question_text": "Consider following statements and their interpretations. Which is/are true?\n(1)margin-right:40px; This assigns margin from right side only.\n(2) margin:10px 30px: This assigns 10px margin from left-right and 30px margin from top-bottom.\n(3) margin:auto; This arranges entire element at center horizontally including its border.", "MCQ Answer": "D", "option A": "Only 1", "option B": "Only 2", "option C": "Only 3", "option D": "Only 1 & 3"},
+    {"No": "236", "question_text": "The following example inserts an image after the content of each <h1> element.", "MCQ Answer": "B", "option A": "h1:after {content: src(smiley.gif);}", "option B": "h1::after {content: url(smiley.gif);}", "option C": "h1::after {content: src(smiley.gif);}", "option D": "h1.:after {content: url(smiley.gif);}"},
+    {"No": "237", "question_text": "What will be the output of the following CSS code?\ndiv {\n  border-width:5px; \n  border-style:dotted solid double dashed;\n }", "MCQ Answer": "B", "option A": "Box having dotted top \noutline, solid left outline, \ndouble bottom outline and \ndashed right outline", "option B": "Box having dotted top \noutline, solid right outline, \ndouble bottom outline and \ndashed left outline", "option C": "Box having dotted bottom \noutline, solid left outline, \ndouble top outline and \ndashed left outline", "option D": "Box having dotted bottom \noutline, solid right outline, \ndouble top outline and \ndashed left outline"},
+    {"No": "238", "question_text": "What will be the output of following CSS code snippet? \nh1 {color: red text-decoration: underline;\nfont-style: italic;}", "MCQ Answer": "C", "option A": "text-decoration: underline and font-style: italic works", "option B": "color: red, text-decoration: underline works", "option C": "only font-style: italic works", "option D": "color: red, text-decoration: underline and font-style: italic all works"},
+    {"No": "239", "question_text": "How do you select all p elements inside a div element?", "MCQ Answer": "D", "option A": "div", "option B": "div +p", "option C": "div .p", "option D": "div p"},
+    {"No": "240", "question_text": "How will you make all paragraph elements “BLUE” in color?", "MCQ Answer": "C", "option A": "p.all{color:rgb(255,0,0);}", "option B": "p.all{color:#ff0000;}", "option C": "p {color:blue;}", "option D": "all.p {color: rgb(255,0,0);}"},
+    {"No": "241", "question_text": "In CSS, “font-size” can be called as?", "MCQ Answer": "D", "option A": "selector", "option B": "rule", "option C": "class", "option D": "property-name"},
+    {"No": "242", "question_text": "Which property is used to change the font of an element?", "MCQ Answer": "D", "option A": "font-style", "option B": "font-weight", "option C": "font-bold", "option D": "font-family"},
+    {"No": "243", "question_text": "What are the uses of CSS pseudo-elements?", "MCQ Answer": "D", "option A": "Style specified parts of an element.", "option B": "Style first line of an element.", "option C": "Content can be inserted before & after an element.", "option D": "All are correct"},
+    {"No": "244", "question_text": "Which of the right syntax for text-transform?", "MCQ Answer": "B", "option A": "<p \nstyle=”transform:caps;”>he\nllo</p> ", "option B": "<p style=”text \ntransform:uppercase;”>hell\no</p>", "option C": "<p style=”text \ntransform:bold;”>hello</p>", "option D": "<p style=”text \ntransform:line \nthrough;”>hello</p>"},
+    {"No": "245", "question_text": "Which of the following is the correct syntax to display the hyperlinks without any underline?", "MCQ Answer": "C", "option A": "<a \nhref=\"http://www.gmail.co\nm\" style=\"text \ndecoration:underline\">gmai\nl</a>", "option B": "<a \nhref=\"http://www.gmail.co\nm\" style=\"text \ndecoration:overline\">gmail\n</a>", "option C": "<a \nhref=\"http://www.gmail.co\nm\" style=\"text \ndecoration:none\">gmail</a\n>", "option D": "<a \nhref=\"http://www.gmail.co\nm\" style=\"text \ndecorate:line\">gmail</a>"},
+    {"No": "246", "question_text": "Which of the following is correct syntax for vertically repeated background-image inweb page with pink background color?", "MCQ Answer": "C", "option A": "background: pink url(“img_tree.png”) repeat x;", "option B": "background: pink content(“img_tree.png”) repeat-x;", "option C": "background: pink url(“img_tree.png”) repeat y;", "option D": "background: pink content(“img_tree.png”) norepeat;"},
+    {"No": "247", "question_text": "Which of the following property defines in a shorthand form the width, style, and color for the top border of an element?", "MCQ Answer": "A", "option A": "border-top", "option B": "border-width", "option C": "border-height", "option D": "border-style"},
+    {"No": "248", "question_text": "What will be the output of the following code.\n<style>\n  p{\n  border-color:black orange;\n  border-style: double solid;\n  }\n </style>\n <p>hello</p>", "MCQ Answer": "B", "option A": "paragraph having solid top \n& bottom border in black \ncolor, double left & right \nborder in orange color", "option B": "paragraph having double \ntop & bottom border in \nblack color, solid left & \nright border in orange color", "option C": "paragraph having double \ntop & bottom border in \norange color, solid left & \nright border in black color", "option D": "paragraph \nhaving solid top \n& bottom border in orange \ncolor, double left & right \nborder in black color"},
+    {"No": "249", "question_text": "What will be the total width of the div element given below?\ndiv {\n width: 310px;\n padding: 20px;\n border: 5px solid blue;\n margin: 0;\n}", "MCQ Answer": "D", "option A": "310px", "option B": "320px", "option C": "340px", "option D": "360px"},
+    {"No": "250", "question_text": "The _____________ attribute is used to define the name(s) of the class(es) to which a particular tag belongs.", "MCQ Answer": "B", "option A": "element", "option B": "class", "option C": "id", "option D": "attribute"},
+    {"No": "251", "question_text": "What does the CSS box-shadow property do?", "MCQ Answer": "B", "option A": "Adds padding to an element", "option B": "Adds one or more shadows around an element’s box", "option C": "Sets the border color of an element", "option D": "Applies a gradient background"},
+    {"No": "252", "question_text": "Which is the correct syntax for a descendant selector in CSS?", "MCQ Answer": "B", "option A": ".container > p", "option B": ".container p", "option C": ".container + p", "option D": "p.container"},
+    {"No": "253", "question_text": "How do you select elements that are not of a specific class, for example, elements not having the class inactive?", "MCQ Answer": "D", "option A": ":not(inactive)", "option B": ":not(:inactive)", "option C": ".not(.inactive)", "option D": "*:not(.inactive)"},
+    {"No": "254", "question_text": "Identify the correct code to apply 20px vertical margin & centering the element horizontally within its block.", "MCQ Answer": "C", "option A": "div {margin: auto;}", "option B": "div {margin: auto 20px;}", "option C": "div {margin: 20px auto;}", "option D": "div {margin-top: auto;\nmargin-left: 20px;}"},
+    {"No": "255", "question_text": "Which of the correct syntax for horizontally repeated background-image in web page?", "MCQ Answer": "D", "option A": "body { background imag:url(“o.jpg”); }", "option B": "body {background image:url(“o.jpg”); repeat x;}", "option C": "body {background image:url(“o.jpg”);\nrepeat img:repeat-y;}", "option D": "body {background \nimage:url(“o.jpg”); \nbackground-repeat:repeat \nx;}"},
+    {"No": "284", "question_text": "The CSS property used to specify the transparency of an element is –", "MCQ Answer": "D", "option A": "overlay", "option B": "hover", "option C": "clearfix", "option D": "opacity"},
+    {"No": "285", "question_text": "Which is the correct way to stretch a section half horizontally & double vertically.", "MCQ Answer": "B", "option A": "scale(2,0.5)", "option B": "scale(0.5,2)", "option C": "scaleX(2);scaleY(0.5)", "option D": "both (a) and(c)"},
+    {"No": "286", "question_text": "Which of the following CSS property is used to indicate an animation plays in reverse?", "MCQ Answer": "C", "option A": "animation-count", "option B": "animation-iteration", "option C": "animation-direction", "option D": "animation-state"},
+    {"No": "287", "question_text": "__________is the valid syntax to execute rounded image.", "MCQ Answer": "C", "option A": "img{border-type:5px;}", "option B": "img{border:5px;}", "option C": "img{border-radius:5px;}", "option D": "img{border-width:5px;}"},
+    {"No": "288", "question_text": "______ is the valid statement to run an animation in one way only for 3 times in forward direction.", "MCQ Answer": "C", "option A": "animation-iteration:3; \nanimation-way:reverse;", "option B": "animation-count:3; \nanimation \ndirection:forward;", "option C": "animation-iteration \ncount:3; animation \ndirection:forward;", "option D": "animation-iteration \ncount:finite; animation \ndirection:normal;"},
+    {"No": "289", "question_text": "_____ is the valid statement to fadeout more than one colors from a center point of a circle.", "MCQ Answer": "C", "option A": "background-color:radial \ngradient(red,yellow,green)", "option B": "background-color:radial \ngradient(circle,red,yellow,g\nreen)", "option C": "background-image:radial \ngradient(circle,red,yellow,g\nreen)", "option D": "background-image:conic \ngradient(circle,red,yellow,g\nreen)"},
+    {"No": "290", "question_text": "Add a 2 second transition effect for width and height changes of the <div> element.\n<style>\n div \n {\n  width: 100px;\n  height: 100px;\n  background-color: red; : ; \n }\n div:hover \n {\n  width: 300px;\n  height: 300px;\n }\n </style>\n <body>\n  <div>This is a div</div>\n </body>", "MCQ Answer": "A", "option A": "transition: width 2s, height \n2s; ", "option B": "transition-transform: width \n2s, height 2s;", "option C": "transition: width:2s, \nheight:2s;", "option D": "transform: width 2s, height \n2s;"},
+    {"No": "291", "question_text": "Which is correct syntax from following, to set a linear gradient, transitioning from “blue” to \n\"yellow\"?", "MCQ Answer": "A", "option A": "background-image: linear gradient(blue,yellow);", "option B": "backgroundimage: linear gradient(blue,yellow);", "option C": "background-image: lineargradient(blue,yellow);", "option D": "background-image: linear gradient (from blue, to yellow);"},
+    {"No": "292", "question_text": "Set a linear gradient background for the <div> element gradient that starts at top left (and goes to \nbottom right), transitioning from \"white\" to \"green\".\n<style>\n div { \n  _____________________ : ( , , );\n }\n </style>\n <body>\n  <div style=\"height:200px\"></div>\n </body>", "MCQ Answer": "C", "option A": "background-image: linear \ngradient(to right, white, \ngreen);", "option B": "background-color:linear \ngradient(to left right, white, \ngreen);", "option C": "background-image: linear \ngradient(to bottom right, \nwhite, green);", "option D": "background-image: linear \ngradient(to bottom right, \ngreen, white);"},
+    {"No": "293", "question_text": "How to set a background for the <div> element, which rotate color around a center point?", "MCQ Answer": "D", "option A": "background-color:linear \ngradient(red,yellow,green,b\nlue);", "option B": "background-image:linear \ngradient(red,yellow,green,b\nlue);", "option C": "background-color:conic \ngradient(red,yellow,green,b\nlue);", "option D": "background-image:conic \ngradient(red,yellow,green,b\nlue);"},
+    {"No": "294", "question_text": "Which of the following property defines the style of the rule between columns in a multicolumn text flow?", "MCQ Answer": "C", "option A": "column-style", "option B": "column-style-gap", "option C": "column-rule-style", "option D": "column-rule-flow"},
+    {"No": "295", "question_text": "The <div> element has specified a transition effect for the width property within 8 seconds.\nGive \nthe correct syntax for the same.", "MCQ Answer": "D", "option A": "div {transition-dealy: width \n8s;}", "option B": "div {transition-type: width;\ntransition-delay:8s;}", "option C": "div {transition: width; \ntransition-delay:8s;}", "option D": "div {transition: width 8s;}"},
+    {"No": "296", "question_text": "______ is the correct way to divide a paragraph in columns like newspaper.", "MCQ Answer": "D", "option A": "column-no:3; column \nspace:30px; column-rule \nstyle: dashed;", "option B": "column:3; column \nspace:30px; column-line: \ndashed;", "option C": "column-no:3; column \nspacing:30px; column-rule \nstyle: dashed;", "option D": "column-count:3; column \ngap:30px;\ncolumn-rule \nstyle: dashed;"},
+    {"No": "297", "question_text": "Set a radial gradient background for the <div> element, transitioning from \"white\" to \"green\", in a \ncircle shape.\n<style>\n div {\n  background-image: radial-gradient( ___ , _____ , ____ );\n }\n </style>\n <body>\n  <div style=\"height:200px\"></div>\n </body>", "MCQ Answer": "B", "option A": "radial, white, green", "option B": "circle, white, green", "option C": "circle, green, white", "option D": "radial, green, white"},
+    {"No": "298", "question_text": "What are the names of different gradients in CSS?", "MCQ Answer": "A", "option A": "Linear Gradients, Radial \nGradients, and Conic \nGradients", "option B": "Linear Gradients, Vertical \nGradients, and Corner \nGradients", "option C": "Horizontal Gradients, \nVertical Gradients, and \nConic Gradients", "option D": "Linear Gradients, Radial \nGradients, Vertical \nGradients, and Conic \nGradients"},
+    {"No": "299", "question_text": "Which of the following css property is used to define the time it takes one iteration of an animation to play?", "MCQ Answer": "B", "option A": "control", "option B": "animation-duration", "option C": "transition-time", "option D": "all of the mentioned"},
+    {"No": "300", "question_text": "Which of the following css property is used to indicate if an animation \nplays in reverse or repeats itself every other iteration?", "MCQ Answer": "C", "option A": "animation-iteration", "option B": "animation-check", "option C": "animation-direction", "option D": "animation-state"},
+    {"No": "301", "question_text": "Which of the following css property allows elements to be rotated, scaled, and skewed in a variety of different ways?", "MCQ Answer": "A", "option A": "transform", "option B": "transform-3D", "option C": "transform-origin", "option D": "transition"},
+    {"No": "302", "question_text": "Which of the following property defines the number of columns in a multicolumn text flow?", "MCQ Answer": "D", "option A": "column", "option B": "column-flow", "option C": "column-number", "option D": "column-count"},
+    {"No": "303", "question_text": "Which of the following property defines the gap between columns in a multicolumn text flow?", "MCQ Answer": "B", "option A": "column-rule-flow", "option B": "column-gap", "option C": "column-rule", "option D": "None"},
+    {"No": "304", "question_text": "Which CSS property sets the opacity for the whole element?", "MCQ Answer": "C", "option A": "fade", "option B": "opacity-value", "option C": "opacity", "option D": "background-opacity"},
+    {"No": "305", "question_text": "Which of the following transform property value defines a 2D translation?", "MCQ Answer": "A", "option A": "translate(x,y)", "option B": "translate2D(x,y)", "option C": "translate3D(x,y)", "option D": "all of the mentioned"},
+    {"No": "306", "question_text": "Which of the following is NOT a valid value for the CSS property transition-timing-function?", "MCQ Answer": "D", "option A": "ease", "option B": "linear", "option C": "step-end", "option D": "smooth"},
+    {"No": "307", "question_text": "Which of the following is a valid value for transition-timing-function?", "MCQ Answer": "C", "option A": "smooth", "option B": "fast-slow", "option C": "ease-in-out", "option D": "step-linear"},
+    {"No": "308", "question_text": "What function is used to insert values of a CSS variable?", "MCQ Answer": "A", "option A": "var()", "option B": "rand()", "option C": "varchar()", "option D": "calc()"},
+    {"No": "309", "question_text": "What will the following CSS code do when the <div> element is hovered?\ndiv {\n height:200px;\n width:200px;\n border:1px solid black;\n transition: transform 0.3s;\n }\n div:hover {\n  transform: scale(1.2);\n}", "MCQ Answer": "B", "option A": "The <div> will rotate 1.2 \ndegrees vertically over 0.3 \nseconds.", "option B": "The <div> will grow to 1.2 \ntimes its original size over \n0.3 seconds.", "option C": "The <div> will move \nhorizontally by 1.2 times its \nwidth over 0.3 seconds.", "option D": "The <div> will rotate 1.2 \ndegrees vertically & \nhorizontally over 0.3 \nseconds."},
+    {"No": "310", "question_text": "How to rotate a div with id mydiv by 30deg?", "MCQ Answer": "C", "option A": "#mydiv{ rotate:30deg;}", "option B": "#mydiv{transform:30deg;}", "option C": "#mydiv{transform:rotate(30deg);}", "option D": "#mydiv{transform:rotation(30deg);}"}
+];
 
-    {"No": "236", "question_text": "A sequential circuit that transmits data from a number of input lines to a single output line is a", "MCQ Answer": "D", "option A": "Decoder", "option B": "Encoder", "option C": "Demultiplexer", "option D": "Multiplexer"},
-    {"No": "237", "question_text": "A combinational circuit that converts binary data from a single input line to a number of output lines is a", "MCQ Answer": "C", "option A": "Multiplexer", "option B": "Encoder", "option C": "Demultiplexer", "option D": "Decoder"},
-    {"No": "238", "question_text": "How many select lines are required for a 16-to-1 multiplexer?", "MCQ Answer": "B", "option A": "2", "option B": "4", "option C": "8", "option D": "16"},
-    {"No": "239", "question_text": "How many outputs are required for a 2-to-4 decoder?", "MCQ Answer": "C", "option A": "2", "option B": "3", "option C": "4", "option D": "6"},
-    {"No": "240", "question_text": "How many input lines does an 8-to-3 encoder have?", "MCQ Answer": "A", "option A": "8", "option B": "3", "option C": "5", "option D": "11"},
-    {"No": "241", "question_text": "A sequential circuit uses an internal memory element called a", "MCQ Answer": "C", "option A": "Resistor", "option B": "Capacitor", "option C": "Flip-flop", "option D": "Transistor"},
-    {"No": "242", "question_text": "The basic building blocks of a sequential circuit are", "MCQ Answer": "D", "option A": "Logic gates", "option B": "Decoders", "option C": "Encoders", "option D": "Flip-flops"},
-    {"No": "243", "question_text": "Which memory element is known as a basic storage element?", "MCQ Answer": "B", "option A": "Capacitor", "option B": "Latch", "option C": "Resistor", "option D": "Diode"},
-    {"No": "244", "question_text": "Which flip-flop is not commonly used?", "MCQ Answer": "B", "option A": "D flip-flop", "option B": "T flip-flop", "option C": "JK flip-flop", "option D": "SR flip-flop"},
-    {"No": "245", "question_text": "The clock pulse is applied to the flip-flop to activate the", "MCQ Answer": "B", "option A": "Input", "option B": "Trigger", "option C": "Output", "option D": "Reset"},
-    {"No": "246", "question_text": "The memory capacity of an S-R flip-flop is", "MCQ Answer": "A", "option A": "1-bit", "option B": "2-bit", "option C": "3-bit", "option D": "4-bit"},
-    {"No": "247", "question_text": "The characteristic equation of an S-R flip-flop is", "MCQ Answer": "A", "option A": "Q(n+1) = S + R'Q(n)", "option B": "Q(n+1) = R + S'Q(n)", "option C": "Q(n+1) = S + R'Q(n)'", "option D": "Q(n+1) = R + S'Q(n)'"},
-    {"No": "248", "question_text": "The characteristic equation of a J-K flip-flop is", "MCQ Answer": "B", "option A": "Q(n+1) = J'Q(n) + KQ(n)", "option B": "Q(n+1) = JQ(n)' + K'Q(n)", "option C": "Q(n+1) = J'Q(n) + K'Q(n)", "option D": "Q(n+1) = JQ(n) + K'Q(n)"},
-    {"No": "249", "question_text": "The characteristic equation of a T flip-flop is", "MCQ Answer": "C", "option A": "Q(n+1) = T'Q(n)", "option B": "Q(n+1) = T'Q(n) + T'Q(n)'", "option C": "Q(n+1) = TQ(n)' + T'Q(n)", "option D": "Q(n+1) = TQ(n)"},
-// ===================================
-// === QUESTIONS FROM MODDE.PDF - DIGITAL ELECTRONICS (Q. 262, 273, 277-279, 282-285, 303, 306-309, 311-312, 315-322, 324, 327-328) ===
 
-    {"No": "262", "question_text": "Which register is capable of performing both left and right shift operations?", "MCQ Answer": "C", "option A": "Parallel-in, Parallel-out", "option B": "Serial-in, Serial-out", "option C": "Bidirectional shift register", "option D": "Universal shift register"},
-    {"No": "273", "question_text": "A counter in which all the flip-flops are connected in a series is called a/an", "MCQ Answer": "A", "option A": "Ripple counter", "option B": "Synchronous counter", "option C": "Decade counter", "option D": "Ring counter"},
-    {"No": "277", "question_text": "In a ripple counter, the clock is applied to the", "MCQ Answer": "B", "option A": "First flip-flop only", "option B": "All flip-flops simultaneously", "option C": "Second flip-flop only", "option D": "Last flip-flop only"},
-    {"No": "278", "question_text": "Which counter has the fastest operation?", "MCQ Answer": "B", "option A": "Ripple counter", "option B": "Synchronous counter", "option C": "Asynchronous counter", "option D": "Twisted ring counter"},
-    {"No": "279", "question_text": "A MOD-10 counter is also known as a", "MCQ Answer": "C", "option A": "Binary counter", "option B": "Up counter", "option C": "Decade counter", "option D": "Ring counter"},
-    {"No": "282", "question_text": "Which memory element is used in the shift register?", "MCQ Answer": "D", "option A": "SR flip-flop", "option B": "NOR gate", "option C": "OR gate", "option D": "D flip-flop"},
-    {"No": "283", "question_text": "The minimum number of flip-flops required to construct a MOD-10 counter is", "MCQ Answer": "B", "option A": "3", "option B": "4", "option C": "5", "option D": "10"},
-    {"No": "284", "question_text": "The maximum number of states in an n-bit counter is", "MCQ Answer": "C", "option A": "n", "option B": "n²", "option C": "2^n", "option D": "2n"},
-    {"No": "285", "question_text": "Which counter is also known as a full-modulus counter?", "MCQ Answer": "D", "option A": "Ring counter", "option B": "Decade counter", "option C": "Ripple counter", "option D": "Binary counter"},
-    {"No": "303", "question_text": "The minimum number of two-input NAND gates required to implement a two-input XOR gate is", "MCQ Answer": "C", "option A": "2", "option B": "5", "option C": "4", "option D": "3"},
-    {"No": "306", "question_text": "In a 3-variable K-map, the number of cells is", "MCQ Answer": "B", "option A": "6", "option B": "8", "option C": "9", "option D": "4"},
-    {"No": "307", "question_text": "In a 4-variable K-map, the number of cells is", "MCQ Answer": "D", "option A": "12", "option B": "8", "option C": "9", "option D": "16"},
-    {"No": "308", "question_text": "In K-map, groups can be formed in", "MCQ Answer": "A", "option A": "2, 4, 8, 16", "option B": "2, 3, 4, 5", "option C": "3, 5, 7", "option D": "2, 4, 6, 8"},
-    {"No": "309", "question_text": "In K-map, the group formed by eight adjacent cells is called a/an", "MCQ Answer": "C", "option A": "Pair", "option B": "Quad", "option C": "Octet", "option D": "Duo"},
-    {"No": "311", "question_text": "Which method is used for simplifying Boolean expressions?", "MCQ Answer": "D", "option A": "Boolean algebra", "option B": "K-map", "option C": "Quine McClusky method", "option D": "All of the above"},
-    {"No": "312", "question_text": "An inverter performs a/an", "MCQ Answer": "A", "option A": "Complementation operation", "option B": "Addition operation", "option C": "Multiplication operation", "option D": "Subtraction operation"},
-    {"No": "315", "question_text": "Which statement is correct for a K-map?", "MCQ Answer": "A", "option A": "Adjacent cells differ by only one variable", "option B": "Adjacent cells differ by two or more variables", "option C": "Groups can be formed only vertically", "option D": "Groups can be formed only horizontally"},
-    {"No": "316", "question_text": "Choose correct statement's from following: i) an inverter performs complementation operation ii) process performed by inverter is known as inversion iii) an inverter contains two or more input terminal and one output terminal.", "MCQ Answer": "A", "option A": "Only I & II", "option B": "Only I & III", "option C": "Only II & III", "option D": "All of the above"},
-    {"No": "317", "question_text": "If the boolean expression PQ + QR + PR is minimized, the expression becomes", "MCQ Answer": "B", "option A": "PQ + QR", "option B": "PQ + PR", "option C": "QR + PR", "option D": "P'Q + QR + PR"},
-    {"No": "318", "question_text": "A + AB = A (A + B) = A represents which law?", "MCQ Answer": "B", "option A": "Commutative", "option B": "Absorption", "option C": "Consensus", "option D": "Transposition"},
-    {"No": "319", "question_text": "In a 5-variable K-map, the number of cells is", "MCQ Answer": "D", "option A": "16", "option B": "25", "option C": "30", "option D": "32"},
-    {"No": "320", "question_text": "Which property allows us to eliminate the common term when grouping in K-maps?", "MCQ Answer": "C", "option A": "Commutative law", "option B": "Idempotent law", "option C": "Consensus law", "option D": "Distributive law"},
-    {"No": "321", "question_text": "The minimum number of two-input NAND gates required to implement a two-input OR gate is", "MCQ Answer": "C", "option A": "2", "option B": "4", "option C": "3", "option D": "5"},
-    {"No": "322", "question_text": "The minimum number of two-input NOR gates required to implement a two-input AND gate is", "MCQ Answer": "C", "option A": "2", "option B": "4", "option C": "3", "option D": "5"},
-    {"No": "324", "question_text": "Which is an example of an illegal state in a J-K flip-flop?", "MCQ Answer": "D", "option A": "J = 0, K = 0", "option B": "J = 0, K = 1", "option C": "J = 1, K = 0", "option D": "J = 1, K = 1"},
-    {"No": "327", "question_text": "The minimum number of flip-flops required to construct a MOD-8 counter is", "MCQ Answer": "A", "option A": "3", "option B": "4", "option C": "8", "option D": "2"},
-    {"No": "328", "question_text": "The characteristic equation of a D flip-flop is", "MCQ Answer": "C", "option A": "Q(n+1) = D'Q(n) + DQ(n)'", "option B": "Q(n+1) = D'Q(n)' + DQ(n)", "option C": "Q(n+1) = D", "option D": "Q(n+1) = D'"},
-// ===================================
-// === QUESTIONS FROM MODDE.PDF - DIGITAL ELECTRONICS (Q. 262, 273, 277-279, 282-285, 303, 306-309, 311-312, 315-32
+        let currentScreen = 'loader';
+        let currentTestIndex = 0;
+        let score = 0;
+        let shuffledQuestions = [];
+        
+        const screens = {
+            'loader': document.getElementById('loader'),
+            'menu': document.getElementById('menu-screen'),
+            'view-mode': document.getElementById('view-mode-screen'),
+            'test-mode': document.getElementById('test-mode-screen')
+        };
+
+        // --- Core Functions ---
+        function showScreen(screenId) {
+            Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+            
+            // Special case for returning to menu
+            if (screenId === 'menu') {
+                // Find the main-container that is a direct child of the body's main-container
+                document.querySelector('.main-container > .main-container').classList.remove('hidden');
+            }
+
+            screens[screenId].classList.remove('hidden');
+            currentScreen = screenId;
+
+            if (screenId === 'view-mode') {
+                initViewMode();
+            } else if (screenId === 'test-mode') {
+                startTest();
+            }
+        }
+        
+        function escapeHTML(str) {
+            if (!str) return "";
+            // Use regex to handle code snippets
+            str = str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            
+            // Basic newline to <br> for pre-like formatting
+            str = str.replace(/\n/g, "<br>");
+            return str;
+        }
+
+        // --- View Mode ---
+        function initViewMode() {
+            const container = document.getElementById('view-questions-container');
+            container.innerHTML = '';
+            questions.forEach(q => {
+                const correctAnswer = q["MCQ Answer"];
+                const optionsHTML = ['A', 'B', 'C', 'D'].map(opt => {
+                    const optionText = q[`option ${opt}`];
+                    if (optionText === null || optionText === undefined) return '';
+                    const isCorrect = opt === correctAnswer;
+                    return `<div class="p-3 rounded-lg ${isCorrect ? 'bg-green-100 border-l-4 border-green-500 font-semibold' : 'bg-slate-100'}">
+                                <strong>${opt}.</strong> <pre class="code-block !p-0 !bg-transparent inline">${escapeHTML(optionText)}</pre>
+                            </div>`;
+                }).join('');
+
+                // Check if question text contains newlines
+                let questionHTML = escapeHTML(q.question_text);
+                if (questionHTML.includes('<br>')) {
+                    questionHTML = `<pre class="code-block">${questionHTML}</pre>`;
+                }
+
+                const questionCard = `
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                        <h3 class="font-semibold text-lg mb-4">Q${q.No}: ${questionHTML}</h3>
+                        <div class="space-y-3">${optionsHTML}</div>
+                    </div>
+                `;
+                container.innerHTML += questionCard;
+            });
+        }
+
+        // --- Test Mode ---
+        function shuffleArray(array) {
+            let currentIndex = array.length,  randomIndex;
+            // While there remain elements to shuffle.
+            while (currentIndex != 0) {
+                // Pick a remaining element.
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                // And swap it with the current element.
+                [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function startTest() {
+            currentTestIndex = 0;
+            score = 0;
+            shuffledQuestions = shuffleArray([...questions]); // Shuffle questions for the test
+            document.getElementById('test-card').classList.remove('hidden');
+            document.getElementById('test-results').classList.add('hidden');
+            loadTestQuestion();
+        }
+
+        function loadTestQuestion() {
+            if (currentTestIndex >= shuffledQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const q = shuffledQuestions[currentTestIndex];
+            const testCard = document.getElementById('test-card');
+            const progress = ((currentTestIndex + 1) / shuffledQuestions.length) * 100;
+
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `Question ${currentTestIndex + 1}/${shuffledQuestions.length}`;
+
+            const optionsHTML = ['A', 'B', 'C', 'D'].map(opt => {
+                const optionText = q[`option ${opt}`];
+                if (optionText === null || optionText === undefined) return '';
+                return `<button class="option-btn text-left w-full p-4 font-medium rounded-lg" onclick="selectAnswer(this, '${opt}', '${q['MCQ Answer']}')">
+                            <strong>${opt}.</strong> <pre class="code-block !p-0 !bg-transparent inline">${escapeHTML(optionText)}</pre>
+                        </button>`;
+            }).join('');
+
+            // Check if question text contains newlines
+            let questionHTML = escapeHTML(q.question_text);
+            if (questionHTML.includes('<br>')) {
+                questionHTML = `<pre class="code-block">${questionHTML}</pre>`;
+            }
+
+            testCard.innerHTML = `
+                <p class="text-xl font-medium text-slate-800 mb-6">Q${q.No}: ${questionHTML}</p>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${optionsHTML}
+                </div>
+                <div class="mt-8 text-right">
+                     <button id="next-btn" onclick="nextQuestion()" class="btn bg-blue-600 text-white font-bold py-2 px-8 rounded-lg hidden">Next</button>
+                </div>
+            `;
+        }
+        
+        function selectAnswer(btn, selectedOpt, correctOpt) {
+            const optionsContainer = document.getElementById('options-container');
+            const allOptions = optionsContainer.querySelectorAll('button');
+
+            allOptions.forEach(optBtn => {
+                optBtn.disabled = true;
+                const optionLetter = optBtn.textContent.trim().split('.')[0];
+                if (optionLetter === correctOpt) {
+                    optBtn.classList.add('correct');
+                }
+            });
+
+            if (selectedOpt === correctOpt) {
+                score++;
+            } else {
+                btn.classList.add('incorrect');
+            }
+
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentTestIndex++;
+            loadTestQuestion();
+        }
+
+        function showResults() {
+             document.getElementById('test-card').classList.add('hidden');
+             const resultsContainer = document.getElementById('test-results');
+             resultsContainer.classList.remove('hidden');
+             document.getElementById('score-text').textContent = `${score}/${shuffledQuestions.length}`;
+             document.getElementById('progress-bar').style.width = '100%';
+             document.getElementById('progress-text').textContent = `Test Complete!`;
+        }
+
+        // --- Initial Load ---
+        window.onload = () => {
+            setTimeout(() => {
+                screens.loader.style.opacity = '0';
+                setTimeout(() => showScreen('menu'), 500); // Show menu after fade out
+            }, 1500); // Show loader for 1.5 seconds
+        };
+    </script>
+</body>
+</html>
