@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Login / Sign up | PB-MCQ</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
@@ -13,9 +12,10 @@
 
   <div id="card" class="w-full max-w-md p-6">
 
-    <!-- Choice -->
+    <!-- Home choice -->
     <div id="choice-screen" class="bg-white rounded-2xl shadow-lg p-8 text-center">
-      <img src="https://avatars.githubusercontent.com/u/175926715?s=400" class="w-20 h-20 mx-auto rounded-full mb-4 border-4 border-blue-500">
+      <img src="https://avatars.githubusercontent.com/u/175926715?s=400"
+           class="w-20 h-20 mx-auto rounded-full mb-4 border-4 border-blue-500">
       <h2 class="text-2xl font-bold mb-6">Welcome to PB-MCQ</h2>
       <div class="flex gap-4">
         <button id="toSignIn" class="flex-1 py-3 bg-blue-600 text-white rounded-lg">Sign In</button>
@@ -69,7 +69,7 @@
 
   <!-- Firebase + Firestore logic -->
   <script type="module">
-    // ====== FIREBASE CONFIG: your config (you already provided) ======
+    // ====== FIREBASE CONFIG ======
     const firebaseConfig = {
       apiKey: "AIzaSyAA9WGhpWt5rfBsN0rIThp_Vd9gwwJlJwY",
       authDomain: "website-mcq-5d390.firebaseapp.com",
@@ -80,16 +80,14 @@
       measurementId: "G-Q1ZXF235FM"
     };
 
-    // Firebase modular imports (v9)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import {
       getAuth,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
-      sendEmailVerification,
-      onAuthStateChanged,
       sendPasswordResetEmail,
-      updateProfile
+      updateProfile,
+      onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
     import {
@@ -127,23 +125,20 @@
     const forgotMsg = document.getElementById("forgot-msg");
     const sendReset = document.getElementById("send-reset");
 
-    // show/hide helpers
+    // Helpers
     function show(el){ el.classList.remove("hidden"); }
     function hide(el){ el.classList.add("hidden"); }
     function resetMessages(){ signinMsg.textContent=''; signupMsg.textContent=''; forgotMsg.textContent=''; }
 
-    // nav
+    // Navigation
     toSignIn.onclick = () => { hide(choiceScreen); show(signinScreen); resetMessages(); }
     toSignUp.onclick = () => { hide(choiceScreen); show(signupScreen); resetMessages(); }
     backFromSignin.onclick = () => { hide(signinScreen); show(choiceScreen); }
     backFromSignup.onclick = () => { hide(signupScreen); show(choiceScreen); }
     backFromForgot.onclick = () => { hide(forgotScreen); show(signinScreen); }
+    document.getElementById("forgotBtn").onclick = () => { hide(signinScreen); show(forgotScreen); resetMessages(); }
 
-    document.getElementById("forgotBtn").onclick = () => {
-      hide(signinScreen); show(forgotScreen); resetMessages();
-    };
-
-    // ---------- utility: generate publicId ----------
+    // Generate publicId
     function generatePublicId(prefix='PBMCQ', len=6){
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let s = '';
@@ -158,20 +153,14 @@
       const pw = signinPassword.value.trim();
       if (!email || !pw) { signinMsg.textContent = 'Please enter email and password.'; return; }
       try {
-        const uc = await signInWithEmailAndPassword(auth, email, pw);
-        const user = uc.user;
-        if (!user.emailVerified) {
-          signinMsg.textContent = 'Please verify your email first (check your inbox).';
-          return;
-        }
-        // signed in and verified
+        await signInWithEmailAndPassword(auth, email, pw);
         location.href = 'index.html';
       } catch (err) {
         signinMsg.textContent = err.message;
       }
     });
 
-    // ---------- SIGN UP: create user, send verification, generate publicId, save to Firestore ----------
+    // ---------- SIGN UP ----------
     signupBtn.addEventListener('click', async () => {
       resetMessages();
       const name = signupName.value.trim();
@@ -181,17 +170,10 @@
       if (pw.length < 6) { signupMsg.textContent = 'Password must be at least 6 characters.'; return; }
 
       try {
-        // create/email user
         const res = await createUserWithEmailAndPassword(auth, email, pw);
         const user = res.user;
-
-        // set display name
         await updateProfile(user, { displayName: name });
 
-        // send email verification
-        await sendEmailVerification(user);
-
-        // generate unique publicId (loop until no collision)
         let publicId;
         while (true) {
           publicId = generatePublicId();
@@ -199,7 +181,6 @@
           if (!pDoc.exists()) break;
         }
 
-        // write Firestore docs
         await setDoc(doc(db, 'users', user.uid), {
           uid: user.uid,
           name,
@@ -215,54 +196,36 @@
           createdAt: serverTimestamp()
         });
 
-        signupMsg.classList.remove('text-red-500'); signupMsg.classList.add('text-green-600');
-        signupMsg.innerHTML = `Account created. Verification email sent.<br>Your User ID: <strong>${publicId}</strong><br>Please save this ID; you can use it to recover your account.`;
+        signupMsg.classList.remove('text-red-500');
+        signupMsg.classList.add('text-green-600');
+        signupMsg.innerHTML = `Account created successfully!<br>Your User ID: <strong>${publicId}</strong>`;
       } catch (err) {
         signupMsg.textContent = err.message;
       }
     });
 
-    // ---------- FORGOT: accept email or publicId ----------
+    // ---------- FORGOT ----------
     sendReset.addEventListener('click', async () => {
       resetMessages();
       const input = forgotInput.value.trim();
       if (!input) { forgotMsg.textContent = 'Enter your email or User ID.'; return; }
-
       try {
-        let emailToReset = null;
-
-        if (input.includes('@')) {
-          // treat as email
-          emailToReset = input;
-        } else {
-          // treat as publicId
-          const docSnap = await getDoc(doc(db, 'publicIds', input));
-          if (!docSnap.exists()) {
-            forgotMsg.textContent = 'No account found for that User ID.';
-            return;
-          }
-          const data = docSnap.data();
-          emailToReset = data.email;
-        }
-
+        let emailToReset = input.includes('@')
+          ? input
+          : (await getDoc(doc(db, 'publicIds', input))).data()?.email;
+        if (!emailToReset) return forgotMsg.textContent = 'No account found.';
         await sendPasswordResetEmail(auth, emailToReset);
-        forgotMsg.classList.remove('text-red-500'); forgotMsg.classList.add('text-green-600');
-        forgotMsg.textContent = `Reset email sent to ${emailToReset}. Check inbox.`;
+        forgotMsg.classList.remove('text-red-500');
+        forgotMsg.classList.add('text-green-600');
+        forgotMsg.textContent = `Password reset email sent to ${emailToReset}.`;
       } catch (err) {
-        forgotMsg.textContent = 'Error: ' + err.message;
+        forgotMsg.textContent = err.message;
       }
     });
 
-    // Redirect already-signed-in & verified users straight away
     onAuthStateChanged(auth, (user) => {
-      if (user && user.emailVerified) {
-        // if on login page, go to index
-        if (location.pathname.endsWith('login.html') || location.pathname.endsWith('/PB-MCQ/') ) {
-          location.href = 'index.html';
-        }
-      }
+      if (user) location.href = 'index.html';
     });
-
   </script>
 </body>
 </html>
