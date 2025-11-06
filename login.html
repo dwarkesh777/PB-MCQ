@@ -1,79 +1,408 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login | PB-MCQ Portal</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login / Sign up | PB-MCQ</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
-<body class="bg-slate-100 flex items-center justify-center min-h-screen font-[Inter]">
-  <div class="bg-white shadow-lg rounded-2xl p-8 w-96 text-center">
-    <img src="https://avatars.githubusercontent.com/u/175926715?s=400&u=3120031e9ae3b66e1814792ba36a5599a1d251bb&v=4"
-         class="w-20 h-20 mx-auto rounded-full mb-4 border-4 border-blue-500">
-    <h2 class="text-2xl font-bold mb-6 text-slate-800">PB-MCQ Portal Login</h2>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center">
 
-    <input id="email" type="email" placeholder="Email"
-           class="w-full mb-3 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-    <input id="password" type="password" placeholder="Password"
-           class="w-full mb-3 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+  <div id="card" class="w-full max-w-md p-6">
+    <!-- Initial choice -->
+    <div id="choice-screen" class="bg-white rounded-2xl shadow-lg p-8 text-center">
+      <img src="https://avatars.githubusercontent.com/u/175926715?s=400" class="w-20 h-20 mx-auto rounded-full mb-4 border-4 border-blue-500">
+      <h2 class="text-2xl font-bold mb-6">Welcome to PB-MCQ</h2>
+      <div class="flex gap-4">
+        <button id="toSignIn" class="flex-1 py-3 bg-blue-600 text-white rounded-lg">Sign In</button>
+        <button id="toSignUp" class="flex-1 py-3 bg-green-600 text-white rounded-lg">Sign Up</button>
+      </div>
+    </div>
 
-    <button id="loginBtn"
-            class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">
-      Login
-    </button>
-    <button id="signupBtn"
-            class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg mt-2 hover:bg-green-700 transition">
-      Sign Up
-    </button>
+    <!-- Sign In screen -->
+    <div id="signin-screen" class="hidden bg-white rounded-2xl shadow-lg p-6">
+      <h3 class="text-xl font-semibold mb-4">Sign In</h3>
 
-    <p id="msg" class="text-sm mt-3 text-red-500"></p>
+      <div class="mb-3">
+        <label class="block text-sm font-medium mb-1">Sign in method</label>
+        <select id="signin-method" class="w-full p-2 border rounded-lg">
+          <option value="email">Email & Password</option>
+          <option value="phone">Phone (OTP)</option>
+        </select>
+      </div>
+
+      <!-- Email form -->
+      <div id="signin-email-form" class="">
+        <input id="signin-email" type="email" placeholder="Email" class="w-full mb-3 p-3 border rounded-lg">
+        <input id="signin-password" type="password" placeholder="Password" class="w-full mb-3 p-3 border rounded-lg">
+      </div>
+
+      <!-- Phone form -->
+      <div id="signin-phone-form" class="hidden">
+        <input id="signin-phone" type="tel" placeholder="+91xxxxxxxxxx" class="w-full mb-3 p-3 border rounded-lg">
+        <div id="recaptcha-container-signin" class="mb-3"></div>
+        <button id="sendSigninOtp" class="w-full bg-blue-600 text-white py-2 rounded-lg mb-3">Send OTP</button>
+
+        <input id="signin-otp" type="text" placeholder="Enter OTP" class="w-full mb-3 p-3 border rounded-lg">
+        <button id="confirmSigninOtp" class="w-full bg-green-600 text-white py-2 rounded-lg">Confirm OTP</button>
+      </div>
+
+      <p id="signin-msg" class="text-sm mt-3 text-red-500"></p>
+
+      <div class="mt-4 flex gap-2">
+        <button id="signin-btn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg">Sign In</button>
+        <button id="backFromSignin" class="flex-1 bg-gray-200 py-2 rounded-lg">Back</button>
+      </div>
+
+      <div class="mt-3 text-sm text-center">
+        <button id="forgotBtn" class="text-blue-600 underline">Forgot password?</button>
+      </div>
+    </div>
+
+    <!-- Sign Up screen -->
+    <div id="signup-screen" class="hidden bg-white rounded-2xl shadow-lg p-6">
+      <h3 class="text-xl font-semibold mb-4">Create Account</h3>
+
+      <input id="signup-name" type="text" placeholder="Full name" class="w-full mb-3 p-3 border rounded-lg">
+      <input id="signup-phone" type="tel" placeholder="+91xxxxxxxxxx" class="w-full mb-3 p-3 border rounded-lg">
+      <div id="recaptcha-container-signup" class="mb-3"></div>
+
+      <input id="signup-email" type="email" placeholder="Email" class="w-full mb-3 p-3 border rounded-lg">
+      <input id="signup-password" type="password" placeholder="Password (min 6)" class="w-full mb-3 p-3 border rounded-lg">
+
+      <button id="signup-send-otp" class="w-full bg-indigo-600 text-white py-2 rounded-lg mb-3">Send OTP (verify phone)</button>
+
+      <input id="signup-otp" type="text" placeholder="Enter OTP" class="w-full mb-3 p-3 border rounded-lg hidden">
+      <button id="signup-confirm-otp" class="w-full bg-green-600 text-white py-2 rounded-lg hidden mb-2">Confirm OTP & Create Account</button>
+
+      <p id="signup-msg" class="text-sm mt-3 text-red-500"></p>
+      <div class="mt-3 flex gap-2">
+        <button id="backFromSignup" class="flex-1 bg-gray-200 py-2 rounded-lg">Back</button>
+      </div>
+    </div>
+
+    <!-- Forgot password modal simple -->
+    <div id="forgot-screen" class="hidden bg-white rounded-2xl shadow-lg p-6">
+      <h3 class="text-xl font-semibold mb-4">Reset Password</h3>
+      <input id="forgot-email" type="email" placeholder="Enter your account email" class="w-full mb-3 p-3 border rounded-lg">
+      <p id="forgot-msg" class="text-sm mt-2 text-red-500"></p>
+      <div class="mt-4 flex gap-2">
+        <button id="send-reset" class="flex-1 bg-blue-600 text-white py-2 rounded-lg">Send Reset Email</button>
+        <button id="backFromForgot" class="flex-1 bg-gray-200 py-2 rounded-lg">Back</button>
+      </div>
+    </div>
+
   </div>
 
+  <!-- Firebase + Auth logic -->
   <script type="module">
-    // ====== REPLACE WITH YOUR Firebase project config ======
+    // ======= Firebase config (your config inserted) =======
     const firebaseConfig = {
-  apiKey: "AIzaSyAA9WGhpWt5rfBsN0rIThp_Vd9gwwJlJwY",
-  authDomain: "website-mcq-5d390.firebaseapp.com",
-  projectId: "website-mcq-5d390",
-  storageBucket: "website-mcq-5d390.firebasestorage.app",
-  messagingSenderId: "792788612285",
-  appId: "1:792788612285:web:34f17eede0307ee65233d4",
-  measurementId: "G-Q1ZXF235FM"
-};
-    // =======================================================
+      apiKey: "AIzaSyAA9WGhpWt5rfBsN0rIThp_Vd9gwwJlJwY",
+      authDomain: "website-mcq-5d390.firebaseapp.com",
+      projectId: "website-mcq-5d390",
+      storageBucket: "website-mcq-5d390.firebasestorage.app",
+      messagingSenderId: "792788612285",
+      appId: "1:792788612285:web:34f17eede0307ee65233d4",
+      measurementId: "G-Q1ZXF235FM"
+    };
 
+    // Firebase modular imports (v9)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      sendEmailVerification,
+      onAuthStateChanged,
+      signInWithPhoneNumber,
+      RecaptchaVerifier,
+      PhoneAuthProvider,
+      linkWithCredential,
+      signInWithCredential,
+      sendPasswordResetEmail,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const msg = document.getElementById('msg');
 
-    document.getElementById('loginBtn').addEventListener('click', async () => {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-      if (!email || !password) { msg.textContent = "Enter email and password."; return; }
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        location.href = "index.html";
-      } catch (err) { msg.textContent = err.message; }
+    // UI elements
+    const choiceScreen = document.getElementById('choice-screen');
+    const signinScreen = document.getElementById('signin-screen');
+    const signupScreen = document.getElementById('signup-screen');
+    const forgotScreen = document.getElementById('forgot-screen');
+
+    const toSignIn = document.getElementById('toSignIn');
+    const toSignUp = document.getElementById('toSignUp');
+    const backFromSignin = document.getElementById('backFromSignin');
+    const backFromSignup = document.getElementById('backFromSignup');
+    const backFromForgot = document.getElementById('backFromForgot');
+
+    // Sign-in elements
+    const signinMethod = document.getElementById('signin-method');
+    const signinEmail = document.getElementById('signin-email');
+    const signinPassword = document.getElementById('signin-password');
+    const signinPhone = document.getElementById('signin-phone');
+    const sendSigninOtp = document.getElementById('sendSigninOtp');
+    const signinOtp = document.getElementById('signin-otp');
+    const confirmSigninOtp = document.getElementById('confirmSigninOtp');
+    const signinMsg = document.getElementById('signin-msg');
+
+    const signinBtn = document.getElementById('signin-btn');
+
+    // Signup elements
+    const signupName = document.getElementById('signup-name');
+    const signupPhone = document.getElementById('signup-phone');
+    const signupEmail = document.getElementById('signup-email');
+    const signupPassword = document.getElementById('signup-password');
+    const signupSendOtp = document.getElementById('signup-send-otp');
+    const signupOtpInput = document.getElementById('signup-otp');
+    const signupConfirmOtp = document.getElementById('signup-confirm-otp');
+    const signupMsg = document.getElementById('signup-msg');
+
+    // Forgot
+    const forgotEmail = document.getElementById('forgot-email');
+    const forgotMsg = document.getElementById('forgot-msg');
+    const sendReset = document.getElementById('send-reset');
+
+    // Recaptcha containers
+    let recaptchaVerifierSignup = null;
+    let recaptchaVerifierSignin = null;
+    let confirmationResultSignin = null;
+    let confirmationResultSignup = null;
+
+    // Show/hide helpers
+    function show(el){ el.classList.remove('hidden'); }
+    function hide(el){ el.classList.add('hidden'); }
+
+    // Navigation
+    toSignIn.onclick = () => { hide(choiceScreen); show(signinScreen); resetSignin(); setupSigninRecaptcha(); }
+    toSignUp.onclick = () => { hide(choiceScreen); show(signupScreen); resetSignup(); setupSignupRecaptcha(); }
+    backFromSignin.onclick = () => { show(choiceScreen); hide(signinScreen); }
+    backFromSignup.onclick = () => { show(choiceScreen); hide(signupScreen); }
+    backFromForgot.onclick = () => { show(signinScreen); hide(forgotScreen); }
+
+    // Switch signin method
+    signinMethod.addEventListener('change', () => {
+      if (signinMethod.value === 'email') {
+        show(document.getElementById('signin-email-form'));
+        hide(document.getElementById('signin-phone-form'));
+      } else {
+        hide(document.getElementById('signin-email-form'));
+        show(document.getElementById('signin-phone-form'));
+      }
     });
 
-    document.getElementById('signupBtn').addEventListener('click', async () => {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-      if (!email || !password) { msg.textContent = "Enter email and password."; return; }
+    // Setup Recaptcha (Signup)
+    function setupSignupRecaptcha() {
       try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        msg.classList.replace('text-red-500', 'text-green-600');
-        msg.textContent = "Account created — redirecting...";
-        setTimeout(() => location.href = "index.html", 800);
-      } catch (err) { msg.textContent = err.message; }
+        if (recaptchaVerifierSignup) recaptchaVerifierSignup.clear();
+      } catch(e){}
+      recaptchaVerifierSignup = new RecaptchaVerifier('recaptcha-container-signup', {
+        size: 'invisible'
+      }, auth);
+    }
+
+    // Setup Recaptcha (Signin)
+    function setupSigninRecaptcha() {
+      try {
+        if (recaptchaVerifierSignin) recaptchaVerifierSignin.clear();
+      } catch(e){}
+      recaptchaVerifierSignin = new RecaptchaVerifier('recaptcha-container-signin', {
+        size: 'invisible'
+      }, auth);
+    }
+
+    // Reset forms
+    function resetSignin(){
+      signinEmail.value = '';
+      signinPassword.value = '';
+      signinPhone.value = '';
+      signinOtp.value = '';
+      signinMsg.textContent = '';
+      hide(document.getElementById('signin-phone-form'));
+      show(document.getElementById('signin-email-form'));
+      signinMethod.value = 'email';
+    }
+    function resetSignup(){
+      signupName.value='';
+      signupPhone.value='';
+      signupEmail.value='';
+      signupPassword.value='';
+      signupOtpInput.value='';
+      signupMsg.textContent='';
+      hide(signupOtpInput);
+      hide(signupConfirmOtp);
+    }
+
+    // ---------- SIGN IN: Email+Password ----------
+    signinBtn.addEventListener('click', async () => {
+      signinMsg.textContent = '';
+      if (signinMethod.value === 'email') {
+        const email = signinEmail.value.trim();
+        const pw = signinPassword.value.trim();
+        if (!email || !pw) { signinMsg.textContent = 'Enter email and password'; return; }
+        try {
+          await signInWithEmailAndPassword(auth, email, pw);
+          // Optional: check emailVerified
+          const user = auth.currentUser;
+          if (user && !user.emailVerified) {
+            signinMsg.textContent = 'Please verify your email (check inbox).';
+            // you can still allow sign-in depending on your policy
+          } else {
+            location.href = 'index.html';
+          }
+        } catch (err) {
+          signinMsg.textContent = err.message;
+        }
+      } else {
+        signinMsg.textContent = 'Use the OTP flow: send OTP then confirm it.';
+      }
     });
+
+    // ---------- SIGN IN: Phone OTP ----------
+    sendSigninOtp.addEventListener('click', async () => {
+      signinMsg.textContent = '';
+      const phone = signinPhone.value.trim();
+      if (!phone) { signinMsg.textContent = 'Enter phone number'; return; }
+      try {
+        // ensure recaptcha is ready
+        setupSigninRecaptcha();
+        confirmationResultSignin = await signInWithPhoneNumber(auth, phone, recaptchaVerifierSignin);
+        signinMsg.textContent = 'OTP sent to phone. Enter OTP below.';
+        show(signinOtp);
+      } catch (err) {
+        signinMsg.textContent = 'Error sending OTP: ' + err.message;
+      }
+    });
+
+    confirmSigninOtp.addEventListener('click', async () => {
+      signinMsg.textContent = '';
+      const code = signinOtp.value.trim();
+      if (!code || !confirmationResultSignin) { signinMsg.textContent = 'Enter OTP or request new OTP.'; return; }
+      try {
+        const credential = await confirmationResultSignin.confirm(code);
+        // signInWithPhoneNumber auto signs in the user
+        // Redirect to index
+        location.href = 'index.html';
+      } catch (err) {
+        signinMsg.textContent = 'Invalid OTP: ' + err.message;
+      }
+    });
+
+    // ---------- SIGN UP flow ----------
+    signupSendOtp.addEventListener('click', async () => {
+      signupMsg.textContent = '';
+      const name = signupName.value.trim();
+      const phone = signupPhone.value.trim();
+      const email = signupEmail.value.trim();
+      const pw = signupPassword.value.trim();
+
+      if (!name || !phone || !email || !pw) { signupMsg.textContent = 'Fill name, phone, email and password.'; return; }
+      if (pw.length < 6) { signupMsg.textContent = 'Password must be at least 6 characters.'; return; }
+
+      // We create the user first (email/password), then send email verification,
+      // then send phone OTP and link the phone credential to the created user.
+      try {
+        // create email user and sign in
+        const result = await createUserWithEmailAndPassword(auth, email, pw);
+        const user = result.user;
+
+        // update display name
+        await updateProfile(user, { displayName: name });
+
+        // send verification email
+        await sendEmailVerification(user);
+        signupMsg.classList.remove('text-red-500'); signupMsg.classList.add('text-green-600');
+        signupMsg.textContent = 'Account created. Verification email sent. Now verify phone with OTP.';
+
+        // prepare recaptcha & send OTP
+        setupSignupRecaptcha();
+        confirmationResultSignup = await signInWithPhoneNumber(auth, phone, recaptchaVerifierSignup);
+        signupMsg.textContent += ' OTP sent to phone.';
+        // show OTP input and confirm button
+        show(signupOtpInput);
+        show(signupConfirmOtp);
+      } catch (err) {
+        signupMsg.classList.remove('text-green-600'); signupMsg.classList.add('text-red-500');
+        signupMsg.textContent = 'Error: ' + err.message;
+      }
+    });
+
+    signupConfirmOtp.addEventListener('click', async () => {
+      signupMsg.textContent = '';
+      const code = signupOtpInput.value.trim();
+      if (!code || !confirmationResultSignup) { signupMsg.textContent = 'Enter OTP or send OTP again.'; return; }
+
+      try {
+        // Confirm the OTP which will sign in the phone number user temporarily
+        const phoneSignInResult = await confirmationResultSignup.confirm(code);
+        const phoneUser = phoneSignInResult.user;
+        // Create a phone credential from verificationId & code
+        const verificationId = confirmationResultSignup.verificationId;
+        const phoneCredential = PhoneAuthProvider.credential(verificationId, code);
+
+        // Current user should be the email user we created earlier (signed in)
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+          signupMsg.textContent = 'No signed-in user to link phone to. Please sign in and try again.';
+          return;
+        }
+
+        // Link phone to the existing user account
+        await linkWithCredential(currentUser, phoneCredential);
+
+        signupMsg.classList.remove('text-red-500'); signupMsg.classList.add('text-green-600');
+        signupMsg.textContent = 'Phone linked and account ready. Please verify your email (check inbox). Redirecting...';
+
+        // redirect to index (you may want to force reload so onAuthStateChanged picks up)
+        setTimeout(()=> location.href = 'index.html', 1200);
+      } catch (err) {
+        signupMsg.classList.remove('text-green-600'); signupMsg.classList.add('text-red-500');
+        signupMsg.textContent = 'OTP confirm / link error: ' + err.message;
+      }
+    });
+
+    // ---------- Forgot password ----------
+    document.getElementById('forgotBtn').addEventListener('click', () => {
+      hide(signinScreen);
+      show(forgotScreen);
+    });
+
+    sendReset.addEventListener('click', async () => {
+      forgotMsg.textContent = '';
+      const email = forgotEmail.value.trim();
+      if (!email) { forgotMsg.textContent = 'Enter your email'; return; }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        forgotMsg.classList.remove('text-red-500'); forgotMsg.classList.add('text-green-600');
+        forgotMsg.textContent = 'Password reset email sent. Check your inbox.';
+      } catch (err) {
+        forgotMsg.classList.remove('text-green-600'); forgotMsg.classList.add('text-red-500');
+        forgotMsg.textContent = 'Error: ' + err.message;
+      }
+    });
+
+    // Initialize recaptcha once (invisible)
+    // We call setup recaptcha when entering screens (see navigation).
+    // Optional: create global invisible recaptcha now:
+    // setupSignupRecaptcha();
+    // setupSigninRecaptcha();
+
+    // If user is already signed in redirect to index
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // if already on login page, redirect
+        if (location.pathname.endsWith('login.html') || location.pathname.endsWith('/PB-MCQ/') ) {
+          location.href = 'index.html';
+        }
+      }
+    });
+
   </script>
 </body>
 </html>
