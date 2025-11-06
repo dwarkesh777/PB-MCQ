@@ -140,7 +140,25 @@
   onAuthStateChanged(auth, (user) => {
     if (!user) location.href = "login.html";
   });
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+const db = getFirestore(app);
 
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return location.href = 'login.html';
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  if (snap.exists()) {
+    const data = snap.data();
+    // example: create small badge
+    let el = document.getElementById('user-id-display');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'user-id-display';
+      el.className = 'fixed top-4 left-4 bg-white p-2 rounded shadow text-sm z-50';
+      document.body.appendChild(el);
+    }
+    el.textContent = `User ID: ${data.publicId} — ${user.email}`;
+  }
+});
   window.logout = () =>
     signOut(auth).then(() => location.href = "login.html").catch(console.error);
 </script>
@@ -496,5 +514,6 @@ const questions = [
     </script>
 </body>
 </html>
+
 
 
