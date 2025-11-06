@@ -25,7 +25,32 @@
     </style>
 </head>
 <body class="bg-slate-100 flex items-center justify-center min-h-screen">
-     
+     <script type="module">
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+  };
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) location.href = "login.html";
+  });
+
+  window.logout = () =>
+    signOut(auth).then(() => location.href = "login.html").catch(console.error);
+</script>
+
+<!-- logout button -->
+<button onclick="logout()"
+        class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 z-50">
+  Logout
+</button>
     <div class="main-container text-center">
         <header class="mb-12">
             <h1 class="text-5xl font-bold text-slate-900 mb-3">Welcome to the Portal</h1>
@@ -59,6 +84,7 @@
 
 </body>
 </html>
+
 
 
 
