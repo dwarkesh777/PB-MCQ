@@ -6,68 +6,177 @@
   <title>Login / Sign up | PB-MCQ</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style> body { font-family: 'Inter', sans-serif; } </style>
+  <style>
+    body { font-family: 'Inter', sans-serif; margin:0; padding:0; min-height:100vh; color:#fff; }
+
+    /* Moving gradient background (slow wave) */
+    body {
+      background: linear-gradient(120deg, #050014, #2b0033, #00334d, #001a2b);
+      background-size: 400% 400%;
+      animation: gradientMove 18s ease infinite;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Card container */
+    #card {
+      width:100%;
+      max-width:460px;
+      padding:20px;
+      box-sizing:border-box;
+    }
+
+    /* panels styling - keep white cards for readability */
+    .panel {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+      border-radius:18px;
+      padding:22px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .panel .inner-white {
+      background: #ffffff;
+      color: #0b1220;
+      border-radius:12px;
+      padding:18px;
+    }
+
+    img.profile {
+      width:80px;
+      height:80px;
+      border-radius:999px;
+      object-fit:cover;
+      border:4px solid #0ea5a4; /* cyan-ish border */
+      display:block;
+      margin:0 auto 12px auto;
+    }
+
+    h2, h3 { margin:0 0 10px 0; }
+    .muted { color: rgba(255,255,255,0.75); }
+
+    input, textarea {
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #e6e6e6;
+      outline:none;
+      box-sizing:border-box;
+    }
+
+    .link {
+      color:#7dd3fc;
+      cursor:pointer;
+      text-decoration:underline;
+    }
+
+    .btn {
+      display:inline-block;
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .btn-primary { background:#0369a1; color:white; }
+    .btn-green { background:#059669; color:white; }
+
+    /* small responsive tweak */
+    @media (max-width:440px){
+      #card { padding:12px; }
+    }
+  </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center">
+<body>
 
-  <div id="card" class="w-full max-w-md p-6">
+  <div id="card">
 
-    <!-- Home choice -->
-    <div id="choice-screen" class="bg-white rounded-2xl shadow-lg p-8 text-center">
-      <img src="https://avatars.githubusercontent.com/u/175926715?s=400"
-           class="w-20 h-20 mx-auto rounded-full mb-4 border-4 border-blue-500">
-      <h2 class="text-2xl font-bold mb-6">Welcome to PB-MCQ</h2>
-      <div class="flex gap-4">
-        <button id="toSignIn" class="flex-1 py-3 bg-blue-600 text-white rounded-lg">Sign In</button>
-        <button id="toSignUp" class="flex-1 py-3 bg-green-600 text-white rounded-lg">Sign Up</button>
+    <!-- CHOICE (styled panel, inner white card) -->
+    <div id="choice-screen" class="panel">
+      <div class="inner-white text-center">
+        <img src="https://avatars.githubusercontent.com/u/175926715?s=400" alt="avatar" class="profile">
+        <h2 class="text-2xl font-bold">Welcome to PB-MCQ</h2>
+        <p class="muted">Quick access — sign in or create your QB QUIZ account</p>
+        <div class="mt-6 flex gap-3">
+          <button id="toSignIn" class="btn btn-primary">Sign In</button>
+          <button id="toSignUp" class="btn btn-green">Sign Up</button>
+        </div>
       </div>
     </div>
 
-    <!-- Sign In -->
-    <div id="signin-screen" class="hidden bg-white rounded-2xl shadow-lg p-6">
-      <h3 class="text-xl font-semibold mb-4">Sign In</h3>
-      <input id="signin-email" type="email" placeholder="Email" class="w-full mb-3 p-3 border rounded-lg">
-      <input id="signin-password" type="password" placeholder="Password" class="w-full mb-3 p-3 border rounded-lg">
-      <p id="signin-msg" class="text-sm mt-3 text-red-500"></p>
+    <!-- SIGN IN -->
+    <div id="signin-screen" class="panel hidden mt-4">
+      <div class="inner-white">
+        <h3 class="text-xl font-semibold">Login to QB Quiz</h3>
+        <p class="muted mb-3">Enter your registered email and password to continue.</p>
 
-      <div class="mt-4 flex gap-2">
-        <button id="signin-btn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg">Sign In</button>
-        <button id="backFromSignin" class="flex-1 bg-gray-200 py-2 rounded-lg">Back</button>
-      </div>
+        <input id="signin-email" type="email" placeholder="Email" class="mb-3" />
+        <input id="signin-password" type="password" placeholder="Password" class="mb-2" />
+        <p id="signin-msg" class="text-sm mt-2 text-red-500"></p>
 
-      <div class="mt-3 text-sm text-center">
-        <button id="forgotBtn" class="text-blue-600 underline">Forgot password?</button>
+        <div class="mt-4 flex gap-2">
+          <button id="signin-btn" class="btn btn-primary">Sign In</button>
+          <button id="backFromSignin" class="btn" style="background:#f3f4f6;">Back</button>
+        </div>
+
+        <div class="mt-3 flex items-center justify-between text-sm">
+          <div>
+            <!-- Small link as requested -->
+            <span id="toSignupLink" class="link">Don't have account? Create Account</span>
+          </div>
+          <div>
+            <button id="forgotBtn" class="link">Forgot password?</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Sign Up -->
-    <div id="signup-screen" class="hidden bg-white rounded-2xl shadow-lg p-6">
-      <h3 class="text-xl font-semibold mb-4">Create Account</h3>
-      <input id="signup-name" type="text" placeholder="Full Name" class="w-full mb-3 p-3 border rounded-lg">
-      <input id="signup-email" type="email" placeholder="Email" class="w-full mb-3 p-3 border rounded-lg">
-      <input id="signup-password" type="password" placeholder="Password (min 6 chars)" class="w-full mb-3 p-3 border rounded-lg">
+    <!-- SIGN UP -->
+    <div id="signup-screen" class="panel hidden mt-4">
+      <div class="inner-white">
+        <h3 class="text-xl font-semibold">Create new QB Quiz account</h3>
+        <p class="muted mb-3">Join now — create your account and start practicing MCQs.</p>
 
-      <button id="signup-btn" class="w-full bg-green-600 text-white py-2 rounded-lg">Sign Up</button>
+        <input id="signup-name" type="text" placeholder="Full Name" class="mb-3" />
+        <input id="signup-email" type="email" placeholder="Email" class="mb-3" />
+        <input id="signup-password" type="password" placeholder="Password (min 6 chars)" class="mb-3" />
 
-      <p id="signup-msg" class="text-sm mt-3 text-red-500"></p>
-      <div class="mt-4"><button id="backFromSignup" class="w-full bg-gray-200 py-2 rounded-lg">Back</button></div>
+        <button id="signup-btn" class="btn btn-green">Sign Up</button>
+
+        <p id="signup-msg" class="text-sm mt-3 text-red-500"></p>
+        <div class="mt-4">
+          <button id="backFromSignup" class="btn" style="background:#f3f4f6;">Back</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Forgot -->
-    <div id="forgot-screen" class="hidden bg-white rounded-2xl shadow-lg p-6">
-      <h3 class="text-xl font-semibold mb-4">Reset Password</h3>
-      <p class="text-sm text-slate-600 mb-2">Enter your <strong>email</strong> or your <strong>User ID</strong> (example: PBMCQ-ABC123)</p>
-      <input id="forgot-input" type="text" placeholder="Email or User ID" class="w-full mb-3 p-3 border rounded-lg">
-      <p id="forgot-msg" class="text-sm mt-2 text-red-500"></p>
-      <div class="mt-4 flex gap-2">
-        <button id="send-reset" class="flex-1 bg-blue-600 text-white py-2 rounded-lg">Send Reset Email</button>
-        <button id="backFromForgot" class="flex-1 bg-gray-200 py-2 rounded-lg">Back</button>
+    <!-- FORGOT -->
+    <div id="forgot-screen" class="panel hidden mt-4">
+      <div class="inner-white">
+        <h3 class="text-xl font-semibold">Reset Password</h3>
+        <p class="muted mb-2">Enter your <strong>email</strong> or your <strong>User ID</strong> (example: PBMCQ-ABC123)</p>
+        <input id="forgot-input" type="text" placeholder="Email or User ID" class="mb-3" />
+        <p id="forgot-msg" class="text-sm mt-2 text-red-500"></p>
+
+        <div class="mt-4 flex gap-2">
+          <button id="send-reset" class="btn btn-primary">Send Reset Email</button>
+          <button id="backFromForgot" class="btn" style="background:#f3f4f6;">Back</button>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Firebase + Firestore logic -->
+  <!-- Firebase + Firestore logic (kept exactly as in your original file) -->
   <script type="module">
     // ====== FIREBASE CONFIG ======
     const firebaseConfig = {
@@ -125,6 +234,8 @@
     const forgotMsg = document.getElementById("forgot-msg");
     const sendReset = document.getElementById("send-reset");
 
+    const toSignupLink = document.getElementById("toSignupLink");
+
     // Helpers
     function show(el){ el.classList.remove("hidden"); }
     function hide(el){ el.classList.add("hidden"); }
@@ -137,6 +248,7 @@
     backFromSignup.onclick = () => { hide(signupScreen); show(choiceScreen); }
     backFromForgot.onclick = () => { hide(forgotScreen); show(signinScreen); }
     document.getElementById("forgotBtn").onclick = () => { hide(signinScreen); show(forgotScreen); resetMessages(); }
+    toSignupLink.onclick = () => { hide(signinScreen); show(signupScreen); resetMessages(); }
 
     // Generate publicId
     function generatePublicId(prefix='PBMCQ', len=6){
