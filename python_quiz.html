@@ -252,9 +252,10 @@ onAuthStateChanged(auth, async (user) => {
     </footer>
 
     <script>
+        let currentScreen = 'loader';
         let currentTestIndex = 0;
         let score = 0;
-        let shuffledQuestions = [];
+        let shuffledQuestions = []; // <-- Add this
         let filteredQuestionsList = []; // <-- Add this
 // === QUESTIONS FROM index (1).html - Unit 4 & 5 ===
 const questions = [
@@ -646,6 +647,7 @@ function startFilteredTest() {
 </body>
 
 </html>
+
 
 
 
