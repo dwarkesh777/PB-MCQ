@@ -200,16 +200,22 @@ onAuthStateChanged(auth, async (user) => {
             </div>
         </div>
 
-        <div id="view-mode-screen" class="hidden">
+       <div id="view-mode-screen" class="hidden">
              <header class="flex justify-between items-center mb-8">
                 <h1 class="text-3xl font-bold text-slate-900">Practice Questions (Units 4 & 5)</h1>
                 <button onclick="showScreen('menu')" class="btn bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md">Back to Menu</button>
             </header>
             
-            <div class="mb-6">
+            <div class="mb-6 space-y-4">
                 <input type="text" id="view-search-bar" 
                        placeholder="Search questions and options..." 
                        class="w-full p-4 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                
+                <button id="start-filtered-test" 
+                        onclick="startFilteredTest()"
+                        class="hidden btn bg-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md w-full">
+                    Start Test with 0 Results
+                </button>
             </div>
             <div id="view-questions-container" class="space-y-6">
                 </div>
@@ -246,7 +252,10 @@ onAuthStateChanged(auth, async (user) => {
     </footer>
 
     <script>
-               
+        let currentTestIndex = 0;
+        let score = 0;
+        let shuffledQuestions = [];
+        let filteredQuestionsList = []; // <-- Add this
 // === QUESTIONS FROM index (1).html - Unit 4 & 5 ===
 const questions = [
     {"No": "159", "question_text": "What arithmetic operators cannot be used with strings?", "MCQ Answer": "A", "option A": "-", "option B": "+", "option C": "*", "option D": "All of the mentioned"},
@@ -438,22 +447,27 @@ const questions = [
         };
 
         // --- Core Functions ---
-        function showScreen(screenId) {
+function showScreen(screenId) {
             Object.values(screens).forEach(screen => screen.classList.add('hidden'));
             
-            // Special case for returning to menu
             if (screenId === 'menu') {
-                // Find the main-container that is a direct child of the body's main-container
                 document.querySelector('.main-container > .main-container').classList.remove('hidden');
             }
 
-            screens[screenId].classList.remove('hidden');
-            currentScreen = screenId;
+            // New logic to handle filtered test
+            if (screenId === 'test-mode-filtered') {
+                screens['test-mode'].classList.remove('hidden');
+                currentScreen = 'test-mode';
+                startTest(filteredQuestionsList); // Pass the filtered list
+            } else {
+                screens[screenId].classList.remove('hidden');
+                currentScreen = screenId;
 
-            if (screenId === 'view-mode') {
-                initViewMode();
-            } else if (screenId === 'test-mode') {
-                startTest();
+                if (screenId === 'view-mode') {
+                    initViewMode();
+                } else if (screenId === 'test-mode') {
+                    startTest(); // Normal, full test
+                }
             }
         }
         
@@ -469,9 +483,10 @@ const questions = [
 
         
         // --- View Mode ---
-        function initViewMode() {
+function initViewMode() {
             const container = document.getElementById('view-questions-container');
             container.innerHTML = '';
+            
             questions.forEach(q => {
                 const correctAnswer = q["MCQ Answer"];
                 const optionsHTML = ['A', 'B', 'C', 'D'].map(opt => {
@@ -483,15 +498,14 @@ const questions = [
                             </div>`;
                 }).join('');
 
-                // Check if question text contains newlines
                 let questionHTML = escapeHTML(q.question_text);
                 if (questionHTML.includes('<br>')) {
                     questionHTML = `<pre class="code-block">${questionHTML}</pre>`;
                 }
 
-                // ***MODIFICATION: Added 'question-card' class***
+                // Added 'question-card' class and 'data-q-no'
                 const questionCard = `
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200 question-card">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200 question-card" data-q-no="${q.No}">
                         <h3 class="font-semibold text-lg mb-4">Q${q.No}: ${questionHTML}</h3>
                         <div class="space-y-3">${optionsHTML}</div>
                     </div>
@@ -499,39 +513,58 @@ const questions = [
                 container.innerHTML += questionCard;
             });
 
-            // --- START: Added Search Functionality ---
+            // --- Added Search Functionality ---
             const searchBar = document.getElementById('view-search-bar');
             const questionCards = container.querySelectorAll('.question-card');
-
-            // Clear search bar when view is re-initialized
-            if(searchBar) {
-                searchBar.value = '';
-            }
+            const filteredTestBtn = document.getElementById('start-filtered-test');
+            
+            if(searchBar) searchBar.value = '';
+            filteredTestBtn.classList.add('hidden');
+            filteredQuestionsList = [];
 
             searchBar.addEventListener('input', () => {
                 const searchTerm = searchBar.value.toLowerCase();
+                filteredQuestionsList = []; // Reset the list
                 
                 questionCards.forEach(card => {
-                    // Check the card's whole text content
                     const cardText = card.textContent.toLowerCase();
                     if (cardText.includes(searchTerm)) {
                         card.style.display = ''; // Show card
+                        const qNo = card.getAttribute('data-q-no');
+                        const questionObj = questions.find(q => q.No === qNo);
+                        if (questionObj) {
+                            filteredQuestionsList.push(questionObj);
+                        }
                     } else {
                         card.style.display = 'none'; // Hide card
                     }
                 });
+
+                if (searchTerm.length > 0 && filteredQuestionsList.length > 0) {
+                    filteredTestBtn.classList.remove('hidden');
+                    filteredTestBtn.textContent = `Start Test with ${filteredQuestionsList.length} matching question(s)`;
+                } else {
+                    filteredTestBtn.classList.add('hidden');
+                }
             });
-            // --- END: Added Search Functionality ---
         }
         // --- Test Mode ---
-        function startTest() {
+  function startTest(customQuestions = null) {
             currentTestIndex = 0;
             score = 0;
+            
+            const questionsToUse = customQuestions ? customQuestions : questions;
+            shuffledQuestions = shuffleArray([...questionsToUse]); // Shuffle questions for the test
+
             document.getElementById('test-card').classList.remove('hidden');
             document.getElementById('test-results').classList.add('hidden');
             loadTestQuestion();
         }
-
+function startFilteredTest() {
+            if (filteredQuestionsList.length > 0) {
+                showScreen('test-mode-filtered'); // Use our special ID
+            }
+        }
         function loadTestQuestion() {
             if (currentTestIndex >= questions.length) {
                 showResults();
@@ -616,6 +649,7 @@ const questions = [
 </body>
 
 </html>
+
 
 
 
