@@ -9,12 +9,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://avatars.githubusercontent.com/u/175926715?s=400&u=3120031e9ae3b66e1814792ba36a5599a1d251bb&v=4" type="image/png">
-  
+   
    <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        
+       
         pre.code-block {
           background: #f5f5f5;
           padding: 10px;
@@ -23,7 +23,7 @@
           font-family: monospace;
           white-space: pre-wrap;  /* wrap long lines */
           word-wrap: break-word;  /* break long words */
-          overflow-x: auto;       /* scroll only if really long */
+          overflow-x: auto;      /* scroll only if really long */
           line-height: 1.5;
           margin: 10px 0;
           text-align: left;
@@ -163,7 +163,6 @@ onAuthStateChanged(auth, async (user) => {
     signOut(auth).then(() => location.href = "login.html").catch(console.error);
 </script>
 
-<!-- logout button -->
 <button onclick="logout()"
         class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 z-50">
   Logout
@@ -174,13 +173,13 @@ onAuthStateChanged(auth, async (user) => {
                  alt="Dwarkesh Profile Image" 
                  class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-600"
                  id="loader-image">
-            
+           
             <div class="loader-logo">D S SAVALIYA</div>
             <div class="loader-spinner"></div>
         </div>
     </div>
 
-    <div class="main-container">    
+    <div class="main-container">   
     <div class="main-container">
 
         <div id="menu-screen">
@@ -193,7 +192,7 @@ onAuthStateChanged(auth, async (user) => {
                     <h2 class="text-2xl font-semibold text-blue-600 mb-2">View FSD-1 MCQs</h2>
                     <p class="text-slate-500">Practice mode. Review all questions (Units 4 & 5) with their options and correct answers revealed.</p>
                 </button>
-                <button onclick="showScreen('test-mode')" class="btn bg-white p-8 rounded-xl shadow-lg border border-slate-200 text-left">
+                <button onclick="startFullTest()" class="btn bg-white p-8 rounded-xl shadow-lg border border-slate-200 text-left">
                     <h2 class="text-2xl font-semibold text-green-600 mb-2">FSD-1 MCQ Test</h2>
                     <p class="text-slate-500">Test your knowledge. Answer questions (Units 4 & 5) and get immediate feedback.</p>
                 </button>
@@ -201,36 +200,44 @@ onAuthStateChanged(auth, async (user) => {
         </div>
 
         <div id="view-mode-screen" class="hidden">
-             <header class="flex justify-between items-center mb-8">
-                <h1 class="text-3xl font-bold text-slate-900">Practice Questions (Units 4 & 5)</h1>
-                <button onclick="showScreen('menu')" class="btn bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md">Back to Menu</button>
-            </header>
-            <div id="view-questions-container" class="space-y-6">
+             <header class="mb-8">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                    <h1 class="text-3xl font-bold text-slate-900">Practice Questions (Units 4 & 5)</h1>
+                    <button onclick="showScreen('menu')" class="btn bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md w-full sm:w-auto">Back to Menu</button>
                 </div>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="search" id="search-input" oninput="filterViewQuestions()" placeholder="Search questions..." class="flex-grow p-3 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button id="start-filtered-test-btn" onclick="startFilteredTest()" class="btn bg-green-600 text-white font-semibold py-3 px-5 rounded-lg shadow-md w-full sm:w-auto">
+                        Start Test with these (88)
+                    </button>
+                </div>
+             </header>
+             <div id="view-questions-container" class="space-y-6">
+                 </div>
         </div>
 
         <div id="test-mode-screen" class="hidden">
             <header class="mb-8">
                  <div class="flex justify-between items-center mb-4">
-                    <h1 class="text-3xl font-bold text-slate-900">FSD-1 MCQ Test (Units 4 & 5)</h1>
-                    <button onclick="showScreen('menu')" class="btn bg-slate-200 text-slate-800 font-semibold py-2 px-5 rounded-lg">Exit Test</button>
+                     <h1 class="text-3xl font-bold text-slate-900">FSD-1 MCQ Test (Units 4 & 5)</h1>
+                     <button onclick="showScreen('menu')" class="btn bg-slate-200 text-slate-800 font-semibold py-2 px-5 rounded-lg">Exit Test</button>
                  </div>
                  <div class="w-full bg-slate-200 rounded-full h-2.5">
-                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
-                </div>
-                <p id="progress-text" class="text-center text-sm text-slate-500 mt-2">Question 1/88</p>
+                     <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                 </div>
+                 <p id="progress-text" class="text-center text-sm text-slate-500 mt-2">Question 1/88</p>
             </header>
 
             <div id="test-card" class="bg-white p-8 rounded-2xl shadow-lg">
                  </div>
-            
+           
             <div id="test-results" class="hidden text-center bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-3xl font-bold text-slate-800 mb-4">Test Complete!</h2>
-                <p class="text-5xl font-bold text-blue-600 mb-6" id="score-text">10/88</p>
-                <div class="flex justify-center gap-4">
-                     <button onclick="startTest()" class="btn bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">Restart Test</button>
-                     <button onclick="showScreen('menu')" class="btn bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">Back to Menu</button>
-                </div>
+                 <h2 class="text-3xl font-bold text-slate-800 mb-4">Test Complete!</h2>
+                 <p class="text-2xl font-bold text-blue-600 mb-6">You have completed the test.</p>
+                 <div class="flex justify-center gap-4">
+                      <button onclick="startFullTest()" class="btn bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">Restart Full Test</button>
+                      <button onclick="showScreen('menu')" class="btn bg-slate-600 text-white font-bold py-3 px-6 rounded-lg">Back to Menu</button>
+                 </div>
             </div>
         </div>
     </div>
@@ -240,7 +247,7 @@ onAuthStateChanged(auth, async (user) => {
     </footer>
 
     <script>
-               
+           
 // === QUESTIONS FROM PB_FSD-1_SEM-III_2025 (1).pdf - Unit 4 & 5 ===
 const questions = [
     {"No": "195", "question_text": "In the below code snippet, in what order will the margins be added?\np {margin: 25px 50px 75px 100px; }", "MCQ Answer": "B", "option A": "Top, left, right, bottom", "option B": "Top, Right, Bottom, Left", "option C": "Top, bottom, right, Left", "option D": "Left, Right, Bottom, top"},
@@ -336,9 +343,10 @@ const questions = [
 
         let currentScreen = 'loader';
         let currentTestIndex = 0;
-        let score = 0;
+        // let score = 0; // REMOVED: Score variable
         let shuffledQuestions = [];
-        
+        let currentFilteredQuestions = [...questions]; // ADDED: To store filtered questions
+       
         const screens = {
             'loader': document.getElementById('loader'),
             'menu': document.getElementById('menu-screen'),
@@ -349,7 +357,7 @@ const questions = [
         // --- Core Functions ---
         function showScreen(screenId) {
             Object.values(screens).forEach(screen => screen.classList.add('hidden'));
-            
+           
             // Special case for returning to menu
             if (screenId === 'menu') {
                 // Find the main-container that is a direct child of the body's main-container
@@ -360,27 +368,62 @@ const questions = [
             currentScreen = screenId;
 
             if (screenId === 'view-mode') {
-                initViewMode();
-            } else if (screenId === 'test-mode') {
-                startTest();
-            }
+                // ADDED: Clear search and populate list when showing view mode
+                document.getElementById('search-input').value = '';
+                filterViewQuestions();
+            } 
+            // REMOVED: else if for 'test-mode' as startTest() is now called by buttons
         }
-        
+       
         function escapeHTML(str) {
             if (!str) return "";
             // Use regex to handle code snippets
             str = str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            
+           
             // Basic newline to <br> for pre-like formatting
             str = str.replace(/\n/g, "<br>");
             return str;
         }
 
-        // --- View Mode ---
-        function initViewMode() {
+        // --- View Mode & Search ---
+
+        // ADDED: New function to filter questions based on search input
+        function filterViewQuestions() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            if (searchTerm.trim() === '') {
+                currentFilteredQuestions = [...questions];
+            } else {
+                currentFilteredQuestions = questions.filter(q => {
+                    // Check question text
+                    if (q.question_text && q.question_text.toLowerCase().includes(searchTerm)) return true;
+                    // Check options
+                    if (q['option A'] && q['option A'].toLowerCase().includes(searchTerm)) return true;
+                    if (q['option B'] && q['option B'].toLowerCase().includes(searchTerm)) return true;
+                    if (q['option C'] && q['option C'].toLowerCase().includes(searchTerm)) return true;
+                    if (q['option D'] && q['option D'].toLowerCase().includes(searchTerm)) return true;
+                    return false;
+                });
+            }
+            
+            // Update the 'Start Test' button text
+            document.getElementById('start-filtered-test-btn').textContent = `Start Test with these (${currentFilteredQuestions.length})`;
+            
+            // Render the filtered list
+            renderViewMode(currentFilteredQuestions);
+        }
+
+        // MODIFIED: Renamed from initViewMode and now accepts a list to render
+        function renderViewMode(questionsToRender) {
             const container = document.getElementById('view-questions-container');
             container.innerHTML = '';
-            questions.forEach(q => {
+            
+            if (questionsToRender.length === 0) {
+                 container.innerHTML = `<p class="text-center text-slate-500">No questions match your search.</p>`;
+                 return;
+            }
+
+            questionsToRender.forEach(q => {
                 const correctAnswer = q["MCQ Answer"];
                 const optionsHTML = ['A', 'B', 'C', 'D'].map(opt => {
                     const optionText = q[`option ${opt}`];
@@ -422,10 +465,27 @@ const questions = [
             return array;
         }
 
-        function startTest() {
+        // ADDED: Wrapper function to start test with ALL questions
+        function startFullTest() {
+            startTest(questions);
+            showScreen('test-mode');
+        }
+
+        // ADDED: Wrapper function to start test with FILTERED questions
+        function startFilteredTest() {
+            const questionsToUse = currentFilteredQuestions.length > 0 ? currentFilteredQuestions : questions;
+            if (currentFilteredQuestions.length === 0) {
+                alert("No questions found for this search. Starting test with all questions.");
+            }
+            startTest(questionsToUse);
+            showScreen('test-mode');
+        }
+
+        // MODIFIED: Now accepts a list of questions to use
+        function startTest(questionsToUse) {
             currentTestIndex = 0;
-            score = 0;
-            shuffledQuestions = shuffleArray([...questions]); // Shuffle questions for the test
+            // score = 0; // REMOVED: Score tracking
+            shuffledQuestions = shuffleArray([...questionsToUse]); // Shuffle the provided questions
             document.getElementById('test-card').classList.remove('hidden');
             document.getElementById('test-results').classList.add('hidden');
             loadTestQuestion();
@@ -468,7 +528,7 @@ const questions = [
                 </div>
             `;
         }
-        
+       
         function selectAnswer(btn, selectedOpt, correctOpt) {
             const optionsContainer = document.getElementById('options-container');
             const allOptions = optionsContainer.querySelectorAll('button');
@@ -482,7 +542,7 @@ const questions = [
             });
 
             if (selectedOpt === correctOpt) {
-                score++;
+                // score++; // REMOVED: Score tracking
             } else {
                 btn.classList.add('incorrect');
             }
@@ -499,7 +559,8 @@ const questions = [
              document.getElementById('test-card').classList.add('hidden');
              const resultsContainer = document.getElementById('test-results');
              resultsContainer.classList.remove('hidden');
-             document.getElementById('score-text').textContent = `${score}/${shuffledQuestions.length}`;
+             // REMOVED: Score display logic
+             // document.getElementById('score-text').textContent = `${score}/${shuffledQuestions.length}`;
              document.getElementById('progress-bar').style.width = '100%';
              document.getElementById('progress-text').textContent = `Test Complete!`;
         }
@@ -514,6 +575,3 @@ const questions = [
     </script>
 </body>
 </html>
-
-
-
