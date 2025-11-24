@@ -9,12 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://avatars.githubusercontent.com/u/175926715?s=400&u=3120031e9ae3b66e1814792ba36a5599a1d251bb&v=4" type="image/png">
-  
+     
    <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        
+        <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+<script type="module">
+	import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+	createChat({
+		webhookUrl: 'https://dwarkesh777.app.n8n.cloud/webhook/2022af8a-e60f-465e-8760-6fcf9145dbbd/chat'
+	});
+</script>
         pre.code-block {
           background: #f5f5f5;
           padding: 10px;
@@ -585,6 +592,7 @@ const questions = [
 </body>
 
 </html>
+
 
 
 
