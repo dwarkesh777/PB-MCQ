@@ -13,9 +13,9 @@
     .logo-bg {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-      background: #0f172a url('https://avatars.githubusercontent.com/u/175926715?s=400&u=1e6017276e80c1f8eaaceb1c483fcecd059cb88d&v=4') no-repeat center center;
+      background: #0f172a url('https://avatars.githubusercontent.com/u/175926715?s=400') no-repeat center center;
       background-size: contain;
-      opacity: 0.1; /* Faded watermark effect */
+      opacity: 0.1; 
     }
 
     .glass-panel {
@@ -33,6 +33,7 @@
 
   <div class="glass-panel p-10 max-w-sm w-full text-center">
     <img src="https://avatars.githubusercontent.com/u/175926715?s=400" class="w-24 h-24 rounded-full mx-auto mb-6 border-4 border-blue-500">
+    
     <h1 class="text-3xl font-bold mb-2">Welcome Back</h1>
     <p class="text-slate-400 mb-8">Sign in to access your MCQ Portal</p>
 
@@ -40,12 +41,12 @@
       <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-6 h-6">
       Sign in with Google
     </button>
+    
     <p id="msg" class="text-blue-400 text-sm mt-4 min-h-[20px]"></p>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    // CHANGED: Imported signInWithRedirect instead of signInWithPopup
     import { getAuth, GoogleAuthProvider, signInWithRedirect, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
@@ -63,37 +64,40 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
-    // 1. Button Logic: Just starts the redirect
+    // 1. When Button is Clicked -> Start Google Login
     document.getElementById('google-btn').addEventListener('click', () => {
       document.getElementById('msg').textContent = "Redirecting to Google...";
       signInWithRedirect(auth, provider);
     });
 
-    // 2. Main Logic: Handles the return from Google AND checks if user is already logged in
+    // 2. THIS IS THE PART THAT OPENS INDEX.HTML
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        document.getElementById('msg').textContent = "Login successful! Setting up profile...";
+        // User is successfully logged in!
+        document.getElementById('msg').textContent = "Login successful! Redirecting...";
         
         try {
-            // Check if user exists in Firestore, if not, create them
+            // Save user data to database (if new user)
             const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
             
             if (!userDoc.exists()) {
-            await setDoc(userRef, {
-                uid: user.uid,
-                name: user.displayName,
-                email: user.email,
-                photoURL: user.photoURL,
-                createdAt: serverTimestamp()
-            });
+              await setDoc(userRef, {
+                  uid: user.uid,
+                  name: user.displayName,
+                  email: user.email,
+                  photoURL: user.photoURL,
+                  createdAt: serverTimestamp()
+              });
             }
             
-            // Redirect to Home
-            window.location.href = "index.html";
+            // ---> REDIRECTION HAPPENS HERE <---
+            window.location.href = "index.html"; 
+
         } catch (error) {
-            document.getElementById('msg').textContent = "Error saving profile: " + error.message;
-            document.getElementById('msg').classList.replace('text-blue-400', 'text-red-400');
+            console.error(error);
+            // Even if database save fails, still let them in
+            window.location.href = "index.html";
         }
       }
     });
