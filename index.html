@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>D S SAVALIYA - Knowledge Hub</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,12 +33,12 @@
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg);
             color: white;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
             margin: 0;
-            -webkit-tap-highlight-color: transparent; /* Remove highlight on mobile tap */
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Canvas for Three.js Background */
+        /* Background Canvas - Pushed to back */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -47,10 +47,10 @@
             height: 100%;
             z-index: -1;
             opacity: 0.6;
-            pointer-events: none; /* Ensure clicks pass through */
+            pointer-events: none; /* Critical: Lets clicks pass through to buttons */
         }
 
-        /* Glassmorphism Utilities */
+        /* Glass Utility */
         .glass {
             background: var(--glass);
             backdrop-filter: blur(12px);
@@ -58,107 +58,61 @@
             border: 1px solid var(--glass-border);
         }
         
-        /* Navigation */
+        /* Navigation Links */
         .nav-link {
             position: relative;
             transition: color 0.3s;
+            padding: 0.5rem 0;
         }
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: width 0.3s;
-        }
-        .nav-link:hover {
-            color: var(--primary);
-        }
-        .nav-link:hover::before {
-            width: 100%;
-        }
+        .nav-link:hover { color: var(--primary); }
 
-        /* Sections */
+        /* Animation */
         .section {
             display: none;
             opacity: 0;
             transform: translateY(20px);
-            animation: fadeInUp 0.6s forwards;
+            animation: fadeInUp 0.4s forwards;
         }
-        .section.active {
-            display: block;
-        }
+        .section.active { display: block; }
 
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* Cards */
+        /* Card Styles */
         .hover-card {
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        /* Only hover effect on non-touch devices */
+        .hover-card:active {
+            transform: scale(0.96); /* Button press effect on mobile */
+            background: rgba(255,255,255,0.1);
+        }
         @media (hover: hover) {
             .hover-card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 20px 40px -10px rgba(0, 242, 234, 0.15);
+                transform: translateY(-5px);
                 border-color: var(--primary);
+                box-shadow: 0 10px 30px -10px rgba(0, 242, 234, 0.15);
             }
         }
 
-        /* Quiz Options */
+        /* Quiz Option Buttons */
         .option-btn {
             transition: all 0.2s;
             cursor: pointer;
             position: relative;
-            overflow: hidden;
         }
-        .option-btn:active {
-            background: rgba(255, 255, 255, 0.2); /* Feedback for mobile touch */
-        }
+        .option-btn:active { background: rgba(255, 255, 255, 0.2); }
         
         .option-btn.correct {
             background: rgba(34, 197, 94, 0.2) !important;
             border-color: var(--correct) !important;
             color: var(--correct) !important;
         }
-        .option-btn.correct::before {
-            content: '✓';
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
         .option-btn.wrong {
             background: rgba(239, 68, 68, 0.2) !important;
             border-color: var(--wrong) !important;
             color: var(--wrong) !important;
         }
-        .option-btn.wrong::before {
-            content: '✕';
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        .option-btn.disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
+        
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Chatbot */
         .chat-window {
@@ -178,129 +132,114 @@
 
     <canvas id="bg-canvas"></canvas>
 
-    <nav class="fixed top-0 w-full z-50 glass border-b-0 h-20 flex items-center bg-black/80 backdrop-blur-md">
-        <div class="container mx-auto px-6 flex justify-between items-center">
-            <a href="#" onclick="showSection('home')" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:rotate-12 transition-transform">
-                    DS
+    <nav class="fixed top-0 w-full z-50 glass border-b-0 bg-black/90 backdrop-blur-xl">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex flex-wrap justify-between items-center">
+                
+                <button onclick="showSection('home')" class="flex items-center gap-3 group z-50 focus:outline-none">
+                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                        DS
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white">D S SAVALIYA</span>
+                </button>
+
+                <button id="menu-btn" class="md:hidden text-2xl text-white p-2 focus:outline-none z-50" onclick="toggleMenu()">
+                    <i class="fa-solid fa-bars" id="menu-icon"></i>
+                </button>
+
+                <div id="nav-content" class="hidden w-full md:block md:w-auto mt-4 md:mt-0 transition-all duration-300 max-h-[80vh] overflow-y-auto md:max-h-none md:overflow-visible">
+                    <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8 bg-black/50 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none border border-gray-800 md:border-0">
+                        <button onclick="showSection('home')" class="nav-link text-left text-gray-300 font-semibold py-3 px-2 rounded hover:bg-white/5 md:hover:bg-transparent">Home</button>
+                        <button onclick="showSection('about')" class="nav-link text-left text-gray-300 font-semibold py-3 px-2 rounded hover:bg-white/5 md:hover:bg-transparent">Portfolio</button>
+                        
+                        <div class="h-px w-full md:h-6 md:w-px bg-gray-700 mx-0 md:mx-2 my-2 md:my-0"></div>
+                        
+                        <button onclick="startQuiz('python')" class="text-left text-yellow-400 font-semibold flex items-center gap-3 py-3 px-2 rounded hover:bg-white/5 md:hover:bg-transparent">
+                            <i class="fa-brands fa-python text-xl"></i> Python Quiz
+                        </button>
+                        <button onclick="startQuiz('fsd')" class="text-left text-blue-400 font-semibold flex items-center gap-3 py-3 px-2 rounded hover:bg-white/5 md:hover:bg-transparent">
+                            <i class="fa-solid fa-code text-xl"></i> FSD Quiz
+                        </button>
+                    </div>
                 </div>
-                <span class="text-xl md:text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">D S SAVALIYA</span>
-            </a>
 
-            <div class="hidden md:flex items-center gap-8">
-                <button onclick="showSection('home')" class="nav-link text-gray-300 text-sm uppercase tracking-widest font-semibold">Home</button>
-                <button onclick="showSection('about')" class="nav-link text-gray-300 text-sm uppercase tracking-widest font-semibold">Portfolio</button>
-                <div class="h-6 w-px bg-gray-700 mx-2"></div>
-                <button onclick="startQuiz('python')" class="text-yellow-400 hover:text-yellow-300 font-semibold flex items-center gap-2 transition-colors">
-                    <i class="fa-brands fa-python"></i> Python
-                </button>
-                <button onclick="startQuiz('fsd')" class="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-2 transition-colors">
-                    <i class="fa-solid fa-code"></i> FSD
-                </button>
             </div>
-
-            <button class="md:hidden text-2xl text-white p-2" onclick="toggleMobileMenu()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
         </div>
     </nav>
 
-    <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-black/95 flex flex-col items-center justify-center gap-8 md:hidden transition-opacity duration-300">
-        <button class="absolute top-6 right-6 text-4xl text-white p-2" onclick="toggleMobileMenu()">&times;</button>
-        
-        <button onclick="showSection('home')" class="text-2xl font-bold text-white hover:text-primary transition-colors">Home</button>
-        <button onclick="showSection('about')" class="text-2xl font-bold text-white hover:text-primary transition-colors">Portfolio</button>
-        <div class="w-20 h-px bg-gray-700"></div>
-        <button onclick="startQuiz('python')" class="text-2xl font-bold text-yellow-400 hover:text-yellow-300">Python Quiz</button>
-        <button onclick="startQuiz('fsd')" class="text-2xl font-bold text-blue-400 hover:text-blue-300">FSD Quiz</button>
-    </div>
-
-    <main class="pt-28 pb-20 container mx-auto px-6 min-h-screen relative z-10">
+    <main class="pt-28 pb-24 container mx-auto px-6 min-h-screen relative z-10">
 
         <section id="home" class="section active">
-            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-                <span class="text-primary text-xs md:text-sm font-bold tracking-[0.2em] uppercase mb-4 block animate-pulse">Welcome to the MCQ Portal</span>
-                <h1 class="text-4xl md:text-7xl font-extrabold mb-6 leading-tight">
-                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Python</span> & 
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-500">Full Stack</span>
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="text-primary text-xs font-bold tracking-[0.2em] uppercase mb-4 block">Knowledge Hub</span>
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+                     Master <span class="text-yellow-400">Python</span> & <span class="text-blue-400">FSD</span>
                 </h1>
-                <p class="text-gray-400 text-base md:text-lg leading-relaxed">
-                    Created By : D S SAVALIYA <br>
-                    Select a subject below to test your knowledge.
-                </p>
+                <p class="text-gray-400">Select a topic below to start practicing.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
-                <div onclick="startQuiz('python')" class="glass hover-card rounded-3xl p-6 md:p-8 cursor-pointer group relative overflow-hidden active:scale-95 transition-transform duration-100">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-50 group-hover:opacity-100"></div>
+            <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <button onclick="startQuiz('python')" class="w-full text-left glass hover-card rounded-3xl p-6 md:p-8 group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-yellow-500/50">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
                     <div class="relative z-10 flex flex-col items-center text-center">
-                        <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg border border-gray-700 group-hover:border-yellow-500 transition-colors">
-                            <i class="fa-brands fa-python text-3xl md:text-4xl text-yellow-400"></i>
+                        <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 shadow-lg border border-gray-700">
+                            <i class="fa-brands fa-python text-3xl text-yellow-400"></i>
                         </div>
-                        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Python Masterclass</h2>
-                        <p class="text-gray-400 mb-6 text-sm md:text-base">Covering Chapters 6, 7, 8. Arrays, File Handling, OOPs concepts.</p>
-                        <span class="text-yellow-400 font-bold text-sm flex items-center gap-2 group-hover:gap-4 transition-all">
-                            START QUIZ <i class="fa-solid fa-arrow-right"></i>
+                        <h2 class="text-2xl font-bold text-white mb-2">Python Quiz</h2>
+                        <p class="text-gray-400 text-sm mb-4">Arrays, File Handling, OOPs</p>
+                        <span class="text-yellow-400 font-bold text-sm bg-yellow-400/10 px-4 py-2 rounded-full">
+                            Start Now &rarr;
                         </span>
                     </div>
-                </div>
+                </button>
 
-                <div onclick="startQuiz('fsd')" class="glass hover-card rounded-3xl p-6 md:p-8 cursor-pointer group relative overflow-hidden active:scale-95 transition-transform duration-100">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-50 group-hover:opacity-100"></div>
+                <button onclick="startQuiz('fsd')" class="w-full text-left glass hover-card rounded-3xl p-6 md:p-8 group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
                     <div class="relative z-10 flex flex-col items-center text-center">
-                        <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg border border-gray-700 group-hover:border-blue-500 transition-colors">
-                            <i class="fa-solid fa-layer-group text-3xl md:text-4xl text-blue-400"></i>
+                        <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 shadow-lg border border-gray-700">
+                            <i class="fa-solid fa-layer-group text-3xl text-blue-400"></i>
                         </div>
-                        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Full Stack Dev</h2>
-                        <p class="text-gray-400 mb-6 text-sm md:text-base">Covering Chapters 6 & 7. Bootstrap, Forms, Responsive Design.</p>
-                        <span class="text-blue-400 font-bold text-sm flex items-center gap-2 group-hover:gap-4 transition-all">
-                            START QUIZ <i class="fa-solid fa-arrow-right"></i>
+                        <h2 class="text-2xl font-bold text-white mb-2">FSD Quiz</h2>
+                        <p class="text-gray-400 text-sm mb-4">Bootstrap, Forms, Design</p>
+                        <span class="text-blue-400 font-bold text-sm bg-blue-400/10 px-4 py-2 rounded-full">
+                            Start Now &rarr;
                         </span>
                     </div>
-                </div>
+                </button>
             </div>
         </section>
 
-        <section id="about" class="section h-full">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold">My Portfolio</h2>
-                <a href="https://dwarkesh777.github.io/My_Portfolio/" target="_blank" class="text-primary hover:text-white transition-colors text-sm md:text-base">
-                    Open New Tab <i class="fa-solid fa-external-link-alt ml-1"></i>
+        <section id="about" class="section">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">My Portfolio</h2>
+                <a href="https://dwarkesh777.github.io/My_Portfolio/" target="_blank" class="text-primary hover:text-white text-sm">
+                    Open in New Tab <i class="fa-solid fa-external-link-alt ml-1"></i>
                 </a>
             </div>
-            <div class="glass rounded-2xl overflow-hidden h-[70vh] md:h-[80vh] w-full border border-gray-700 shadow-2xl">
+            <div class="glass rounded-2xl overflow-hidden h-[70vh] w-full border border-gray-700">
                 <iframe src="https://dwarkesh777.github.io/My_Portfolio/" class="w-full h-full border-0 bg-black"></iframe>
             </div>
         </section>
 
         <section id="quiz" class="section">
             <div class="max-w-3xl mx-auto">
-                <div class="flex items-center justify-between mb-6 md:mb-8">
-                    <button onclick="showSection('home')" class="text-gray-400 hover:text-white transition-colors">
-                        <i class="fa-solid fa-arrow-left mr-2"></i> Back
+                <div class="flex items-center justify-between mb-6">
+                    <button onclick="showSection('home')" class="text-gray-400 hover:text-white flex items-center gap-2 py-2">
+                        <i class="fa-solid fa-arrow-left"></i> Back
                     </button>
                     <div class="text-sm font-mono text-gray-400">
-                        Q <span id="q-current" class="text-white font-bold">1</span> / <span id="q-total">10</span>
+                        <span id="q-current" class="text-white font-bold">1</span> / <span id="q-total">10</span>
                     </div>
                 </div>
 
-                <div class="glass rounded-3xl p-6 md:p-12 relative overflow-hidden border-t border-gray-700 transition-all">
-                    <div id="quiz-loading" class="absolute inset-0 bg-black/80 flex items-center justify-center z-20 hidden">
-                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                    </div>
+                <div class="glass rounded-3xl p-6 md:p-10 border-t border-gray-700">
+                    <h2 id="q-text" class="text-xl md:text-2xl font-bold mb-8 leading-snug text-white"></h2>
+                    <div id="q-options" class="grid gap-3"></div>
 
-                    <h2 id="q-text" class="text-xl md:text-3xl font-bold mb-6 md:mb-8 leading-snug text-white transition-opacity duration-200"></h2>
-                    
-                    <div id="q-options" class="grid gap-3 md:gap-4 transition-opacity duration-200">
-                        </div>
-
-                    <div class="mt-8 md:mt-10 flex justify-between items-center border-t border-gray-800 pt-6">
-                        <button id="btn-prev" onclick="prevQ()" class="px-4 md:px-6 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base">
-                            Previous
-                        </button>
-                        <button id="btn-next" onclick="nextQ()" class="px-6 md:px-8 py-2 md:py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-white shadow-lg hover:shadow-cyan-500/25 active:scale-95 transition-all text-sm md:text-base">
-                            Next
-                        </button>
+                    <div class="mt-8 flex justify-between items-center border-t border-gray-800 pt-6">
+                        <button id="btn-prev" onclick="prevQ()" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white disabled:opacity-50">Prev</button>
+                        
+                        <button id="btn-next" onclick="nextQ()" class="px-6 py-2 bg-gradient-to-r from-green-400 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:shadow-green-500/25 active:scale-95 transition-all">Next</button>
                     </div>
                 </div>
             </div>
@@ -308,49 +247,32 @@
 
     </main>
 
-    <div class="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 flex flex-col items-end gap-4">
-        
-        <div id="chat-window" class="chat-window glass w-[90vw] md:w-[350px] h-[450px] md:h-[500px] rounded-2xl flex flex-col overflow-hidden shadow-2xl border border-gray-700/50">
-            <div class="bg-gray-900/80 p-4 border-b border-gray-700 flex justify-between items-center backdrop-blur-md">
-                <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span class="font-bold text-sm">AI Assistant</span>
-                </div>
-                <button onclick="toggleChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 custom-scrollbar text-sm">
-                <div class="flex gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold">AI</div>
-                    <div class="bg-white/10 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-gray-200">
-                        Hi! I'm your AI tutor. Ask me about Python syntax, Bootstrap classes, or help with the quiz!
-                    </div>
-                </div>
-            </div>
-
-            <div class="p-3 bg-gray-900/50 border-t border-gray-700">
-                <form onsubmit="handleChat(event)" class="flex gap-2">
-                    <input type="text" id="chat-input" placeholder="Ask a question..." class="flex-1 bg-black/50 border border-gray-600 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-primary transition-colors">
-                    <button type="submit" class="w-9 h-9 bg-primary text-black rounded-full flex items-center justify-center hover:bg-white transition-colors">
-                        <i class="fa-solid fa-paper-plane text-sm"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <button onclick="toggleChat()" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r from-primary to-blue-500 rounded-full shadow-lg shadow-primary/30 flex items-center justify-center text-black text-xl md:text-2xl hover:scale-110 transition-transform group">
-            <i class="fa-solid fa-robot group-hover:rotate-12 transition-transform"></i>
+    <div class="fixed bottom-6 right-6 z-40">
+        <button onclick="toggleChat()" class="w-14 h-14 bg-gradient-to-r from-primary to-blue-500 rounded-full shadow-lg shadow-primary/30 flex items-center justify-center text-black text-2xl hover:scale-110 transition-transform">
+            <i class="fa-solid fa-robot"></i>
         </button>
     </div>
 
-    <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
+    <div id="chat-window" class="chat-window fixed bottom-24 right-6 glass w-[90vw] md:w-[350px] h-[500px] rounded-2xl flex flex-col overflow-hidden shadow-2xl border border-gray-700/50 z-40">
+        <div class="bg-gray-900/90 p-4 border-b border-gray-700 flex justify-between items-center">
+            <span class="font-bold text-sm text-white">AI Assistant</span>
+            <button onclick="toggleChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 text-sm bg-black/40">
+            <div class="flex gap-3">
+                <div class="bg-white/10 p-3 rounded-2xl rounded-tl-none text-gray-200">Hello! I can help you with Python or FSD questions.</div>
+            </div>
+        </div>
+        <div class="p-3 bg-gray-900/90 border-t border-gray-700">
+            <form onsubmit="handleChat(event)" class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="Type here..." class="flex-1 bg-black/50 border border-gray-600 rounded-full px-4 py-2 text-sm text-white">
+                <button type="submit" class="w-9 h-9 bg-primary text-black rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+        </div>
+    </div>
 
-        // --- CONFIGURATION ---
-        const GEMINI_API_KEY = ""; 
-        let genAI;
-
-        // --- DATA ---
+    <script>
+        // --- QUIZ DATA ---
         const QUESTION_BANK = {
             python: [
                 { q: "Q455: Which of the following code blocks will print all of the names in names.txt? (Ch 6)", options: ["names = open('names.txt', 'w'); ...", "names = open('names.txt', 'r'); for line in names: print(line)", "names = open('names.txt', 'r'); for line in names: print(names)", "Both B & C"], ans: 3 },
@@ -489,261 +411,177 @@
             ]
         };
 
-        // --- STATE ---
         let currentQuizData = [];
         let currentQIdx = 0;
         let answers = {};
-        let answeredState = {}; // Track if a question has been answered
+        let answeredState = {};
 
-        // --- UI FUNCTIONS ---
-        window.showSection = (id) => {
-            // Hide all sections
+        function showSection(id) {
             document.querySelectorAll('.section').forEach(el => {
                 el.classList.remove('active');
                 el.style.display = 'none';
             });
-            // Show target section
             const target = document.getElementById(id);
             target.style.display = 'block';
             setTimeout(() => target.classList.add('active'), 10);
             
-            // Close mobile menu if open
-            document.getElementById('mobile-menu').classList.add('hidden');
-        };
-
-        window.toggleMobileMenu = () => {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+            // Auto close menu
+            document.getElementById('nav-content').classList.add('hidden');
+            document.getElementById('menu-icon').classList.replace('fa-xmark', 'fa-bars');
         }
 
-        // --- QUIZ LOGIC ---
-        window.startQuiz = (subject) => {
+        function toggleMenu() {
+            const nav = document.getElementById('nav-content');
+            const icon = document.getElementById('menu-icon');
+            if(nav.classList.contains('hidden')) {
+                nav.classList.remove('hidden');
+                icon.classList.replace('fa-bars', 'fa-xmark');
+            } else {
+                nav.classList.add('hidden');
+                icon.classList.replace('fa-xmark', 'fa-bars');
+            }
+        }
+
+        function startQuiz(subject) {
             currentQuizData = QUESTION_BANK[subject];
             currentQIdx = 0;
             answers = {};
-            answeredState = {}; // Reset answered state
+            answeredState = {};
             document.getElementById('q-total').innerText = currentQuizData.length;
             showSection('quiz');
             renderQuestion();
-        };
+        }
 
         function renderQuestion() {
             const qData = currentQuizData[currentQIdx];
             document.getElementById('q-current').innerText = currentQIdx + 1;
-            
             const qText = document.getElementById('q-text');
             const container = document.getElementById('q-options');
             
-            // Fade Out
-            qText.style.opacity = 0;
-            container.style.opacity = 0;
+            qText.innerText = qData.q;
+            container.innerHTML = '';
+            
+            const hasAnswered = answeredState[currentQIdx];
 
-            // Update Content & Fade In with Delay
-            setTimeout(() => {
-                qText.innerText = qData.q;
-                container.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('div');
+                let classes = `option-btn p-4 rounded-xl border border-gray-700 bg-gray-800/50 text-base text-gray-300`;
+
+                if (hasAnswered) {
+                    classes += " cursor-default";
+                    if (idx === qData.ans) classes += " correct";
+                    else if (answers[currentQIdx] === idx) classes += " wrong";
+                    else classes += " opacity-50";
+                }
+
+                btn.className = classes;
+                btn.innerText = opt;
                 
-                const hasAnswered = answeredState[currentQIdx];
-
-                qData.options.forEach((opt, idx) => {
-                    const btn = document.createElement('div');
-                    let classes = `option-btn p-4 rounded-xl border border-gray-700 bg-gray-800/50 text-base md:text-lg text-gray-300`;
-
-                    if (hasAnswered) {
-                        classes += " disabled";
-                        if (idx === qData.ans) {
-                            classes += " correct";
-                        } else if (answers[currentQIdx] === idx) {
-                            classes += " wrong";
-                        }
-                    }
-
-                    btn.className = classes;
-                    btn.innerText = opt;
-                    
-                    if (!hasAnswered) {
-                        btn.onclick = () => {
-                            answers[currentQIdx] = idx;
-                            answeredState[currentQIdx] = true;
-                            renderQuestion(); // Re-render to show colors
-                        };
-                    }
-                    
-                    container.appendChild(btn);
-                });
-
-                // Update Buttons State
-                const prevBtn = document.getElementById('btn-prev');
-                const nextBtn = document.getElementById('btn-next');
-
-                if(currentQIdx === 0) {
-                    prevBtn.disabled = true;
-                } else {
-                    prevBtn.disabled = false;
+                if (!hasAnswered) {
+                    btn.onclick = () => {
+                        answers[currentQIdx] = idx;
+                        answeredState[currentQIdx] = true;
+                        renderQuestion();
+                    };
                 }
+                container.appendChild(btn);
+            });
 
-                if(currentQIdx === currentQuizData.length - 1) {
-                    nextBtn.innerText = "Finish Quiz";
-                } else {
-                    nextBtn.innerText = "Next";
-                }
-
-                // Fade In
-                qText.style.opacity = 1;
-                container.style.opacity = 1;
-            }, 200);
+            // Button States
+            document.getElementById('btn-prev').disabled = (currentQIdx === 0);
+            document.getElementById('btn-next').innerText = (currentQIdx === currentQuizData.length - 1) ? "Finish" : "Next";
         }
 
-        window.nextQ = () => {
+        function nextQ() {
             if (currentQIdx < currentQuizData.length - 1) {
                 currentQIdx++;
                 renderQuestion();
             } else {
                 let score = 0;
-                currentQuizData.forEach((q, i) => {
-                    if(answers[i] === q.ans) score++;
-                });
-                alert(`Quiz Completed!\nYou scored ${score} / ${currentQuizData.length}`);
+                currentQuizData.forEach((q, i) => { if(answers[i] === q.ans) score++; });
+                alert(`Quiz Finished! Score: ${score}/${currentQuizData.length}`);
                 showSection('home');
             }
-        };
+        }
 
-        window.prevQ = () => {
+        function prevQ() {
             if (currentQIdx > 0) {
                 currentQIdx--;
                 renderQuestion();
             }
-        };
-
-        // --- CHATBOT LOGIC ---
-        window.toggleChat = () => {
-            document.getElementById('chat-window').classList.toggle('open');
-        };
-
-        if (typeof GoogleGenerativeAI !== 'undefined' && GEMINI_API_KEY) {
-            try {
-                genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-            } catch(e) { console.error("AI Init Fail", e); }
         }
+
+        function toggleChat() {
+            document.getElementById('chat-window').classList.toggle('open');
+        }
+
+        // Expose functions globally
+        window.showSection = showSection;
+        window.toggleMenu = toggleMenu;
+        window.startQuiz = startQuiz;
+        window.nextQ = nextQ;
+        window.prevQ = prevQ;
+        window.toggleChat = toggleChat;
+
+        // Init background
+        setTimeout(() => {
+            const canvas = document.getElementById('bg-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.position.z = 5;
+            
+            // Reduced particles for mobile performance
+            const count = window.innerWidth < 768 ? 200 : 500;
+            const geo = new THREE.BufferGeometry();
+            const pos = new Float32Array(count * 3);
+            for(let i=0; i<count*3; i++) pos[i] = (Math.random()-0.5)*15;
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const mat = new THREE.PointsMaterial({ size: 0.02, color: 0x00f2ea, transparent: true, opacity: 0.6 });
+            const mesh = new THREE.Points(geo, mat);
+            scene.add(mesh);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                mesh.rotation.y += 0.001;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }, 100);
+    </script>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+        const API_KEY = ""; // Add Key Here
+        let model;
+        
+        try {
+            const genAI = new GoogleGenerativeAI(API_KEY);
+            model = genAI.getGenerativeModel({ model: "gemini-pro"});
+        } catch(e) { console.log("AI Offline"); }
 
         window.handleChat = async (e) => {
             e.preventDefault();
             const input = document.getElementById('chat-input');
             const msg = input.value.trim();
             if(!msg) return;
-
-            const chatBox = document.getElementById('chat-messages');
             
-            chatBox.innerHTML += `
-                <div class="flex gap-3 flex-row-reverse">
-                    <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-bold"><i class="fa-solid fa-user"></i></div>
-                    <div class="bg-primary/20 border border-primary/30 p-3 rounded-2xl rounded-tr-none max-w-[85%] text-white">
-                        ${msg}
-                    </div>
-                </div>
-            `;
+            const box = document.getElementById('chat-messages');
+            box.innerHTML += `<div class="flex gap-3 flex-row-reverse"><div class="bg-primary p-2 rounded text-black">${msg}</div></div>`;
             input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            let aiResponse = "I am a demo bot. Please add a Gemini API Key in the code to make me smart!";
             
-            if(genAI) {
+            let reply = "I need an API Key to think!";
+            if(model && API_KEY) {
                 try {
-                    const typingId = 'typing-' + Date.now();
-                    chatBox.innerHTML += `<div id="${typingId}" class="text-xs text-gray-500 ml-12">Thinking...</div>`;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-
-                    const model = genAI.getGenerativeModel({ model: "gemini-pro"});
                     const result = await model.generateContent(msg);
-                    const response = await result.response;
-                    aiResponse = response.text();
-                    document.getElementById(typingId).remove();
-                } catch(err) {
-                    console.error(err);
-                    aiResponse = "Sorry, I couldn't connect to the AI server.";
-                }
+                    reply = result.response.text();
+                } catch(err) { reply = "Error connecting to AI."; }
             }
-
-            chatBox.innerHTML += `
-                <div class="flex gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold">AI</div>
-                    <div class="bg-white/10 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-gray-200">
-                        ${aiResponse}
-                    </div>
-                </div>
-            `;
-            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            box.innerHTML += `<div class="flex gap-3"><div class="bg-white/10 p-2 rounded text-white">${reply}</div></div>`;
+            box.scrollTop = box.scrollHeight;
         };
-
-        // --- THREE.JS BACKGROUND ---
-        const initThreeJS = () => {
-            const canvas = document.getElementById('bg-canvas');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-            
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.position.z = 5;
-
-            const particlesGeometry = new THREE.BufferGeometry();
-            
-            // Reduce particles on mobile for better performance
-            const isMobile = window.innerWidth < 768;
-            const particlesCount = isMobile ? 300 : 700;
-            
-            const posArray = new Float32Array(particlesCount * 3);
-
-            for(let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 15;
-            }
-
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-            const material = new THREE.PointsMaterial({
-                size: 0.02,
-                color: 0x00f2ea,
-                transparent: true,
-                opacity: 0.8,
-            });
-
-            const particlesMesh = new THREE.Points(particlesGeometry, material);
-            scene.add(particlesMesh);
-
-            let mouseX = 0;
-            let mouseY = 0;
-            let targetX = 0;
-            let targetY = 0;
-
-            const windowHalfX = window.innerWidth / 2;
-            const windowHalfY = window.innerHeight / 2;
-
-            document.addEventListener('mousemove', (event) => {
-                mouseX = (event.clientX - windowHalfX);
-                mouseY = (event.clientY - windowHalfY);
-            });
-
-            const animate = () => {
-                targetX = mouseX * 0.001;
-                targetY = mouseY * 0.001;
-
-                particlesMesh.rotation.y += 0.05 * (targetX - particlesMesh.rotation.y);
-                particlesMesh.rotation.x += 0.05 * (targetY - particlesMesh.rotation.x);
-                particlesMesh.rotation.z += 0.001;
-
-                renderer.render(scene, camera);
-                requestAnimationFrame(animate);
-            };
-
-            animate();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        };
-
-        initThreeJS();
-
     </script>
 </body>
 </html>
