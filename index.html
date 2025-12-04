@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D S SAVALIYA - Knowledge Hub</title>
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <!-- Google Generative AI -->
     <script type="importmap">
       {
         "imports": {
@@ -27,16 +25,17 @@
             --bg: #050505;
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --correct: #22c55e; /* Green */
-            --wrong: #ef4444;   /* Red */
+            --correct: #22c55e;
+            --wrong: #ef4444;
         }
 
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg);
             color: white;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll */
             margin: 0;
+            -webkit-tap-highlight-color: transparent; /* Remove highlight on mobile tap */
         }
 
         /* Canvas for Three.js Background */
@@ -48,21 +47,7 @@
             height: 100%;
             z-index: -1;
             opacity: 0.6;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
+            pointer-events: none; /* Ensure clicks pass through */
         }
 
         /* Glassmorphism Utilities */
@@ -115,10 +100,13 @@
             transition: all 0.3s ease;
             transform-style: preserve-3d;
         }
-        .hover-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px -10px rgba(0, 242, 234, 0.15);
-            border-color: var(--primary);
+        /* Only hover effect on non-touch devices */
+        @media (hover: hover) {
+            .hover-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px -10px rgba(0, 242, 234, 0.15);
+                border-color: var(--primary);
+            }
         }
 
         /* Quiz Options */
@@ -128,12 +116,10 @@
             position: relative;
             overflow: hidden;
         }
-        .option-btn:hover:not(.disabled) {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: white;
+        .option-btn:active {
+            background: rgba(255, 255, 255, 0.2); /* Feedback for mobile touch */
         }
         
-        /* Correct Answer Style */
         .option-btn.correct {
             background: rgba(34, 197, 94, 0.2) !important;
             border-color: var(--correct) !important;
@@ -149,7 +135,6 @@
             font-size: 1.2em;
         }
 
-        /* Wrong Answer Style */
         .option-btn.wrong {
             background: rgba(239, 68, 68, 0.2) !important;
             border-color: var(--wrong) !important;
@@ -165,13 +150,11 @@
             font-size: 1.2em;
         }
 
-        /* Disabled State */
         .option-btn.disabled {
             cursor: not-allowed;
             opacity: 0.7;
         }
 
-        /* Button Disabled State */
         button:disabled {
             cursor: not-allowed;
             opacity: 0.5;
@@ -193,23 +176,20 @@
 </head>
 <body>
 
-    <!-- 3D Background -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass border-b-0 h-20 flex items-center">
+    <nav class="fixed top-0 w-full z-50 glass border-b-0 h-20 flex items-center bg-black/80 backdrop-blur-md">
         <div class="container mx-auto px-6 flex justify-between items-center">
             <a href="#" onclick="showSection('home')" class="flex items-center gap-3 group">
                 <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:rotate-12 transition-transform">
                     DS
                 </div>
-                <span class="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">D S SAVALIYA</span>
+                <span class="text-xl md:text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">D S SAVALIYA</span>
             </a>
 
-            <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
                 <button onclick="showSection('home')" class="nav-link text-gray-300 text-sm uppercase tracking-widest font-semibold">Home</button>
-                <button onclick="showSection('about')" class="nav-link text-gray-300 text-sm uppercase tracking-widest font-semibold">About Me</button>
+                <button onclick="showSection('about')" class="nav-link text-gray-300 text-sm uppercase tracking-widest font-semibold">Portfolio</button>
                 <div class="h-6 w-px bg-gray-700 mx-2"></div>
                 <button onclick="startQuiz('python')" class="text-yellow-400 hover:text-yellow-300 font-semibold flex items-center gap-2 transition-colors">
                     <i class="fa-brands fa-python"></i> Python
@@ -219,63 +199,60 @@
                 </button>
             </div>
 
-            <!-- Mobile Menu Button -->
-            <button class="md:hidden text-2xl text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <button class="md:hidden text-2xl text-white p-2" onclick="toggleMobileMenu()">
                 <i class="fa-solid fa-bars"></i>
             </button>
         </div>
     </nav>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-black/95 flex flex-col items-center justify-center gap-8 md:hidden">
-        <button class="absolute top-6 right-6 text-3xl text-white" onclick="document.getElementById('mobile-menu').classList.add('hidden')">&times;</button>
-        <button onclick="showSection('home'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-2xl font-bold text-white">Home</button>
-        <button onclick="showSection('about'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-2xl font-bold text-white">About Me</button>
-        <button onclick="startQuiz('python'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-2xl font-bold text-yellow-400">Python Quiz</button>
-        <button onclick="startQuiz('fsd'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-2xl font-bold text-blue-400">FSD Quiz</button>
+    <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-black/95 flex flex-col items-center justify-center gap-8 md:hidden transition-opacity duration-300">
+        <button class="absolute top-6 right-6 text-4xl text-white p-2" onclick="toggleMobileMenu()">&times;</button>
+        
+        <button onclick="showSection('home')" class="text-2xl font-bold text-white hover:text-primary transition-colors">Home</button>
+        <button onclick="showSection('about')" class="text-2xl font-bold text-white hover:text-primary transition-colors">Portfolio</button>
+        <div class="w-20 h-px bg-gray-700"></div>
+        <button onclick="startQuiz('python')" class="text-2xl font-bold text-yellow-400 hover:text-yellow-300">Python Quiz</button>
+        <button onclick="startQuiz('fsd')" class="text-2xl font-bold text-blue-400 hover:text-blue-300">FSD Quiz</button>
     </div>
 
-    <!-- MAIN CONTENT -->
     <main class="pt-28 pb-20 container mx-auto px-6 min-h-screen relative z-10">
 
-        <!-- HOME SECTION -->
         <section id="home" class="section active">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <span class="text-primary text-sm font-bold tracking-[0.2em] uppercase mb-4 block animate-pulse">Welcome to the MCQ Portal</span>
-                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <span class="text-primary text-xs md:text-sm font-bold tracking-[0.2em] uppercase mb-4 block animate-pulse">Welcome to the MCQ Portal</span>
+                <h1 class="text-4xl md:text-7xl font-extrabold mb-6 leading-tight">
                      <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Python</span> & 
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-500">Full Stack</span>
                 </h1>
-                <p class="text-gray-400 text-lg leading-relaxed">
+                <p class="text-gray-400 text-base md:text-lg leading-relaxed">
                     Created By : D S SAVALIYA <br>
+                    Select a subject below to test your knowledge.
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                <!-- Python Card -->
-                <div onclick="startQuiz('python')" class="glass hover-card rounded-3xl p-8 cursor-pointer group relative overflow-hidden">
+            <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+                <div onclick="startQuiz('python')" class="glass hover-card rounded-3xl p-6 md:p-8 cursor-pointer group relative overflow-hidden active:scale-95 transition-transform duration-100">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-50 group-hover:opacity-100"></div>
                     <div class="relative z-10 flex flex-col items-center text-center">
-                        <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg border border-gray-700 group-hover:border-yellow-500 transition-colors">
-                            <i class="fa-brands fa-python text-4xl text-yellow-400"></i>
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg border border-gray-700 group-hover:border-yellow-500 transition-colors">
+                            <i class="fa-brands fa-python text-3xl md:text-4xl text-yellow-400"></i>
                         </div>
-                        <h2 class="text-3xl font-bold text-white mb-2">Python Masterclass</h2>
-                        <p class="text-gray-400 mb-6">Covering Chapters 6, 7, 8. Arrays, File Handling, OOPs concepts.</p>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Python Masterclass</h2>
+                        <p class="text-gray-400 mb-6 text-sm md:text-base">Covering Chapters 6, 7, 8. Arrays, File Handling, OOPs concepts.</p>
                         <span class="text-yellow-400 font-bold text-sm flex items-center gap-2 group-hover:gap-4 transition-all">
                             START QUIZ <i class="fa-solid fa-arrow-right"></i>
                         </span>
                     </div>
                 </div>
 
-                <!-- FSD Card -->
-                <div onclick="startQuiz('fsd')" class="glass hover-card rounded-3xl p-8 cursor-pointer group relative overflow-hidden">
+                <div onclick="startQuiz('fsd')" class="glass hover-card rounded-3xl p-6 md:p-8 cursor-pointer group relative overflow-hidden active:scale-95 transition-transform duration-100">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-50 group-hover:opacity-100"></div>
                     <div class="relative z-10 flex flex-col items-center text-center">
-                        <div class="w-20 h-20 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg border border-gray-700 group-hover:border-blue-500 transition-colors">
-                            <i class="fa-solid fa-layer-group text-4xl text-blue-400"></i>
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg border border-gray-700 group-hover:border-blue-500 transition-colors">
+                            <i class="fa-solid fa-layer-group text-3xl md:text-4xl text-blue-400"></i>
                         </div>
-                        <h2 class="text-3xl font-bold text-white mb-2">Full Stack Dev</h2>
-                        <p class="text-gray-400 mb-6">Covering Chapters 6 & 7. Bootstrap, Forms, Responsive Design.</p>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Full Stack Dev</h2>
+                        <p class="text-gray-400 mb-6 text-sm md:text-base">Covering Chapters 6 & 7. Bootstrap, Forms, Responsive Design.</p>
                         <span class="text-blue-400 font-bold text-sm flex items-center gap-2 group-hover:gap-4 transition-all">
                             START QUIZ <i class="fa-solid fa-arrow-right"></i>
                         </span>
@@ -284,52 +261,45 @@
             </div>
         </section>
 
-        <!-- ABOUT / PORTFOLIO SECTION -->
         <section id="about" class="section h-full">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-bold">My Portfolio</h2>
-                <a href="https://dwarkesh777.github.io/My_Portfolio/" target="_blank" class="text-primary hover:text-white transition-colors">
-                    Open in New Tab <i class="fa-solid fa-external-link-alt ml-1"></i>
+                <a href="https://dwarkesh777.github.io/My_Portfolio/" target="_blank" class="text-primary hover:text-white transition-colors text-sm md:text-base">
+                    Open New Tab <i class="fa-solid fa-external-link-alt ml-1"></i>
                 </a>
             </div>
-            <div class="glass rounded-2xl overflow-hidden h-[80vh] w-full border border-gray-700 shadow-2xl">
+            <div class="glass rounded-2xl overflow-hidden h-[70vh] md:h-[80vh] w-full border border-gray-700 shadow-2xl">
                 <iframe src="https://dwarkesh777.github.io/My_Portfolio/" class="w-full h-full border-0 bg-black"></iframe>
             </div>
         </section>
 
-        <!-- QUIZ INTERFACE -->
         <section id="quiz" class="section">
             <div class="max-w-3xl mx-auto">
-                <!-- Quiz Header -->
-                <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center justify-between mb-6 md:mb-8">
                     <button onclick="showSection('home')" class="text-gray-400 hover:text-white transition-colors">
-                        <i class="fa-solid fa-arrow-left mr-2"></i> Back to Hub
+                        <i class="fa-solid fa-arrow-left mr-2"></i> Back
                     </button>
                     <div class="text-sm font-mono text-gray-400">
-                        Question <span id="q-current" class="text-white font-bold">1</span> / <span id="q-total">10</span>
+                        Q <span id="q-current" class="text-white font-bold">1</span> / <span id="q-total">10</span>
                     </div>
                 </div>
 
-                <!-- Question Card -->
-                <div class="glass rounded-3xl p-8 md:p-12 relative overflow-hidden border-t border-gray-700 transition-all">
+                <div class="glass rounded-3xl p-6 md:p-12 relative overflow-hidden border-t border-gray-700 transition-all">
                     <div id="quiz-loading" class="absolute inset-0 bg-black/80 flex items-center justify-center z-20 hidden">
                         <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
                     </div>
 
-                    <h2 id="q-text" class="text-2xl md:text-3xl font-bold mb-8 leading-snug text-white transition-opacity duration-200"></h2>
+                    <h2 id="q-text" class="text-xl md:text-3xl font-bold mb-6 md:mb-8 leading-snug text-white transition-opacity duration-200"></h2>
                     
-                    <div id="q-options" class="grid gap-4 transition-opacity duration-200">
-                        <!-- Options injected via JS -->
-                    </div>
+                    <div id="q-options" class="grid gap-3 md:gap-4 transition-opacity duration-200">
+                        </div>
 
-                    <div class="mt-10 flex justify-between items-center border-t border-gray-800 pt-6">
-                        <!-- Added ID for logic -->
-                        <button id="btn-prev" onclick="prevQ()" class="px-6 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <div class="mt-8 md:mt-10 flex justify-between items-center border-t border-gray-800 pt-6">
+                        <button id="btn-prev" onclick="prevQ()" class="px-4 md:px-6 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base">
                             Previous
                         </button>
-                        <!-- Added ID for logic -->
-                        <button id="btn-next" onclick="nextQ()" class="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-white shadow-lg hover:shadow-cyan-500/25 transform hover:-translate-y-1 transition-all">
-                            Next Question
+                        <button id="btn-next" onclick="nextQ()" class="px-6 md:px-8 py-2 md:py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-white shadow-lg hover:shadow-cyan-500/25 active:scale-95 transition-all text-sm md:text-base">
+                            Next
                         </button>
                     </div>
                 </div>
@@ -338,11 +308,9 @@
 
     </main>
 
-    <!-- FLOATING CHATBOT -->
-    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
+    <div class="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 flex flex-col items-end gap-4">
         
-        <!-- Chat Window -->
-        <div id="chat-window" class="chat-window glass w-[350px] h-[500px] rounded-2xl flex flex-col overflow-hidden shadow-2xl border border-gray-700/50">
+        <div id="chat-window" class="chat-window glass w-[90vw] md:w-[350px] h-[450px] md:h-[500px] rounded-2xl flex flex-col overflow-hidden shadow-2xl border border-gray-700/50">
             <div class="bg-gray-900/80 p-4 border-b border-gray-700 flex justify-between items-center backdrop-blur-md">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -370,13 +338,11 @@
             </div>
         </div>
 
-        <!-- Toggle Button -->
-        <button onclick="toggleChat()" class="w-14 h-14 bg-gradient-to-r from-primary to-blue-500 rounded-full shadow-lg shadow-primary/30 flex items-center justify-center text-black text-2xl hover:scale-110 transition-transform group">
+        <button onclick="toggleChat()" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r from-primary to-blue-500 rounded-full shadow-lg shadow-primary/30 flex items-center justify-center text-black text-xl md:text-2xl hover:scale-110 transition-transform group">
             <i class="fa-solid fa-robot group-hover:rotate-12 transition-transform"></i>
         </button>
     </div>
 
-    <!-- JAVASCRIPT -->
     <script type="module">
         import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -387,675 +353,139 @@
         // --- DATA ---
         const QUESTION_BANK = {
             python: [
-                { 
-            q: "Q455: Which of the following code blocks will print all of the names in names.txt? (Ch 6)", 
-            options: [
-                "names = open('names.txt', 'w'); ...", 
-                "names = open('names.txt', 'r'); for line in names: print(line)", 
-                "names = open('names.txt', 'r'); for line in names: print(names)", 
-                "Both B & C"
-            ], 
-            ans: 3 // Answer D
-        },
-        { 
-            q: "Q456: File is created if it does not exist. If it exists, it is truncated (past data is lost). Both reading and writing operations can take place. What is the text file mode? (Ch 6)", 
-            options: ["w", "a", "w+", "r+"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q457: From following which statement reads some bytes from the file and returns it as a string? (Ch 6)", 
-            options: ["readlines()", "read()", "readline()", "readpara()"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q458: From following which statement reads all the lines from the file and returns in the form of list? (Ch 6)", 
-            options: ["readlines()", "read()", "readline()", "readpara()"], 
-            ans: 0 // Answer A
-        },
-        { 
-            q: "Q459: From following which statement write a string in file? (Ch 6)", 
-            options: ["write()", "writeline()", "writelines()", "writepara()"], 
-            ans: 0 // Answer A
-        },
-        { 
-            q: "Q460: From following which statement writes a list in a file? (Ch 6)", 
-            options: ["write()", "writeline()", "writelines()", "writepara()"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q461: What Happens if no arguments are passed to the seek function? (Ch 6)", 
-            options: ["File position is set to the start", "File position is set to the end", "File position remains unchanged", "Error"], 
-            ans: 3 // Answer D
-        },
-        { 
-            q: "Q462: To read the 5th line from a text file, which statement is true? (Ch 6)", 
-            options: ["dt=f.readline(4); print(dt[4])", "dt=f.readlines(); print(dt[4])", "dt=f.read(5); print(dt[3])", "dt=f.read(4); print(dt[5])"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q463: What will be the output of reading 'Hello World how are you today' using readlines() and split()? (Ch 6)", 
-            options: ["['Hello', 'World', 'how', 'are', 'you', 'today']", "Hello World how are you today", "Hello", "Error"], 
-            ans: 0 // Answer A
-        },
-        { 
-            q: "Q464: What is printed after executing: f=open('abc.txt','w'); x=[1,2,3]; f.writelines(x); ? (Ch 6)", 
-            options: ["1,2,3", "1 2 3", "123", "Error (writelines argument must be strings)"], 
-            ans: 3 // Answer D
-        },
-        { 
-            q: "Q484: To use a module in another module, you must import it using an ___ statement. (Ch 7)", 
-            options: ["import", "include", "using", "require"], 
-            ans: 0 // Answer A [cite: 149]
-        },
-        { 
-            q: "Q485: Which statement is correct to import all modules from the package? (Ch 7)", 
-            options: ["from package import all", "from package import *", "from package include all", "from package include *"], 
-            ans: 1 // Answer B [cite: 149]
-        },
-        { 
-            q: "Q486: A Python module is a file with the file extension ___ that contains valid Python code. (Ch 7)", 
-            options: [".pym", ".pymodule", ".module", ".py"], 
-            ans: 3 // Answer D [cite: 149]
-        },
-        { 
-            q: "Q488: Which of the following returns a string that represents the present working directory? (Ch 7)", 
-            options: ["os.getcwd()", "os.cwd()", "os.getpwd()", "os.pwd()"], 
-            ans: 0 // Answer A [cite: 149]
-        },
-        { 
-            q: "Q489: Which of the following can be used to remove a directory? (Ch 7)", 
-            options: ["os.rmdir()", "os.remdir()", "os.create_dir()", "os.make_dir()"], 
-            ans: 0 // Answer A [cite: 149]
-        },
-        { 
-            q: "Q490: Which of the following can be used to create a directory? (Ch 7)", 
-            options: ["os.mkdir()", "os.creat_dir()", "os.create_dir()", "os.make_dir()"], 
-            ans: 0 // Answer A [cite: 149]
-        },
-        { 
-            q: "Q491: ___ is used to get the list of all files and directories in the specified directory. (Ch 7)", 
-            options: ["os.rmdir()", "os.chdir()", "os.listdir()", "os.make_dir()"], 
-            ans: 2 // Answer C [cite: 150]
-        },
-        { 
-            q: "Q493: If 'mymod.py' has 'A=100', and you run 'from mymod import *; print(x)', what is the output? (Ch 7)", 
-            options: ["888", "30", "Error", "None"], 
-            ans: 2 // Answer C (NameError because 'x' is not defined) [cite: 169]
-        },
-        { 
-            q: "Q494: If mod2 is imported after mod1 and both have function 'change', which one is used? (Ch 7)", 
-            options: ["mod1's change", "Both", "mod2's change", "None"], 
-            ans: 2 // Answer C (The last import overwrites previous ones) [cite: 169]
-        },
-        { 
-            q: "Q495: What is the output of 'calc.power(5,3)' if power returns a**b? (Ch 7)", 
-            options: ["15", "243", "125", "Error"], 
-            ans: 2 // Answer C [cite: 169]
-        },{ 
-            q: "Q500: Which is not a feature of OOP in general definitions? (Ch 8)", 
-            options: ["Efficient Code", "Code reusability", "Modularity", "Duplicate data"], 
-            ans: 3 // Answer D
-        },
-        { 
-            q: "Q501: ___ represents an entity in the real world with its identity and behaviour. (Ch 8)", 
-            options: ["method", "An object", "A class", "An operator"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q502: What is the output of creating class test with init(self,a='Hello World') and calling obj.display()? (Ch 8)", 
-            options: ["Program error (constructor default args)", "Nothing displayed", "'Hello World' is displayed", "Error (display requires args)"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q503: What is the output of creating class test with init(self,a) and calling test() without arguments? (Ch 8)", 
-            options: ["Runs normally", "Displays 0", "Error (argument required)", "Error (display function)"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q504: What is instantiation in terms of OOP terminology? (Ch 8)", 
-            options: ["Deleting an instance", "Modifying an instance", "Copying an instance", "Creating an instance of class"], 
-            ans: 3 // Answer D
-        },
-        { 
-            q: "Q505: Which of the following Python code creates an empty class? (Ch 8)", 
-            options: ["class A: return", "class A: pass", "class A", "Not possible"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q506: Which is False regarding: class Student: def __init__(self,id,age): ... std=Student(1,20)? (Ch 8)", 
-            options: ["std is reference variable", "id and age are parameters", "Every class must have a constructor", "None of the above"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q507: Output of class Student: self.id=id; std=Student('Simon',1); std.id=2; print(std.id)? (Ch 8)", 
-            options: ["1", "2", "Simon", "Error"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q508: Output of class A(1): obj1=A(); obj2=A(102); print(obj1.count, obj2.count)? (Ch 8)", 
-            options: ["100 100", "100 102", "102 102", "Error"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q509: Which of the following is correct for class A: def __init__(self): self.count=5 ... A(); print(a.count)? (Ch 8)", 
-            options: ["5", "6", "0", "Error"], 
-            ans: 3 // Answer D (NameError: name 'a' is not defined, instance not assigned to 'a')
-        },
-        { 
-            q: "Q510: Output of class A: self.num=num; change() sets num=7; a=A(5); a.change(); print(a.num)? (Ch 8)", 
-            options: ["5", "7", "2", "Error"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q511: Output of class Point: self.x=0; p=Point(); q=Point(); print(p, q)? (Ch 8)", 
-            options: ["Nothing happened", "Points printed", "<main.Point object...> <main.Point object...>", "(0,0) (0,0)"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q512: Output of class Point: self.x=0; p=Point(); q=Point(); print(p==q)? (Ch 8)", 
-            options: ["True", "False", "Error", "None"], 
-            ans: 1 // Answer B (Different objects in memory)
-        },
-        { 
-            q: "Q513: Will this program print the last statement? try: ... except Exception: print('got error'); print('continuing') (Ch 8)", 
-            options: ["This won't print... continuing", "got an error... continuing", "This won't print... continuing", "continuing"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q514: Output of try: third=items[1] except Exception as e: print(e)? (Ch 8)", 
-            options: ["This won't print... continuing", "got an error... continuing", "got an error... list index out of range... continuing", "continuing"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q515: Sanjeev's file read code: where is the error? (Ch 8)", 
-            options: ["No error", "Line 1", "Line 2", "Line 3"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q516: Output of try: L.append(A)... except NameError: print('Not defined')? (Ch 8)", 
-            options: ["Write properly", "Not in range", "Both A & B", "SyntaxError"], 
-            ans: 3 // Answer D
-        },
-        { 
-            q: "Q517: When will the else part of try-except-else be executed? (Ch 8)", 
-            options: ["always", "when an exception occurs", "when no exception occurs", "when exception occurs in except"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q518: When is the finally block executed? (Ch 8)", 
-            options: ["when no exception", "when exception occurs", "only if condition met", "always"], 
-            ans: 3 // Answer D
-        },
-        { 
-            q: "Q519: Output of def foo(): try: return 1 finally: return 2? (Ch 8)", 
-            options: ["1", "2", "Error", "None"], 
-            ans: 1 // Answer B
-        },
-        { 
-            q: "Q520: Output of def foo(): try: print(1) finally: print(2)? (Ch 8)", 
-            options: ["1 2", "1", "2", "None"], 
-            ans: 0 // Answer A
-        },
-        { 
-            q: "Q521: Output of getMonth(6) if it raises ValueError for m<1 or m>12? (Ch 8)", 
-            options: ["ValueError", "Invalid", "6", "ValueError('Invalid')"], 
-            ans: 2 // Answer C (It prints m before raising error if logic allows, or prints 6 if valid)
-        },
-        { 
-            q: "Q522: Which block is executed whether an exception is thrown or not? (Ch 8)", 
-            options: ["else", "except", "finally", "assert"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q523: Output of try: f=open('sample2.txt') print(m) except NameError: print('Variable not found')? (Ch 8)", 
-            options: ["5... File not found", "5... List index out of range", "5... Hello World", "Variable not found"], 
-            ans: 3 // Answer D (Assuming m is not defined in try block scope correctly or triggers NameError)
-        },
-        { 
-            q: "Q524: Output of try: print(a) except: print('This is python') if a is undefined? (Ch 8)", 
-            options: ["SyntaxError", "NameError", "This is python", "AttributeError"], 
-            ans: 2 // Answer C
-        },
-        { 
-            q: "Q525: Output of Employee count code: emp1, emp2, emp3 created. display_count_emp()? (Ch 8)", 
-            options: ["3 employees", "2 employees", "1 employee", "0 employees"], 
-            ans: 0 // Answer A
-        },
-        { 
-            q: "Q526: Output of generator simple(): for i in range(10): if i%2==0: yield i? (Ch 8)", 
-            options: ["yield", "0,2,4,6,8", "1 10", "[0,2,4,6,8]"], 
-            ans: 1 // Answer B
-        }
-
-        
+                { q: "Q455: Which of the following code blocks will print all of the names in names.txt? (Ch 6)", options: ["names = open('names.txt', 'w'); ...", "names = open('names.txt', 'r'); for line in names: print(line)", "names = open('names.txt', 'r'); for line in names: print(names)", "Both B & C"], ans: 3 },
+                { q: "Q456: File is created if it does not exist. If it exists, it is truncated (past data is lost). Both reading and writing operations can take place. What is the text file mode? (Ch 6)", options: ["w", "a", "w+", "r+"], ans: 2 },
+                { q: "Q457: From following which statement reads some bytes from the file and returns it as a string? (Ch 6)", options: ["readlines()", "read()", "readline()", "readpara()"], ans: 1 },
+                { q: "Q458: From following which statement reads all the lines from the file and returns in the form of list? (Ch 6)", options: ["readlines()", "read()", "readline()", "readpara()"], ans: 0 },
+                { q: "Q459: From following which statement write a string in file? (Ch 6)", options: ["write()", "writeline()", "writelines()", "writepara()"], ans: 0 },
+                { q: "Q460: From following which statement writes a list in a file? (Ch 6)", options: ["write()", "writeline()", "writelines()", "writepara()"], ans: 2 },
+                { q: "Q461: What Happens if no arguments are passed to the seek function? (Ch 6)", options: ["File position is set to the start", "File position is set to the end", "File position remains unchanged", "Error"], ans: 3 },
+                { q: "Q462: To read the 5th line from a text file, which statement is true? (Ch 6)", options: ["dt=f.readline(4); print(dt[4])", "dt=f.readlines(); print(dt[4])", "dt=f.read(5); print(dt[3])", "dt=f.read(4); print(dt[5])"], ans: 1 },
+                { q: "Q463: What will be the output of reading 'Hello World how are you today' using readlines() and split()? (Ch 6)", options: ["['Hello', 'World', 'how', 'are', 'you', 'today']", "Hello World how are you today", "Hello", "Error"], ans: 0 },
+                { q: "Q464: What is printed after executing: f=open('abc.txt','w'); x=[1,2,3]; f.writelines(x); ? (Ch 6)", options: ["1,2,3", "1 2 3", "123", "Error (writelines argument must be strings)"], ans: 3 },
+                { q: "Q484: To use a module in another module, you must import it using an ___ statement. (Ch 7)", options: ["import", "include", "using", "require"], ans: 0 },
+                { q: "Q485: Which statement is correct to import all modules from the package? (Ch 7)", options: ["from package import all", "from package import *", "from package include all", "from package include *"], ans: 1 },
+                { q: "Q486: A Python module is a file with the file extension ___ that contains valid Python code. (Ch 7)", options: [".pym", ".pymodule", ".module", ".py"], ans: 3 },
+                { q: "Q488: Which of the following returns a string that represents the present working directory? (Ch 7)", options: ["os.getcwd()", "os.cwd()", "os.getpwd()", "os.pwd()"], ans: 0 },
+                { q: "Q489: Which of the following can be used to remove a directory? (Ch 7)", options: ["os.rmdir()", "os.remdir()", "os.create_dir()", "os.make_dir()"], ans: 0 },
+                { q: "Q490: Which of the following can be used to create a directory? (Ch 7)", options: ["os.mkdir()", "os.creat_dir()", "os.create_dir()", "os.make_dir()"], ans: 0 },
+                { q: "Q491: ___ is used to get the list of all files and directories in the specified directory. (Ch 7)", options: ["os.rmdir()", "os.chdir()", "os.listdir()", "os.make_dir()"], ans: 2 },
+                { q: "Q493: If 'mymod.py' has 'A=100', and you run 'from mymod import *; print(x)', what is the output? (Ch 7)", options: ["888", "30", "Error", "None"], ans: 2 },
+                { q: "Q494: If mod2 is imported after mod1 and both have function 'change', which one is used? (Ch 7)", options: ["mod1's change", "Both", "mod2's change", "None"], ans: 2 },
+                { q: "Q495: What is the output of 'calc.power(5,3)' if power returns a**b? (Ch 7)", options: ["15", "243", "125", "Error"], ans: 2 },
+                { q: "Q500: Which is not a feature of OOP in general definitions? (Ch 8)", options: ["Efficient Code", "Code reusability", "Modularity", "Duplicate data"], ans: 3 },
+                { q: "Q501: ___ represents an entity in the real world with its identity and behaviour. (Ch 8)", options: ["method", "An object", "A class", "An operator"], ans: 1 },
+                { q: "Q502: What is the output of creating class test with init(self,a='Hello World') and calling obj.display()? (Ch 8)", options: ["Program error (constructor default args)", "Nothing displayed", "'Hello World' is displayed", "Error (display requires args)"], ans: 2 },
+                { q: "Q503: What is the output of creating class test with init(self,a) and calling test() without arguments? (Ch 8)", options: ["Runs normally", "Displays 0", "Error (argument required)", "Error (display function)"], ans: 2 },
+                { q: "Q504: What is instantiation in terms of OOP terminology? (Ch 8)", options: ["Deleting an instance", "Modifying an instance", "Copying an instance", "Creating an instance of class"], ans: 3 },
+                { q: "Q505: Which of the following Python code creates an empty class? (Ch 8)", options: ["class A: return", "class A: pass", "class A", "Not possible"], ans: 1 },
+                { q: "Q506: Which is False regarding: class Student: def __init__(self,id,age): ... std=Student(1,20)? (Ch 8)", options: ["std is reference variable", "id and age are parameters", "Every class must have a constructor", "None of the above"], ans: 2 },
+                { q: "Q507: Output of class Student: self.id=id; std=Student('Simon',1); std.id=2; print(std.id)? (Ch 8)", options: ["1", "2", "Simon", "Error"], ans: 1 },
+                { q: "Q508: Output of class A(1): obj1=A(); obj2=A(102); print(obj1.count, obj2.count)? (Ch 8)", options: ["100 100", "100 102", "102 102", "Error"], ans: 1 },
+                { q: "Q509: Which of the following is correct for class A: def __init__(self): self.count=5 ... A(); print(a.count)? (Ch 8)", options: ["5", "6", "0", "Error"], ans: 3 },
+                { q: "Q510: Output of class A: self.num=num; change() sets num=7; a=A(5); a.change(); print(a.num)? (Ch 8)", options: ["5", "7", "2", "Error"], ans: 1 },
+                { q: "Q511: Output of class Point: self.x=0; p=Point(); q=Point(); print(p, q)? (Ch 8)", options: ["Nothing happened", "Points printed", "<main.Point object...> <main.Point object...>", "(0,0) (0,0)"], ans: 2 },
+                { q: "Q512: Output of class Point: self.x=0; p=Point(); q=Point(); print(p==q)? (Ch 8)", options: ["True", "False", "Error", "None"], ans: 1 },
+                { q: "Q513: Will this program print the last statement? try: ... except Exception: print('got error'); print('continuing') (Ch 8)", options: ["This won't print... continuing", "got an error... continuing", "This won't print... continuing", "continuing"], ans: 2 },
+                { q: "Q514: Output of try: third=items[1] except Exception as e: print(e)? (Ch 8)", options: ["This won't print... continuing", "got an error... continuing", "got an error... list index out of range... continuing", "continuing"], ans: 2 },
+                { q: "Q515: Sanjeev's file read code: where is the error? (Ch 8)", options: ["No error", "Line 1", "Line 2", "Line 3"], ans: 1 },
+                { q: "Q516: Output of try: L.append(A)... except NameError: print('Not defined')? (Ch 8)", options: ["Write properly", "Not in range", "Both A & B", "SyntaxError"], ans: 3 },
+                { q: "Q517: When will the else part of try-except-else be executed? (Ch 8)", options: ["always", "when an exception occurs", "when no exception occurs", "when exception occurs in except"], ans: 2 },
+                { q: "Q518: When is the finally block executed? (Ch 8)", options: ["when no exception", "when exception occurs", "only if condition met", "always"], ans: 3 },
+                { q: "Q519: Output of def foo(): try: return 1 finally: return 2? (Ch 8)", options: ["1", "2", "Error", "None"], ans: 1 },
+                { q: "Q520: Output of def foo(): try: print(1) finally: print(2)? (Ch 8)", options: ["1 2", "1", "2", "None"], ans: 0 },
+                { q: "Q521: Output of getMonth(6) if it raises ValueError for m<1 or m>12? (Ch 8)", options: ["ValueError", "Invalid", "6", "ValueError('Invalid')"], ans: 2 },
+                { q: "Q522: Which block is executed whether an exception is thrown or not? (Ch 8)", options: ["else", "except", "finally", "assert"], ans: 2 },
+                { q: "Q523: Output of try: f=open('sample2.txt') print(m) except NameError: print('Variable not found')? (Ch 8)", options: ["5... File not found", "5... List index out of range", "5... Hello World", "Variable not found"], ans: 3 },
+                { q: "Q524: Output of try: print(a) except: print('This is python') if a is undefined? (Ch 8)", options: ["SyntaxError", "NameError", "This is python", "AttributeError"], ans: 2 },
+                { q: "Q525: Output of Employee count code: emp1, emp2, emp3 created. display_count_emp()? (Ch 8)", options: ["3 employees", "2 employees", "1 employee", "0 employees"], ans: 0 },
+                { q: "Q526: Output of generator simple(): for i in range(10): if i%2==0: yield i? (Ch 8)", options: ["yield", "0,2,4,6,8", "1 10", "[0,2,4,6,8]"], ans: 1 }
             ],
             fsd: [
-                { 
-            q: "Q338: What is the purpose of the following tag in a Bootstrap page?<meta name='viewport' content='width=device-width...'> (Ch 6)", 
-            options: ["Ensures responsive scaling on mobile devices", "Enables dark mode", "Loads Bootstrap faster", "Centers the container"], 
-            ans: 0 
-        },
-        { 
-            q: "Q339: .container in Bootstrap 5 is: (Ch 6)", 
-            options: ["Always 100% width", "A fixed-width container with breakpoint-based max-widths", "Only for nesting .row", "Deprecated in v5"], 
-            ans: 1 
-        },
-        { 
-            q: "Q340: .container-fluid is: (Ch 6)", 
-            options: ["100% width at all breakpoints", "100% width only on mobile", "Fixed width on xl and above", "Auto width, never full width"], 
-            ans: 0 
-        },
-        { 
-            q: "Q341: What does .container-lg do? (Ch 6)", 
-            options: ["Fixed width at all sizes", "Fluid until lg, then fixed max-width from lg up", "Fixed until lg, then fluid above", "Same as .container-fluid"], 
-            ans: 1 
-        },
-        { 
-            q: "Q342: Which class provides the widest fixed breakpoint in Bootstrap 5? (Ch 6)", 
-            options: [".container-xl", ".container-md", ".container-xxl", ".container-sm"], 
-            ans: 2 
-        },
-        { 
-            q: "Q343: Which utility class adds margin top = 3 units? (Ch 6)", 
-            options: ["mt-3", "pt-3", "ml-3", "mb-3"], 
-            ans: 0 
-        },
-        { 
-            q: "Q344: Which class makes an element behave like an inline-block? (Ch 6)", 
-            options: ["d-inline", "d-block", "d-inline-block", "d-flex"], 
-            ans: 2 
-        },
-        { 
-            q: "Q345: Which class applies Bootstrap background color? (Ch 6)", 
-            options: ["text-primary", "bg-primary", "color-primary", "background-primary"], 
-            ans: 1 
-        },
-        { 
-            q: "Q346: To change the text color to success (green), which is correct? (Ch 6)", 
-            options: ["bg-success", "color-success", "text-success", "txt-green"], 
-            ans: 2 
-        },
-        { 
-            q: "Q347: Which class makes an element take 100% width? (Ch 6)", 
-            options: ["w-auto", "w-100", "max-w-100", "full-width"], 
-            ans: 1 
-        },
-        { 
-            q: "Q348: Which applies a border only on top? (Ch 6)", 
-            options: ["border-all", "border-top", "border-1", "border-only-top"], 
-            ans: 1 
-        },
-        { 
-            q: "Q349: Which class converts text to uppercase? (Ch 6)", 
-            options: ["text-lowercase", "text-uppercase", "text-capitalize", "text-transform"], 
-            ans: 1 
-        },
-        { 
-            q: "Q350: Which class applies a large shadow? (Ch 6)", 
-            options: ["shadow-sm", "shadow-md", "shadow-lg", "shadow-big"], 
-            ans: 2 
-        },
-        { 
-            q: "Q351: Which class makes background transparent? (Ch 6)", 
-            options: ["bg-white", "bg-transparent", "bg-light", "bg-none"], 
-            ans: 1 
-        },
-        { 
-            q: "Q352: Which class aligns text to the center? (Ch 6)", 
-            options: ["align-center", "text-align-center", "text-center", "center-text"], 
-            ans: 2 
-        },
-        { 
-            q: "Q353: Which utility sets auto left and right margins (centers block)? (Ch 6)", 
-            options: ["m-0", "mx-auto", "ml-auto", "my-auto"], 
-            ans: 1 
-        },
-        { 
-            q: "Q354: Which class applies padding left & right = 5 units? (Ch 6)", 
-            options: ["p-5", "px-5", "py-5", "pt-5"], 
-            ans: 1 
-        },
-        { 
-            q: "Q355: Which class places flex items horizontally with space between? (Ch 6)", 
-            options: ["justify-content-around", "justify-content-evenly", "justify-content-between", "align-items-between"], 
-            ans: 2 
-        },
-        { 
-            q: "Q356: Which class adds equal margin on left & right? (Ch 6)", 
-            options: ["mx-", "my-", "ml-", "mr-"], // Adjusted for context as PDF had typos like 'mx-' vs 'mx-auto' logic
-            ans: 0 
-        },
-        { 
-            q: "Q357: Which class adds vertical padding only? (Ch 6)", 
-            options: ["px-", "py-", "pr-", "pl-"], 
-            ans: 1 
-        },
-        { 
-            q: "Q358: Which class is used for muted text color? (Ch 6)", 
-            options: ["text-light", "text-muted", "text-gray", "text-secondary"], 
-            ans: 1 
-        },
-        { 
-            q: "Q359: Which class makes an element 50% width? (Ch 6)", 
-            options: ["w-50", "w-half", "width-50", "max-w-50"], 
-            ans: 0 
-        },
-        { 
-            q: "Q360: Which class makes an element relative positioned? (Ch 6)", 
-            options: ["pos-relative", "position-relative", "relative", "d-relative"], 
-            ans: 1 
-        },
-        { 
-            q: "Q361: Which class gives a warning (yellow) background? (Ch 6)", 
-            options: ["bg-alert", "bg-warning", "background-warning", "bg-yellow"], 
-            ans: 1 
-        },
-        { 
-            q: "Q362: Which class arranges flex items in a column? (Ch 6)", 
-            options: ["d-flex-column", "flex-col", "flex-column", "d-column"], 
-            ans: 2 
-        },
-        { 
-            q: "Q363: Which class applies the Bootstrap danger red color to text? (Ch 6)", 
-            options: ["bg-danger", "text-danger", "color-danger", "danger-text"], 
-            ans: 1 
-        },
-        { 
-            q: "Q364: Which class turns an image into a perfectly circular avatar (assuming the image is square)? (Ch 6)", 
-            options: ["rounded", "rounded-pill", "rounded-circle", "img-circle"], 
-            ans: 2 
-        },
-        { 
-            q: "Q365: Which class adds a thin border and padding to an image to make it look like a photo print? (Ch 6)", 
-            options: ["img-frame", "img-bordered", "img-thumbnail", "img-card"], 
-            ans: 2 
-        },
-        { 
-            q: "Q366: Which class gives an element slightly rounded corners (small border-radius)? (Ch 6)", 
-            options: ["rounded-sm", "rounded", "rounded-all", "rounded-corner"], 
-            ans: 1 
-        },
-        { 
-            q: "Q367: Which table class makes a Bootstrap table have zebra-striping on rows? (Ch 6)", 
-            options: ["table-striped", "table-bordered", "table-hover", "table-sm"], 
-            ans: 0 
-        },
-        { 
-            q: "Q368: Which class will highlight a table row on hover (pointer-like effect)? (Ch 6)", 
-            options: ["table-active", "table-highlight", "table-hover", "table-pointer"], 
-            ans: 2 
-        },
-        { 
-            q: "Q369: In Bootstrap grid, which class makes a column take up 6 of 12 columns on medium (>=768px) screens? (Ch 6)", 
-            options: ["col-md-6", "col-6-md", "col-lg-6", "col-sm-6"], 
-            ans: 0 
-        },
-        { 
-            q: "Q370: Which alert class gives an alert the standard success (green) appearance? (Ch 6)", 
-            options: ["alert-info", "alert-success", "alert-primary", "alert-successful"], 
-            ans: 1 
-        },
-        { 
-            q: "Q371: How do you make a Bootstrap 5 alert dismissible? (Ch 6)", 
-            options: ["Add dismissible attribute", "Add alert-dismissible class & close button with data-bs-dismiss='alert'", "Add data-dismiss='alert' only on alert div", "Set role='alert-close'"], 
-            ans: 1 
-        },
-        { 
-            q: "Q372: Which class gives a Bootstrap button the large size variant? (Ch 6)", 
-            options: ["btn-lg", "btn-large", "btn-size-lg", "btn-big"], 
-            ans: 0 
-        },
-        { 
-            q: "Q373: By default, spinners in Bootstrap 5 use which color? (Ch 6)", 
-            options: ["Gray", "Blue (primary theme color)", "Black", "White"], 
-            ans: 1 
-        },
-        { 
-            q: "Q374: Which class creates a growing spinner? (Ch 6)", 
-            options: ["spinner-ring", "spinner-grow", "spinner-loader", "spinner-fill"], 
-            ans: 1 
-        },
-        { 
-            q: "Q375: Which class is used for an outline primary button? (Ch 6)", 
-            options: ["btn-outline-primary", "btn-primary-outline", "btn-border-primary", "btn-outline"], 
-            ans: 0 
-        },
-        { 
-            q: "Q376: Which utility makes a spinner centered? (Ch 6)", 
-            options: ["spinner-center", "d-flex align-items-center justify-content-center", "spinner-fixed", "full-center"], 
-            ans: 1 
-        },
-        { 
-            q: "Q377: Which class is used to create a border spinner in Bootstrap 5? (Ch 6)", 
-            options: ["spinner-grow", "spinner-border", "spinner-ring", "spinner"], 
-            ans: 1 
-        },
-        { 
-            q: "Q378: Which of the following class we have to add for vertical navigation? (Ch 6)", 
-            options: ["flex-row", "flex-column", "flex-tuple", "Both A and B"], 
-            ans: 1 
-        },
-        { 
-            q: "Q379: which of the following class is used to wrap the flex items when browser width decrease? (Ch 6)", 
-            options: ["wraping", "warp", "flex-wrap", "no-warp"], 
-            ans: 2 
-        },
-        { 
-            q: "Q380: which of the following will be used If you want your form elements to appear side by side? (Ch 6)", 
-            options: ["class='row' class='col'", "class='row'", "None of these", "class='col'"], 
-            ans: 0 
-        },
-        { 
-            q: "Q381: Dropdown will not expand without ___ class or attribute. (Ch 6)", 
-            options: ["dropdown-toggle", "data-bs-toggle", "aria-expanded", "data-target"], 
-            ans: 0 
-        },
-        { 
-            q: "Q382: Which class/es will be used to put a divider between two nav items in a dropdown? (Ch 6)", 
-            options: ["dropdown-divider", "dropdown-header", "dropdown-footer", "data-target"], 
-            ans: 0 
-        },
-        { 
-            q: "Q383: Which of the following valid classes are used to change the alignment of flex items? (Ch 6)", 
-            options: ["justify-content-around", "justify-items-center", "justify-content-between", "dropdown-divider"], 
-            ans: 0 
-        },
-        { 
-            q: "Q384: Fill in the blank: setting a grid tier of .col-sm-6 says (Ch 6)", 
-            options: ["Make the div 6 columns wide on sm and above", "break into 6 columns on sm and above", "break into 6 columns only on sm", "break into 6 columns on md and above"], 
-            ans: 0 
-        },
-        { 
-            q: "Q385: ___ class arranges controls vertical if screen size goes <1400px. (Ch 6)", 
-            options: ["col-xxl", "col-xl", "col-sm", "col-md"], 
-            ans: 0 
-        },
-        { 
-            q: "Q386: Which of the following is correct method to add a close button in alert box? (Ch 6)", 
-            options: ["<button type='button' class='btn-close' data-bs-dismiss='alert'></button>", "<button class='close' data-dismiss='alert'>&times;</button>", "<button id='close' data-dismissible='alert'>&times;</button>", "<button class='btn-close' dismiss='alert'>&times;</button>"], 
-            ans: 0 
-        },
-        { 
-            q: "Q412: Which of the following class is used to style a select menu in Bootstrap 5? (Ch 7)", 
-            options: ["form-select", "form-control", "form-dropdown", "form-option"], 
-            ans: 0 
-        },
-        { 
-            q: "Q413: ___ class arranges controls vertical if screen size goes <1400px. (Ch 7)", 
-            options: ["col-xxl", "col-sm", "col-xl", "col-xs"], 
-            ans: 0 
-        },
-        { 
-            q: "Q414: ___ is a correct set of classes/attributes to handle collapsing mechanism of navbar with collapsible icon. (Ch 7)", 
-            options: ["navbar-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "navbar-toggler, data-bs-toggle, data-bs-target, navbar-toggler-icon", "nav-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "navbar-toggle, data-bs-toggler, data-bs-target, navbar-toggle-icon"], 
-            ans: 1 
-        },
-        { 
-            q: "Q415: Which of the following set of classes denotes bootstrap carousel next button? (Ch 7)", 
-            options: ["carousel-control-next, carousel-control-next-icon", "carousel-control-icon, carousel-control-previous", "carousel-control-next, carousel-control-icon", "carousel-control-previous, carousel-control-next-icon"], 
-            ans: 0 
-        },
-        { 
-            q: "Q416: Which classes denote bottom indicators, slide show and arrow buttons for Bootstrap carousel respectively? (Ch 7)", 
-            options: ["carousel-indicators, carousel-control-inner, carousel-control-next-icon", "carousel-indicators, carousel-inner, carousel-control-prev-icon", "carousel-control-indicators, carousel-inner, carousel-control-prev-icon", "carousel-indicators, carousel-item-slide, carousel-control-icon"], 
-            ans: 1 
-        },
-        { 
-            q: "Q417: Which of the following is correct code to render toggle switch in Bootstrap form? (Ch 7)", 
-            options: ["<div class='form-check form-switch'> <input type='checkbox' class='form-check-input'> </div>", "<div class='form-check form-switch'> <input type='radio' class='form-check-input'> </div>", "<div class='form-check form-toggle'> <input type='checkbox' class='form-check-input'> </div>", "<div class='form-check form-switch'> <input type='checkbox' class='form-check'> </div>"], 
-            ans: 0 
-        },
-        { 
-            q: "Q418: Which of the following class is used to create a navbar with icon? (Ch 7)", 
-            options: ["navbar-brand", "navbar-img", "nav-img", "navbar-icon"], 
-            ans: 0 
-        },
-        { 
-            q: "Q419: Which attribute is used in <button> or <a> to create dialog box? (Ch 7)", 
-            options: ["data-bs-toggle='modal'", "data-bs-toggle='dialog'", "data-toggle='modal'", "data-toggle='dialog'"], 
-            ans: 0 
-        },
-        { 
-            q: "Q420: To create standard navigation bar horizontally which of the following is the correct syntax? (Ch 7)", 
-            options: ["<nav class='navbar'>", "<nav class='navbar-nav'>", "<nav class='navbar-nav navbar-expand-sm'>", "<nav class='nav navbar-expand-sm'>"], 
-            ans: 3 
-        },
-        { 
-            q: "Q421: Which of the following class be used to put a header between two items in a dropdown? (Ch 7)", 
-            options: ["dropdown_header", "dropdown-header", "dropdown-border", "drop-header"], 
-            ans: 1 
-        },
-        { 
-            q: "Q422: Bootstrap 5 often specifies fonts and border sizes in terms of REMs. What is a REM equal to? (Ch 7)", 
-            options: ["16 pixels", "12 pixels", "1 pixel", "0.1 sievert"], 
-            ans: 0 
-        },
-        { 
-            q: "Q423: Which of the following class we have to add in a code for creating link as navigation item in bootstrap-5? (Ch 7)", 
-            options: ["nav-link", "nav-item", "nav", "None of these"], 
-            ans: 0 
-        },
-        { 
-            q: "Q424: Which of the following is an attribute in bootstrap-5? (Ch 7)", 
-            options: ["nav-item", "data-ds-toggle", "data-bs-toggle", "nav"], 
-            ans: 2 
-        },
-        { 
-            q: "Q425: Which class will be used to add white text colors to all links in navbar? (Ch 7)", 
-            options: ["navbar-dark", "navbar-light", "light-navbar", "dark-navbar"], 
-            ans: 0 
-        },
-        { 
-            q: "Q426: Which of the following class will be used for get proper form styling for textual <input> and <textarea>? (Ch 7)", 
-            options: ["form-style", "form-control", "form-divider", "None of these"], 
-            ans: 1 
-        },
-        { 
-            q: "Q427: Which of the following class will be used with form to show what is missing before submitting the form? (Ch 7)", 
-            options: ["needs-validated", "was-validated", "valid-feedback", "None of these"], 
-            ans: 1 // Answer: was-validated
-        },
-        { 
-            q: "Q428: If you want your checkbox to be styled as a toggle switch, then which class will be used with which container? (Ch 7)", 
-            options: ["form-switch, form-check", "form-switched, form-checked", "Both A and B", "None of these"], 
-            ans: 0 
-        },
-        { 
-            q: "Q429: Which class will be used with form to show what is missing before submitting the form? (Ch 7)", 
-            options: ["needs-validated", "was-validated", "valid-feedback", "None of these"], 
-            ans: 1 
-        },
-        { 
-            q: "Q430: Which of the following are components of Modal? (Ch 7)", 
-            options: ["modal-header", "modal-body", "modal-footer", "All of these"], 
-            ans: 3 
-        },
-        { 
-            q: "Q431: The plugin used to create a cycle through elements as a slideshow is - (Ch 7)", 
-            options: ["slideshow", "scrollspy", "carousel", "None of these"], 
-            ans: 2 
-        },
-        { 
-            q: "Q432: Which of the following class is used to create a carousel? (Ch 7)", 
-            options: ["carousel", "Icarousel", "carousel-extern", "None of these"], 
-            ans: 0 
-        },
-        { 
-            q: "Q433: Which attribute should be mentioned for the element that should be used as a scrollable area? (Ch 7)", 
-            options: ["data-bs-spy='dropdown'", "data-bs-spy='scroll'", "data-bs-toggle='scroll'", "None of these"], 
-            ans: 1 
-        },
-        { 
-            q: "Q434: Which of the following valid classes are used to change the alignment of flex items? (Ch 7)", 
-            options: ["justify-content-center", "justify-content-between", "justify-content-around", "All of these"], 
-            ans: 3 
-        },
-        { 
-            q: "Q435: How many grid tiers, over which Bootstrap's layout system can adapt, are available in version 5? (Ch 7)", 
-            options: ["4", "5", "6", "12"], 
-            ans: 2 
-        },
-        { 
-            q: "Q436: In Bootstrap 5, floating labels are used with which type of form elements? (Ch 7)", 
-            options: ["Only <input type='text'>", "Only <textarea>", "<input> and <textarea>", "<select> only"], 
-            ans: 2 
-        },
-        { 
-            q: "Q437: Which Bootstrap 5 class is required to create a floating label inside a form control? (Ch 7)", 
-            options: ["form-floating", "form-label", "floating-label", "form-control-floating"], 
-            ans: 0 
-        },
-        { 
-            q: "Q438: Which of the following input types does NOT support floating labels in Bootstrap 5? (Ch 7)", 
-            options: ["text", "password", "file", "email"], 
-            ans: 2 
-        },
-        { 
-            q: "Q439: When using floating labels in Bootstrap 5, what is the correct structure? (Ch 7)", 
-            options: ["<div class='form-floating'> <input> <label>...</label> </div>", "<div class='form-floating'> <label>...</label> <input> </div>", "<div class='floating-label'> <label>...</label> <input> </div>", "<form-floating> <input> <label>...</label> </form-floating>"], 
-            ans: 0 
-        },
-        { 
-            q: "Q440: To align a Bootstrap 5 pagination component to the center horizontally, which correct utility class should be applied? (Ch 7)", 
-            options: ["pagination-center on <ul>", "justify-content-center on <ul class='pagination'>", "text-center on <nav>", "align-center on <ul>"], 
-            ans: 1 
-        },
-        { 
-            q: "Q441: If you want to highlight the current pagination page in Bootstrap 5, which is the correct method? (Ch 7)", 
-            options: ["Add active class to <li class='page-item'>", "Add active class to <a class='page-link'>", "Add selected attribute to <li>", "Add current class to <a class='page-link'>"], 
-            ans: 0 
-        },
-        { 
-            q: "Q442: In Bootstrap 5, which attribute is mandatory on the trigger element to open an offcanvas sidebar? (Ch 7)", 
-            options: ["data-bs-toggle='offcanvas'", "data-bs-trigger='offcanvas'", "data-bs-open='sidebar'", "data-bs-sidebar='true'"], 
-            ans: 0 
-        },
-        { 
-            q: "Q443: Which Bootstrap 5 class is used to make a sidebar offcanvas slide from the right side of the screen? (Ch 7)", 
-            options: ["offcanvas-end", "offcanvas-right", "offcanvas-rightside", "offcanvas-next"], 
-            ans: 0 
-        },
-        { 
-            q: "Q444: In the offcanvas component structure, which of the following is the correct placement of the close button? (Ch 7)", 
-            options: ["Inside <div class='offcanvas-header'> with .btn-close", "Inside <div class='offcanvas-body'> only", "Anywhere inside the offcanvas", "Outside the offcanvas component"], 
-            ans: 0 
-        },
-        { 
-            q: "Q445: ___ is a correct set of classes/attributes to handle collapsing mechanism of navbar with collapsible icon. (Ch 7)", 
-            options: [
-                "navbar-toggler, data-bs-toggle, data-bs-target, navbar-toggler-icon", 
-                "navbar-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", 
-                "nav-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", 
-                "navbar-toggler, data-bs-toggler, data-bs-target, navbar-toggler-icon"
-            ], 
-            ans: 0 // Answer: navbar-toggler, data-bs-toggle...
-        },
-        { 
-            q: "Q446: Identify the statement to show a collapsible section initially on loading a page. (Ch 7)", 
-            options: ["<div id='section' class='collapse show'>", "<div id='section' class='collapse-show'>", "<div id='section' class='collapse'>", "<div id='section' class='accordion'>"], 
-            ans: 0 
-        }       
-                
+                { q: "Q338: What is the purpose of the following tag in a Bootstrap page?<meta name='viewport' content='width=device-width...'> (Ch 6)", options: ["Ensures responsive scaling on mobile devices", "Enables dark mode", "Loads Bootstrap faster", "Centers the container"], ans: 0 },
+                { q: "Q339: .container in Bootstrap 5 is: (Ch 6)", options: ["Always 100% width", "A fixed-width container with breakpoint-based max-widths", "Only for nesting .row", "Deprecated in v5"], ans: 1 },
+                { q: "Q340: .container-fluid is: (Ch 6)", options: ["100% width at all breakpoints", "100% width only on mobile", "Fixed width on xl and above", "Auto width, never full width"], ans: 0 },
+                { q: "Q341: What does .container-lg do? (Ch 6)", options: ["Fixed width at all sizes", "Fluid until lg, then fixed max-width from lg up", "Fixed until lg, then fluid above", "Same as .container-fluid"], ans: 1 },
+                { q: "Q342: Which class provides the widest fixed breakpoint in Bootstrap 5? (Ch 6)", options: [".container-xl", ".container-md", ".container-xxl", ".container-sm"], ans: 2 },
+                { q: "Q343: Which utility class adds margin top = 3 units? (Ch 6)", options: ["mt-3", "pt-3", "ml-3", "mb-3"], ans: 0 },
+                { q: "Q344: Which class makes an element behave like an inline-block? (Ch 6)", options: ["d-inline", "d-block", "d-inline-block", "d-flex"], ans: 2 },
+                { q: "Q345: Which class applies Bootstrap background color? (Ch 6)", options: ["text-primary", "bg-primary", "color-primary", "background-primary"], ans: 1 },
+                { q: "Q346: To change the text color to success (green), which is correct? (Ch 6)", options: ["bg-success", "color-success", "text-success", "txt-green"], ans: 2 },
+                { q: "Q347: Which class makes an element take 100% width? (Ch 6)", options: ["w-auto", "w-100", "max-w-100", "full-width"], ans: 1 },
+                { q: "Q348: Which applies a border only on top? (Ch 6)", options: ["border-all", "border-top", "border-1", "border-only-top"], ans: 1 },
+                { q: "Q349: Which class converts text to uppercase? (Ch 6)", options: ["text-lowercase", "text-uppercase", "text-capitalize", "text-transform"], ans: 1 },
+                { q: "Q350: Which class applies a large shadow? (Ch 6)", options: ["shadow-sm", "shadow-md", "shadow-lg", "shadow-big"], ans: 2 },
+                { q: "Q351: Which class makes background transparent? (Ch 6)", options: ["bg-white", "bg-transparent", "bg-light", "bg-none"], ans: 1 },
+                { q: "Q352: Which class aligns text to the center? (Ch 6)", options: ["align-center", "text-align-center", "text-center", "center-text"], ans: 2 },
+                { q: "Q353: Which utility sets auto left and right margins (centers block)? (Ch 6)", options: ["m-0", "mx-auto", "ml-auto", "my-auto"], ans: 1 },
+                { q: "Q354: Which class applies padding left & right = 5 units? (Ch 6)", options: ["p-5", "px-5", "py-5", "pt-5"], ans: 1 },
+                { q: "Q355: Which class places flex items horizontally with space between? (Ch 6)", options: ["justify-content-around", "justify-content-evenly", "justify-content-between", "align-items-between"], ans: 2 },
+                { q: "Q356: Which class adds equal margin on left & right? (Ch 6)", options: ["mx-", "my-", "ml-", "mr-"], ans: 0 },
+                { q: "Q357: Which class adds vertical padding only? (Ch 6)", options: ["px-", "py-", "pr-", "pl-"], ans: 1 },
+                { q: "Q358: Which class is used for muted text color? (Ch 6)", options: ["text-light", "text-muted", "text-gray", "text-secondary"], ans: 1 },
+                { q: "Q359: Which class makes an element 50% width? (Ch 6)", options: ["w-50", "w-half", "width-50", "max-w-50"], ans: 0 },
+                { q: "Q360: Which class makes an element relative positioned? (Ch 6)", options: ["pos-relative", "position-relative", "relative", "d-relative"], ans: 1 },
+                { q: "Q361: Which class gives a warning (yellow) background? (Ch 6)", options: ["bg-alert", "bg-warning", "background-warning", "bg-yellow"], ans: 1 },
+                { q: "Q362: Which class arranges flex items in a column? (Ch 6)", options: ["d-flex-column", "flex-col", "flex-column", "d-column"], ans: 2 },
+                { q: "Q363: Which class applies the Bootstrap danger red color to text? (Ch 6)", options: ["bg-danger", "text-danger", "color-danger", "danger-text"], ans: 1 },
+                { q: "Q364: Which class turns an image into a perfectly circular avatar (assuming the image is square)? (Ch 6)", options: ["rounded", "rounded-pill", "rounded-circle", "img-circle"], ans: 2 },
+                { q: "Q365: Which class adds a thin border and padding to an image to make it look like a photo print? (Ch 6)", options: ["img-frame", "img-bordered", "img-thumbnail", "img-card"], ans: 2 },
+                { q: "Q366: Which class gives an element slightly rounded corners (small border-radius)? (Ch 6)", options: ["rounded-sm", "rounded", "rounded-all", "rounded-corner"], ans: 1 },
+                { q: "Q367: Which table class makes a Bootstrap table have zebra-striping on rows? (Ch 6)", options: ["table-striped", "table-bordered", "table-hover", "table-sm"], ans: 0 },
+                { q: "Q368: Which class will highlight a table row on hover (pointer-like effect)? (Ch 6)", options: ["table-active", "table-highlight", "table-hover", "table-pointer"], ans: 2 },
+                { q: "Q369: In Bootstrap grid, which class makes a column take up 6 of 12 columns on medium (>=768px) screens? (Ch 6)", options: ["col-md-6", "col-6-md", "col-lg-6", "col-sm-6"], ans: 0 },
+                { q: "Q370: Which alert class gives an alert the standard success (green) appearance? (Ch 6)", options: ["alert-info", "alert-success", "alert-primary", "alert-successful"], ans: 1 },
+                { q: "Q371: How do you make a Bootstrap 5 alert dismissible? (Ch 6)", options: ["Add dismissible attribute", "Add alert-dismissible class & close button with data-bs-dismiss='alert'", "Add data-dismiss='alert' only on alert div", "Set role='alert-close'"], ans: 1 },
+                { q: "Q372: Which class gives a Bootstrap button the large size variant? (Ch 6)", options: ["btn-lg", "btn-large", "btn-size-lg", "btn-big"], ans: 0 },
+                { q: "Q373: By default, spinners in Bootstrap 5 use which color? (Ch 6)", options: ["Gray", "Blue (primary theme color)", "Black", "White"], ans: 1 },
+                { q: "Q374: Which class creates a growing spinner? (Ch 6)", options: ["spinner-ring", "spinner-grow", "spinner-loader", "spinner-fill"], ans: 1 },
+                { q: "Q375: Which class is used for an outline primary button? (Ch 6)", options: ["btn-outline-primary", "btn-primary-outline", "btn-border-primary", "btn-outline"], ans: 0 },
+                { q: "Q376: Which utility makes a spinner centered? (Ch 6)", options: ["spinner-center", "d-flex align-items-center justify-content-center", "spinner-fixed", "full-center"], ans: 1 },
+                { q: "Q377: Which class is used to create a border spinner in Bootstrap 5? (Ch 6)", options: ["spinner-grow", "spinner-border", "spinner-ring", "spinner"], ans: 1 },
+                { q: "Q378: Which of the following class we have to add for vertical navigation? (Ch 6)", options: ["flex-row", "flex-column", "flex-tuple", "Both A and B"], ans: 1 },
+                { q: "Q379: which of the following class is used to wrap the flex items when browser width decrease? (Ch 6)", options: ["wraping", "warp", "flex-wrap", "no-warp"], ans: 2 },
+                { q: "Q380: which of the following will be used If you want your form elements to appear side by side? (Ch 6)", options: ["class='row' class='col'", "class='row'", "None of these", "class='col'"], ans: 0 },
+                { q: "Q381: Dropdown will not expand without ___ class or attribute. (Ch 6)", options: ["dropdown-toggle", "data-bs-toggle", "aria-expanded", "data-target"], ans: 0 },
+                { q: "Q382: Which class/es will be used to put a divider between two nav items in a dropdown? (Ch 6)", options: ["dropdown-divider", "dropdown-header", "dropdown-footer", "data-target"], ans: 0 },
+                { q: "Q383: Which of the following valid classes are used to change the alignment of flex items? (Ch 6)", options: ["justify-content-around", "justify-items-center", "justify-content-between", "dropdown-divider"], ans: 0 },
+                { q: "Q384: Fill in the blank: setting a grid tier of .col-sm-6 says (Ch 6)", options: ["Make the div 6 columns wide on sm and above", "break into 6 columns on sm and above", "break into 6 columns only on sm", "break into 6 columns on md and above"], ans: 0 },
+                { q: "Q385: ___ class arranges controls vertical if screen size goes <1400px. (Ch 6)", options: ["col-xxl", "col-xl", "col-sm", "col-md"], ans: 0 },
+                { q: "Q386: Which of the following is correct method to add a close button in alert box? (Ch 6)", options: ["<button type='button' class='btn-close' data-bs-dismiss='alert'></button>", "<button class='close' data-dismiss='alert'>&times;</button>", "<button id='close' data-dismissible='alert'>&times;</button>", "<button class='btn-close' dismiss='alert'>&times;</button>"], ans: 0 },
+                { q: "Q412: Which of the following class is used to style a select menu in Bootstrap 5? (Ch 7)", options: ["form-select", "form-control", "form-dropdown", "form-option"], ans: 0 },
+                { q: "Q413: ___ class arranges controls vertical if screen size goes <1400px. (Ch 7)", options: ["col-xxl", "col-sm", "col-xl", "col-xs"], ans: 0 },
+                { q: "Q414: ___ is a correct set of classes/attributes to handle collapsing mechanism of navbar with collapsible icon. (Ch 7)", options: ["navbar-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "navbar-toggler, data-bs-toggle, data-bs-target, navbar-toggler-icon", "nav-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "navbar-toggle, data-bs-toggler, data-bs-target, navbar-toggle-icon"], ans: 1 },
+                { q: "Q415: Which of the following set of classes denotes bootstrap carousel next button? (Ch 7)", options: ["carousel-control-next, carousel-control-next-icon", "carousel-control-icon, carousel-control-previous", "carousel-control-next, carousel-control-icon", "carousel-control-previous, carousel-control-next-icon"], ans: 0 },
+                { q: "Q416: Which classes denote bottom indicators, slide show and arrow buttons for Bootstrap carousel respectively? (Ch 7)", options: ["carousel-indicators, carousel-control-inner, carousel-control-next-icon", "carousel-indicators, carousel-inner, carousel-control-prev-icon", "carousel-control-indicators, carousel-inner, carousel-control-prev-icon", "carousel-indicators, carousel-item-slide, carousel-control-icon"], ans: 1 },
+                { q: "Q417: Which of the following is correct code to render toggle switch in Bootstrap form? (Ch 7)", options: ["<div class='form-check form-switch'> <input type='checkbox' class='form-check-input'> </div>", "<div class='form-check form-switch'> <input type='radio' class='form-check-input'> </div>", "<div class='form-check form-toggle'> <input type='checkbox' class='form-check-input'> </div>", "<div class='form-check form-switch'> <input type='checkbox' class='form-check'> </div>"], ans: 0 },
+                { q: "Q418: Which of the following class is used to create a navbar with icon? (Ch 7)", options: ["navbar-brand", "navbar-img", "nav-img", "navbar-icon"], ans: 0 },
+                { q: "Q419: Which attribute is used in <button> or <a> to create dialog box? (Ch 7)", options: ["data-bs-toggle='modal'", "data-bs-toggle='dialog'", "data-toggle='modal'", "data-toggle='dialog'"], ans: 0 },
+                { q: "Q420: To create standard navigation bar horizontally which of the following is the correct syntax? (Ch 7)", options: ["<nav class='navbar'>", "<nav class='navbar-nav'>", "<nav class='navbar-nav navbar-expand-sm'>", "<nav class='nav navbar-expand-sm'>"], ans: 3 },
+                { q: "Q421: Which of the following class be used to put a header between two items in a dropdown? (Ch 7)", options: ["dropdown_header", "dropdown-header", "dropdown-border", "drop-header"], ans: 1 },
+                { q: "Q422: Bootstrap 5 often specifies fonts and border sizes in terms of REMs. What is a REM equal to? (Ch 7)", options: ["16 pixels", "12 pixels", "1 pixel", "0.1 sievert"], ans: 0 },
+                { q: "Q423: Which of the following class we have to add in a code for creating link as navigation item in bootstrap-5? (Ch 7)", options: ["nav-link", "nav-item", "nav", "None of these"], ans: 0 },
+                { q: "Q424: Which of the following is an attribute in bootstrap-5? (Ch 7)", options: ["nav-item", "data-ds-toggle", "data-bs-toggle", "nav"], ans: 2 },
+                { q: "Q425: Which class will be used to add white text colors to all links in navbar? (Ch 7)", options: ["navbar-dark", "navbar-light", "light-navbar", "dark-navbar"], ans: 0 },
+                { q: "Q426: Which of the following class will be used for get proper form styling for textual <input> and <textarea>? (Ch 7)", options: ["form-style", "form-control", "form-divider", "None of these"], ans: 1 },
+                { q: "Q427: Which of the following class will be used with form to show what is missing before submitting the form? (Ch 7)", options: ["needs-validated", "was-validated", "valid-feedback", "None of these"], ans: 1 },
+                { q: "Q428: If you want your checkbox to be styled as a toggle switch, then which class will be used with which container? (Ch 7)", options: ["form-switch, form-check", "form-switched, form-checked", "Both A and B", "None of these"], ans: 0 },
+                { q: "Q429: Which class will be used with form to show what is missing before submitting the form? (Ch 7)", options: ["needs-validated", "was-validated", "valid-feedback", "None of these"], ans: 1 },
+                { q: "Q430: Which of the following are components of Modal? (Ch 7)", options: ["modal-header", "modal-body", "modal-footer", "All of these"], ans: 3 },
+                { q: "Q431: The plugin used to create a cycle through elements as a slideshow is - (Ch 7)", options: ["slideshow", "scrollspy", "carousel", "None of these"], ans: 2 },
+                { q: "Q432: Which of the following class is used to create a carousel? (Ch 7)", options: ["carousel", "Icarousel", "carousel-extern", "None of these"], ans: 0 },
+                { q: "Q433: Which attribute should be mentioned for the element that should be used as a scrollable area? (Ch 7)", options: ["data-bs-spy='dropdown'", "data-bs-spy='scroll'", "data-bs-toggle='scroll'", "None of these"], ans: 1 },
+                { q: "Q434: Which of the following valid classes are used to change the alignment of flex items? (Ch 7)", options: ["justify-content-center", "justify-content-between", "justify-content-around", "All of these"], ans: 3 },
+                { q: "Q435: How many grid tiers, over which Bootstrap's layout system can adapt, are available in version 5? (Ch 7)", options: ["4", "5", "6", "12"], ans: 2 },
+                { q: "Q436: In Bootstrap 5, floating labels are used with which type of form elements? (Ch 7)", options: ["Only <input type='text'>", "Only <textarea>", "<input> and <textarea>", "<select> only"], ans: 2 },
+                { q: "Q437: Which Bootstrap 5 class is required to create a floating label inside a form control? (Ch 7)", options: ["form-floating", "form-label", "floating-label", "form-control-floating"], ans: 0 },
+                { q: "Q438: Which of the following input types does NOT support floating labels in Bootstrap 5? (Ch 7)", options: ["text", "password", "file", "email"], ans: 2 },
+                { q: "Q439: When using floating labels in Bootstrap 5, what is the correct structure? (Ch 7)", options: ["<div class='form-floating'> <input> <label>...</label> </div>", "<div class='form-floating'> <label>...</label> <input> </div>", "<div class='floating-label'> <label>...</label> <input> </div>", "<form-floating> <input> <label>...</label> </form-floating>"], ans: 0 },
+                { q: "Q440: To align a Bootstrap 5 pagination component to the center horizontally, which correct utility class should be applied? (Ch 7)", options: ["pagination-center on <ul>", "justify-content-center on <ul class='pagination'>", "text-center on <nav>", "align-center on <ul>"], ans: 1 },
+                { q: "Q441: If you want to highlight the current pagination page in Bootstrap 5, which is the correct method? (Ch 7)", options: ["Add active class to <li class='page-item'>", "Add active class to <a class='page-link'>", "Add selected attribute to <li>", "Add current class to <a class='page-link'>"], ans: 0 },
+                { q: "Q442: In Bootstrap 5, which attribute is mandatory on the trigger element to open an offcanvas sidebar? (Ch 7)", options: ["data-bs-toggle='offcanvas'", "data-bs-trigger='offcanvas'", "data-bs-open='sidebar'", "data-bs-sidebar='true'"], ans: 0 },
+                { q: "Q443: Which Bootstrap 5 class is used to make a sidebar offcanvas slide from the right side of the screen? (Ch 7)", options: ["offcanvas-end", "offcanvas-right", "offcanvas-rightside", "offcanvas-next"], ans: 0 },
+                { q: "Q444: In the offcanvas component structure, which of the following is the correct placement of the close button? (Ch 7)", options: ["Inside <div class='offcanvas-header'> with .btn-close", "Inside <div class='offcanvas-body'> only", "Anywhere inside the offcanvas", "Outside the offcanvas component"], ans: 0 },
+                { q: "Q445: ___ is a correct set of classes/attributes to handle collapsing mechanism of navbar with collapsible icon. (Ch 7)", options: ["navbar-toggler, data-bs-toggle, data-bs-target, navbar-toggler-icon", "navbar-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "nav-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "navbar-toggler, data-bs-toggler, data-bs-target, navbar-toggler-icon"], ans: 0 },
+                { q: "Q446: Identify the statement to show a collapsible section initially on loading a page. (Ch 7)", options: ["<div id='section' class='collapse show'>", "<div id='section' class='collapse-show'>", "<div id='section' class='collapse'>", "<div id='section' class='accordion'>"], ans: 0 }
             ]
         };
 
@@ -1067,16 +497,23 @@
 
         // --- UI FUNCTIONS ---
         window.showSection = (id) => {
+            // Hide all sections
             document.querySelectorAll('.section').forEach(el => {
                 el.classList.remove('active');
                 el.style.display = 'none';
             });
+            // Show target section
             const target = document.getElementById(id);
             target.style.display = 'block';
             setTimeout(() => target.classList.add('active'), 10);
             
+            // Close mobile menu if open
             document.getElementById('mobile-menu').classList.add('hidden');
         };
+
+        window.toggleMobileMenu = () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
 
         // --- QUIZ LOGIC ---
         window.startQuiz = (subject) => {
@@ -1109,7 +546,7 @@
 
                 qData.options.forEach((opt, idx) => {
                     const btn = document.createElement('div');
-                    let classes = `option-btn p-4 rounded-xl border border-gray-700 bg-gray-800/50 text-lg text-gray-300`;
+                    let classes = `option-btn p-4 rounded-xl border border-gray-700 bg-gray-800/50 text-base md:text-lg text-gray-300`;
 
                     if (hasAnswered) {
                         classes += " disabled";
@@ -1147,7 +584,7 @@
                 if(currentQIdx === currentQuizData.length - 1) {
                     nextBtn.innerText = "Finish Quiz";
                 } else {
-                    nextBtn.innerText = "Next Question";
+                    nextBtn.innerText = "Next";
                 }
 
                 // Fade In
@@ -1248,7 +685,11 @@
             camera.position.z = 5;
 
             const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 700;
+            
+            // Reduce particles on mobile for better performance
+            const isMobile = window.innerWidth < 768;
+            const particlesCount = isMobile ? 300 : 700;
+            
             const posArray = new Float32Array(particlesCount * 3);
 
             for(let i = 0; i < particlesCount * 3; i++) {
@@ -1306,4 +747,3 @@
     </script>
 </body>
 </html>
-
