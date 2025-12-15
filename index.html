@@ -160,6 +160,7 @@
                         <button onclick="startQuiz('fsd')" class="text-left text-blue-400 font-semibold flex items-center gap-3 py-3 px-2 rounded hover:bg-white/5 md:hover:bg-transparent">
                             <i class="fa-solid fa-code text-xl"></i> FSD Quiz
                         </button>
+                        
                     </div>
                 </div>
 
@@ -178,7 +179,8 @@
                 <p class="text-gray-400">Select a topic below to start practicing.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+           <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                
                 <button onclick="startQuiz('python')" class="w-full text-left glass hover-card rounded-3xl p-6 md:p-8 group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-yellow-500/50">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
                     <div class="relative z-10 flex flex-col items-center text-center">
@@ -192,7 +194,19 @@
                         </span>
                     </div>
                 </button>
-
+                <button onclick="window.open('https://piyushjt.github.io/Python-Material/', '_blank')" class="w-full text-left glass hover-card rounded-3xl p-6 md:p-8 group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-green-500/50">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <div class="relative z-10 flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 shadow-lg border border-gray-700">
+                            <i class="fa-solid fa-laptop-code text-3xl text-green-400"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Python Program</h2>
+                        <p class="text-gray-400 text-sm mb-4">Study Material & Codes</p>
+                        <span class="text-green-400 font-bold text-sm bg-green-400/10 px-4 py-2 rounded-full">
+                            Open Website &rarr;
+                        </span>
+                    </div>
+                </button>
                 <button onclick="startQuiz('fsd')" class="w-full text-left glass hover-card rounded-3xl p-6 md:p-8 group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500/50">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
                     <div class="relative z-10 flex flex-col items-center text-center">
@@ -206,6 +220,9 @@
                         </span>
                     </div>
                 </button>
+
+                
+
             </div>
         </section>
 
@@ -585,6 +602,5 @@
     </script>
 </body>
 </html>
-
 
 
