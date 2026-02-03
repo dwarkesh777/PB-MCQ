@@ -2,878 +2,977 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>D S SAVALIYA - Quiz Portal</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETC Ultimate Quiz Bank</title>
     <style>
         :root {
-            --primary: #00f2ea;
-            --secondary: #ff0050;
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --correct: #22c55e;
-            --wrong: #ef4444;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #64748b;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
+            --gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg);
-            color: white;
-            overflow-x: hidden;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: var(--text-main);
             margin: 0;
-            -webkit-tap-highlight-color: transparent;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .wrapper {
+            flex: 1;
             width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.6;
-            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            box-sizing: border-box;
         }
 
-        .glass {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: none; /* Hidden by default, controlled by JS */
+            animation: fadeIn 0.4s ease-out;
         }
         
-        .nav-link:hover { color: var(--primary); }
+        /* Show landing page by default */
+        #landing-page { display: block; text-align: center; }
 
-        .section {
-            display: none;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.4s forwards;
-        }
-        .section.active { display: block; }
-
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-
-        .hover-card {
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        @media (hover: hover) {
-            .hover-card:hover {
-                transform: translateY(-5px);
-                border-color: var(--primary);
-                box-shadow: 0 10px 30px -10px rgba(0, 242, 234, 0.15);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Quiz Option Buttons */
-        .option-btn {
-            transition: all 0.2s;
+        h1 {
+            text-align: center;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        h2 { margin-top: 0; color: var(--text-main); }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* --- Landing Page Buttons --- */
+        .landing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .big-btn {
+            padding: 40px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            background: white;
             cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .big-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .big-btn i { font-size: 3rem; margin-bottom: 10px; }
+        .big-btn span { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+        .big-btn p { color: var(--text-light); margin: 0; }
+
+        /* --- Menu Grid --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-height: 65vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .unit-btn {
+            background: white;
+            color: var(--text-main);
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .unit-btn:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+
+        .unit-tag {
+            background: #e0e7ff;
+            color: var(--primary);
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        /* --- Quiz & Study Mode --- */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            margin-bottom: 35px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-box { margin-bottom: 30px; }
+        .question-text { font-size: 1.3em; font-weight: 700; margin-bottom: 20px; line-height: 1.5; }
+        
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        
+        .option-btn {
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.05em;
+            color: var(--text-main);
             position: relative;
         }
-        .option-btn:active { background: rgba(255, 255, 255, 0.2); }
+
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #f8fafc; }
         
-        .option-btn.correct {
-            background: rgba(34, 197, 94, 0.2) !important;
-            border-color: var(--correct) !important;
-            color: var(--correct) !important;
+        /* Quiz Mode Colors */
+        .option-btn.selected-correct { border-color: var(--success); background: #dcfce7; color: #14532d; font-weight: 600; }
+        .option-btn.selected-incorrect { border-color: var(--error); background: #fee2e2; color: #7f1d1d; }
+        .option-btn.correct-highlight { border-color: var(--success); background: #dcfce7; color: #14532d; font-weight: 600; }
+
+        /* Study Mode Specifics */
+        .study-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
         }
-        .option-btn.wrong {
-            background: rgba(239, 68, 68, 0.2) !important;
-            border-color: var(--wrong) !important;
-            color: var(--wrong) !important;
+        .study-question { font-weight: 700; font-size: 1.1em; margin-bottom: 15px; color: var(--text-main); }
+        .study-option {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
         }
-        
-        /* Study Mode Styles */
-        .study-answer-correct {
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid var(--correct);
-            color: var(--correct);
+        .study-option.correct {
+            background: #dcfce7;
+            border-color: var(--success);
+            color: #14532d;
             font-weight: 600;
         }
-        .study-answer-normal {
-            border: 1px solid transparent;
-            color: #9ca3af;
+
+        /* --- Footer & Controls --- */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
         }
 
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .btn-secondary { background: white; border: 2px solid #e2e8f0; color: #64748b; }
+        .btn-secondary:hover { background: #f1f5f9; color: var(--text-main); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        
+        footer { margin-top: auto; padding: 20px; color: #94a3b8; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            .landing-grid { grid-template-columns: 1fr; }
+            .container { padding: 20px; }
+            .controls { flex-direction: column-reverse; gap: 15px; }
+            .btn { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
+<div class="wrapper">
+    
+    <div class="container" id="landing-page">
+        <h1>ETC Practice Book</h1>
+        <p class="subtitle">Complete Question Bank (Units 1 - 10)</p>
+        
+        <div class="landing-grid">
+            <button class="big-btn" onclick="openUnitMenu('view')">
+                <span>📖 View MCQs</span>
+                <p>Read questions and answers (Study Mode)</p>
+            </button>
+            <button class="big-btn" onclick="openUnitMenu('quiz')">
+                <span>📝 MCQ Quiz</span>
+                <p>Practice with interactive test (Quiz Mode)</p>
+            </button>
+        </div>
+    </div>
 
-    <nav class="fixed top-0 w-full z-50 glass border-b-0 bg-black/90 backdrop-blur-xl">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex flex-wrap justify-between items-center">
-                
-                <button onclick="showSection('home')" class="flex items-center gap-3 group z-50 focus:outline-none">
-                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                        DS
-                    </div>
-                    <span class="text-xl font-bold tracking-tight text-white">D S SAVALIYA</span>
-                </button>
+    <div class="container" id="unit-menu">
+        <h2 id="menu-title">Select Unit</h2>
+        <p class="subtitle">Choose a chapter to begin</p>
+        <div class="menu-grid" id="unit-list">
+            </div>
+        <div class="controls" style="justify-content: center;">
+            <button class="btn btn-secondary" onclick="goHome()">Back to Home</button>
+        </div>
+    </div>
 
-                <button id="menu-btn" class="md:hidden text-2xl text-white p-2 focus:outline-none z-50" onclick="toggleMenu()">
-                    <i class="fa-solid fa-bars" id="menu-icon"></i>
-                </button>
+    <div class="container" id="quiz-interface">
+        <div class="header-bar">
+            <span id="quiz-unit-indicator">Unit 1</span>
+            <span id="q-counter">Q 1/40</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+        
+        <div class="question-box">
+            <div class="question-text" id="question">Loading...</div>
+            <div class="options-grid" id="options"></div>
+        </div>
 
-                <div id="nav-content" class="hidden w-full md:block md:w-auto mt-4 md:mt-0 transition-all duration-300 max-h-[80vh] overflow-y-auto md:max-h-none md:overflow-visible">
-                    <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8 bg-black/50 md:bg-transparent p-4 md:p-0 rounded-2xl md:rounded-none border border-gray-800 md:border-0">
-                        <button onclick="showSection('home')" class="nav-link text-left text-gray-300 font-semibold py-3 px-2 rounded hover:bg-white/5 md:hover:bg-transparent">Home</button>
-                        
-                        <div class="h-px w-full md:h-6 md:w-px bg-gray-700 mx-0 md:mx-2 my-2 md:my-0"></div>
-                        
-                        <button onclick="selectSubject('python')" class="text-left text-yellow-400 font-semibold flex items-center gap-3 py-3 px-2 rounded hover:bg-white/5 md:hover:bg-transparent">
-                            <i class="fa-brands fa-python text-xl"></i> Python
-                        </button>
-                        <button onclick="selectSubject('fsd')" class="text-left text-blue-400 font-semibold flex items-center gap-3 py-3 px-2 rounded hover:bg-white/5 md:hover:bg-transparent">
-                            <i class="fa-solid fa-code text-xl"></i> FSD
-                        </button>
-                    </div>
-                </div>
+        <div class="controls">
+            <button class="btn btn-secondary" onclick="openUnitMenu('quiz')">Exit</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" id="prev-btn" onclick="prevQuestion()">Previous</button>
+                <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <main class="pt-28 pb-24 container mx-auto px-6 min-h-screen relative z-10">
-
-        <section id="home" class="section active">
-            <div class="text-center max-w-3xl mx-auto mb-10">
-                <span class="text-primary text-xs font-bold tracking-[0.2em] uppercase mb-4 block">D S SAVALIYA</span>
-                <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-                      <span class="text-yellow-400">Python</span> & <span class="text-blue-400">FSD</span>
-                </h1>
-                <p class="text-gray-400">Select a subject below to view topics.</p>
+    <div class="container" id="study-interface">
+        <div class="header-bar">
+            <span id="study-unit-indicator">Unit 1 - Study Mode</span>
+        </div>
+        <div id="study-content" style="max-height: 60vh; overflow-y: auto; padding-right: 5px;">
             </div>
+        <div class="controls" style="justify-content: center;">
+            <button class="btn btn-secondary" onclick="openUnitMenu('view')">Back to Units</button>
+        </div>
+    </div>
 
-           <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                <button onclick="selectSubject('python')" class="w-full text-left glass hover-card rounded-3xl p-6 md:p-8 group relative overflow-hidden focus:outline-none">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                    <div class="relative z-10 flex flex-col items-center text-center">
-                        <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 shadow-lg border border-gray-700">
-                            <i class="fa-brands fa-python text-3xl text-yellow-400"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-white mb-2">Python</h2>
-                        <p class="text-gray-400 text-sm mb-4">View & Test (T1 - T4)</p>
-                        <span class="text-yellow-400 font-bold text-sm bg-yellow-400/10 px-4 py-2 rounded-full">Enter &rarr;</span>
-                    </div>
-                </button>
+    <div class="container" id="result-screen" style="text-align: center;">
+        <h1>Unit Completed!</h1>
+        <div style="font-size: 3em; font-weight: 800; color: var(--primary); margin: 20px 0;" id="final-score">0%</div>
+        <p id="feedback-text"></p>
+        <button class="btn btn-primary" onclick="openUnitMenu('quiz')">Back to Menu</button>
+    </div>
 
-                <button onclick="window.open('https://piyushjt.github.io/Python-Material/', '_blank')" class="w-full text-left glass hover-card rounded-3xl p-6 md:p-8 group relative overflow-hidden focus:outline-none">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                    <div class="relative z-10 flex flex-col items-center text-center">
-                        <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 shadow-lg border border-gray-700">
-                            <i class="fa-solid fa-laptop-code text-3xl text-green-400"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-white mb-2">Materials</h2>
-                        <p class="text-gray-400 text-sm mb-4">Codes & Docs</p>
-                        <span class="text-green-400 font-bold text-sm bg-green-400/10 px-4 py-2 rounded-full">Open &rarr;</span>
-                    </div>
-                </button>
+</div>
 
-                <button onclick="selectSubject('fsd')" class="w-full text-left glass hover-card rounded-3xl p-6 md:p-8 group relative overflow-hidden focus:outline-none">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                    <div class="relative z-10 flex flex-col items-center text-center">
-                        <div class="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mb-4 shadow-lg border border-gray-700">
-                            <i class="fa-solid fa-layer-group text-3xl text-blue-400"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-white mb-2">FSD</h2>
-                        <p class="text-gray-400 text-sm mb-4">View & Test (T1 - T4)</p>
-                        <span class="text-blue-400 font-bold text-sm bg-blue-400/10 px-4 py-2 rounded-full">Enter &rarr;</span>
-                    </div>
-                </button>
-            </div>
-        </section>
+<footer>
+    Create by : D S SAVALIYA
+</footer>
 
-        <section id="topics" class="section">
-            <div class="max-w-4xl mx-auto">
-                <button onclick="showSection('home')" class="text-gray-400 hover:text-white flex items-center gap-2 mb-8 transition-colors">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Home
-                </button>
-                
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl font-bold mb-2">Select Topic</h2>
-                    <p id="topic-subtitle" class="text-gray-400">Practice or View Answers</p>
-                </div>
+<script>
+// --- FULL DATABASE (UNITS 1-10) ---
+const fullQuizData = {
+    1: [
+        {q:"Which of the following best explains the natural fear experienced before interviews?", a:"Human biological response", o:["Lack of intelligence","Human biological response","Poor academic record","Weak communication"]},
+        {q:"What do symptoms such as sweaty palms and increased heart rate indicate during interviews?", a:"Activation of stress response", o:["Physical illness","Activation of stress response","Fatigue","Lack of preparation"]},
+        {q:"Excessive overthinking during interviews mainly affects which ability?", a:"Concentration and decision-making ability", o:["Dressing style","Speaking speed","Concentration and decision-making ability","Body posture"]},
+        {q:"Why does fear negatively impact interview performance?", a:"Interrupts memory recall process", o:["Improves alertness","Increases confidence","Interrupts memory recall process","Enhances focus"]},
+        {q:"What does poor posture during an interview generally reflect?", a:"Lack of confidence", o:["Strong leadership","High professionalism","Lack of confidence","Time management"]},
+        {q:"The internship fear myth is commonly related to which concern?", a:"Academic performance and placement impact", o:["Skill development opportunities","Industrial exposure","Academic performance and placement impact","Professional networking"]},
+        {q:"What is the most significant benefit of internship experience for students?", a:"Development of practical professional skills", o:["Easy academic grading","Reduced academic workload","Development of practical professional skills","Flexible working hours"]},
+        {q:"On what basis do interviewers primarily evaluate candidates?", a:"Overall professional competence", o:["Attendance percentage","College reputation","Overall professional competence","Social media profile"]},
+        {q:"The ability to clearly explain technical concepts indicates which competency?", a:"Communication competence", o:["Programming speed","Memorization ability","Communication competence","Writing proficiency"]},
+        {q:"According to growth mindset theory, how are challenges viewed?", a:"Opportunities for learning and improvement", o:["Permanent failures","Career threats","Opportunities for learning and improvement","Personal limitations"]},
+        {q:"A fear-based mindset often leads to which outcome?", a:"Avoidance of challenging opportunities", o:["Faster career growth","Higher motivation","Avoidance of challenging opportunities","Skill mastery"]},
+        {q:"Why are mock interviews considered effective preparation tools?", a:"Simulate real interview environments", o:["Replace technical preparation","Guarantee job selection","Simulate real interview environments","Reduce syllabus coverage"]},
+        {q:"What is the primary purpose of practicing positive self-talk?", a:"Building mental confidence", o:["Increasing overconfidence","Ignoring weaknesses","Building mental confidence","Avoiding preparation"]},
+        {q:"Maintaining proper eye contact during interviews supports which aspect of communication?", a:"Professional engagement and confidence", o:["Aggressive behavior","Disrespectful attitude","Professional engagement and confidence","Nervous response"]},
+        {q:"What does the concept of normalizing fear refer to?", a:"Accepting nervousness as a natural reaction", o:["Avoiding interview situations","Giving excuses for mistakes","Accepting nervousness as a natural reaction","Ignoring preparation"]},
+        {q:"How does thorough preparation improve interview performance?", a:"Increasing clarity and self-confidence", o:["Reducing content scope","Avoiding effort","Increasing clarity and self-confidence","Saving time"]},
+        {q:"A strong learning attitude in candidates reflects which characteristic?", a:"Willingness to adapt and improve skills", o:["Fixed knowledge base","Short-term thinking","Willingness to adapt and improve skills","Overconfidence"]},
+        {q:"Cultural fit assessment in interviews primarily focuses on which factor?", a:"Alignment with organizational values", o:["Salary expectations","Fashion preferences","Alignment with organizational values","Language fluency"]},
+        {q:"What is a common consequence of communication breakdown during interviews?", a:"Misinterpretation of candidate responses", o:["Higher evaluation scores","Faster interview process","Misinterpretation of candidate responses","Positive feedback"]},
+        {q:"Stress hormones mainly interfere with which cognitive function of candidates?", a:"Memory performance", o:["Writing speed","Voice tone","Memory performance","Body posture"]},
+        {q:"Continuous peer comparison among students generally increases which factor?", a:"Psychological pressure and self-doubt", o:["Motivation consistency","Academic performance","Psychological pressure and self-doubt","Social interaction"]},
+        {q:"How can family expectations negatively affect student performance?", a:"Increasing internal pressure", o:["Improving emotional balance","Reducing workload","Increasing internal pressure","Increasing relaxation"]},
+        {q:"Internship experience enhances a resume primarily by providing what benefit?", a:"Real-world professional exposure", o:["Attendance records","Classroom knowledge","Real-world professional exposure","Examination scores"]},
+        {q:"How does a growth mindset contribute to long-term career success?", a:"Continuous self-improvement", o:["Risk avoidance","Fixed working habits","Continuous self-improvement","Minimum effort"]},
+        {q:"Practicing commonly asked interview questions mainly helps students in which way?", a:"Improving response clarity and confidence", o:["Memorizing fixed answers","Avoiding preparation","Improving response clarity and confidence","Guessing responses"]},
+        {q:"Appropriate body language during interviews demonstrates which quality?", a:"Confidence and professionalism", o:["Arrogance","Carelessness","Confidence and professionalism","Nervous behavior"]},
+        {q:"Technical competency in interviews refers to which ability?", a:"Apply knowledge to solve practical problems", o:["Memorize theoretical concepts","Type quickly","Apply knowledge to solve practical problems","Design presentations"]},
+        {q:"Effective career planning requires students to perform which action?", a:"Evaluate multiple career pathways", o:["Follow peer choices blindly","Avoid future planning","Evaluate multiple career pathways","Depend on luck"]},
+        {q:"Competitive examinations such as GATE should be considered for?", a:"IIT/IISc and PSU opportunities only", o:["IIT/IISc and PSU opportunities only","Escaping from work","Doing ME/MTech from any college","All of them"]},
+        {q:"Which path gives highest 40-year total earning for average student?", a:"Join workforce early after Sem 4 (age 20)", o:["Do ME teaching","Join workforce early after Sem 4 (age 20)","Join after BE","1-year break average ME"]},
+        {q:"For average student, joining early after Sem 4 vs ME teaching from non-premium college shows?", a:"Early job earns significantly more over 40 years", o:["ME teaching always better","Early job earns significantly more over 40 years","No major difference","Teaching pays highest"]},
+        {q:"Compared to joining after BE (age 22), joining workforce early after Sem 4 advantage is?", a:"Extra 2 years salary + compound growth", o:["Less total income","Extra 2 years salary + compound growth","Same outcome","More fees paid"]},
+        {q:"GATE qualified ME from Nirma/PDPU/LD teaching vs early workforce entry after Sem 4?", a:"Early entry still has higher lifetime earning", o:["Teaching far ahead","Early entry still has higher lifetime earning","Equal after 40 years","ME gives double income"]},
+        {q:"For MTech from IT, most graduates (90% chance) end up in?", a:"Reasonably good-paying teaching jobs", o:["High corporate packages","Reasonably good-paying teaching jobs","No job","Only research roles"]},
+        {q:"IIT MTech campus placement in corporates has what realistic scope?", a:"Only 10-15% of total intake", o:["90% placement","Only 10-15% of total intake","50% placement","100% guaranteed"]},
+        {q:"Even for premium IIT MTech with rare corporate placement, early workforce entry after Sem 4 usually?", a:"Still leads in total 40-year earnings due to early start", o:["Always lower","Still leads in total 40-year earnings due to early start","Same as early job","Double the income"]},
+        {q:"Taking 1-year break for GATE ME from average IIT/NIT vs joining early after Sem 4?", a:"Early job has clear financial advantage over 40 years", o:["Break always better","Early job has clear financial advantage over 40 years","Equal outcome","ME gives huge jump"]},
+        {q:"GATE qualified + direct PSU job vs joining workforce early after Sem 4?", a:"Early entry often accumulates more wealth long-term due to extra years", o:["PSU always highest","Early entry often accumulates more wealth long-term due to extra years","PSU better after 10 years","No comparison"]},
+        {q:"Main financial message for average engineering fresher?", a:"Joining workforce early after Sem 4 usually beats ME/MTech", o:["Always do ME first","Joining workforce early after Sem 4 usually beats ME/MTech","IIT MTech guarantees riches","Teaching pays most"]},
+        {q:"When a candidate pursues ME/MTech from tier 2 colleges, where does it lead in 98% cases?", a:"Towards a job of teacher/educator in a college or university", o:["PSU Job","Towards a job of teacher/educator in a college or university","Govt Job","MNC with high salary"]},
+        {q:"According to career development principles, what mainly determines career destination?", a:"Personal decisions and consistent effort", o:["College infrastructure","Peer influence","Personal decisions and consistent effort","Geographical location"]}
+    ],
+    2: [
+        {q:"What is the key mindset shift needed for proactive job searching?", a:"From 'I need a job' to 'I solve problems'", o:["From 'I solve problems' to 'I need a job'","From 'I need a job' to 'I solve problems'","From skill development to resume","From networking to online applications"]},
+        {q:"The T-shaped engineer concept emphasizes:", a:"Deep technical skills + broad complementary skills", o:["Only deep technical knowledge","Only broad soft skills","Deep technical skills + broad complementary skills","Specialization in one tool only"]},
+        {q:"What should be your primary proof of skills as an engineering student?", a:"Project portfolio", o:["High GPA","Certificate collection","Project portfolio","Recommendation letters"]},
+        {q:"Growth mindset in job search means:", a:"Viewing rejections as feedback", o:["Waiting for perfect opportunities","Viewing rejections as feedback","Applying only to guaranteed positions","Avoiding challenging roles"]},
+        {q:"The FIRST step in skill gap analysis is:", a:"Analyzing job descriptions in your field", o:["Enrolling in expensive courses","Analyzing job descriptions in your field","Asking friends for advice","Waiting for college curriculum"]},
+        {q:"Which is NOT a component of the horizontal bar in T-shaped skills?", a:"Technical programming depth", o:["Technical programming depth","Communication skills","Collaboration abilities","Business acumen"]},
+        {q:"Proactive learning for engineers means:", a:"Self-initiated skill development beyond syllabus", o:["Waiting for college to teach everything","Learning only from textbooks","Self-initiated skill development beyond syllabus","Learning passively"]},
+        {q:"The most valuable approach to building skills is:", a:"Hands-on projects with documentation", o:["Collecting certificates","Theoretical knowledge only","Memorizing interview questions","Hands-on projects with documentation"]},
+        {q:"The Ideal LinkedIn headline for a 3rd year engineering student is:", a:"Engineering Student | Python Developer | Seeking Summer Internship", o:["Student at XYZ College","Engineering Student | Python Developer | Seeking Summer Internship","Seeking internship","Future Engineer"]},
+        {q:"Which photo is appropriate for LinkedIn profile?", a:"Professional headshot with plain background", o:["Casual selfie","Professional headshot with plain background","Group photo cropped","Party photo"]},
+        {q:"The About section should include:", a:"3 paragraphs: Introduction, Skills, Goals", o:["Only your college name","Your entire life story","3 paragraphs: Introduction, Skills, Goals","Just contact information"]},
+        {q:"When describing projects in Experience section, use:", a:"STAR method (Situation, Task, Action, Result)", o:["Just project titles","STAR method (Situation, Task, Action, Result)","Emotional descriptions","Technical jargon only"]},
+        {q:"Your digital footprint includes:", a:"LinkedIn, GitHub, portfolio website", o:["Only LinkedIn","LinkedIn, GitHub, portfolio website","All social media including personal","Only resume on job portals"]},
+        {q:"Personalized connection requests should:", a:"Mention how you know them or why connecting", o:["Be sent to everyone","Mention how you know them or why connecting","Ask for job directly","Just say 'Hi'"]},
+        {q:"The best time to update your LinkedIn profile is:", a:"After completing each significant project/course", o:["Only when looking for job","After completing each significant project/course","Once a year","Never"]},
+        {q:"Which is NOT recommended for LinkedIn profile?", a:"Personal political views", o:["Professional headline","List of relevant skills","Personal political views","Project descriptions"]},
+        {q:"The ideal length of a cold email is:", a:"Less than 200 words", o:["500 words","Less than 200 words","As long as needed","One sentence"]},
+        {q:"Best days to send cold emails are:", a:"Tuesday-Thursday, 10 AM-2 PM", o:["Monday mornings","Tuesday-Thursday, 10 AM-2 PM","Friday evenings","Weekends"]},
+        {q:"Professional email signature should include:", a:"Name, college, contact, LinkedIn/GitHub", o:["Funny quote","Name, college, contact, LinkedIn/GitHub","All social media links","Colorful fonts"]},
+        {q:"The hook in cold email should:", a:"Show you researched them/company", o:["Be generic compliment","Show you researched them/company","Immediately ask for job","Talk only about yourself"]},
+        {q:"Value proposition in email means:", a:"Explaining what you can offer", o:["Demanding high salary","Explaining what you can offer","Listing all your achievements","Criticizing their company"]},
+        {q:"Appropriate follow up time after no response:", a:"One Week", o:["Next day","One Week","One month","Never follow up"]},
+        {q:"Which email domain is professional?", a:"hr@companyname.com", o:["companyhr@gmail.com","hr@companyname.com","jobs.company@rediffmail.com","company.careers@yahoo.com"]},
+        {q:"The 70/30 rule in networking conversations means:", a:"You listen 70%, talk 30%", o:["You talk 70%, listen 30%","You listen 70%, talk 30%","70% asking questions","70% Technical talk"]},
+        {q:"Best way to approach a speaker after talk:", a:"Wait your turn, start with appreciation", o:["Immediately interrupt","Wait your turn, start with appreciation","Hand over resume directly","Ask for job immediately"]},
+        {q:"What to research before attending an event?", a:"Speakers, companies, topics", o:["Only event location","Speakers, companies, topics","Dress code only","Food menu"]},
+        {q:"The 30-second introduction should include:", a:"Name, college, interests, purpose", o:["Your life story","Name, college, interests, purpose","Your GPA and marks","Only your name"]},
+        {q:"At hackathons, networking happens with:", a:"Judges, sponsors, mentors, other participants", o:["Only winning teams","Judges, sponsors, mentors, other participants","Nobody","Only organizers"]},
+        {q:"At alumni events, emphasize:", a:"Common college connection", o:["Criticizing college","Demanding job referrals","Common college connection","Your superiority"]},
+        {q:"What to bring to networking events?", a:"All of the above", o:["Multiple resumes","Notebook and pen","Business cards/digital card","All of the above"]},
+        {q:"When asking for LinkedIn connection after meeting:", a:"Mention where you met and conversation point", o:["Send generic invitation","Mention where you met and conversation point","Don't connect","Ask for job"]},
+        {q:"Networking is about:", a:"Long-term relationship building", o:["Getting immediate benefits","Long-term relationship building","Showing off","Finding people to do your work"]}
+    ],
+    3: [
+        {q:"A recruiter wants a quick 30-second scan of skills. Which document suits best?", a:"Resume", o:["Resume","CV","Video resume","Bio-data"]},
+        {q:"For a research fellowship application, why is a CV preferred?", a:"It allows detailed academic history", o:["It is shorter","It allows detailed academic history","It supports videos","It is ATS-friendly"]},
+        {q:"Which resume element causes maximum ATS parsing errors?", a:"Tables and columns", o:["Bold headings","Tables and columns","Bullet points","Section titles"]},
+        {q:"A resume mentions 'Improved system performance'. Why is this weak?", a:"Not quantified", o:["Too technical","Not quantified","Too long","Not ATS-friendly"]},
+        {q:"Which version shows correct quantification?", a:"Delivered 5 projects reducing errors by 20%", o:["Handled 5 projects","Worked on projects","Delivered 5 projects reducing errors by 20%","Projects completed"]},
+        {q:"Why should GitHub links be included for technical roles?", a:"To show real code evidence", o:["To increase resume length","To show real code evidence","To replace projects","To bypass ATS"]},
+        {q:"Which resume format maximizes ATS compatibility?", a:"Single-column chronological", o:["Creative infographic","Two-column layout","Single-column chronological","Canva template"]},
+        {q:"A video resume is MOST useful when applying for:", a:"Customer-facing roles", o:["Data analyst role","Customer-facing roles","Research roles","Government jobs"]},
+        {q:"Why do many ATS systems reject image-based PDFs?", a:"Text cannot be parsed", o:["Large file size","Poor resolution","Text cannot be parsed","Images look unprofessional"]},
+        {q:"Which metric best demonstrates impact in a resume project?", a:"Improved accuracy from 70% to 92%", o:["Used Python","Developed model","Improved accuracy from 70% to 92%","Worked in team"]},
+        {q:"A resume exceeds 3 pages for a fresher. What is the likely outcome?", a:"Immediate rejection", o:["Higher selection chance","Immediate rejection","Delayed review","ATS prioritization"]},
+        {q:"Which is the best place to insert a portfolio link?", a:"Header/contact section", o:["Header/contact section","Footer","Hobbies section","References"]},
+        {q:"Why do generic objectives reduce shortlisting chances?", a:"Not role-specific", o:["Too short","Not role-specific","ATS ignores them","Grammar issues"]},
+        {q:"Which resume change improves ATS score the MOST?", a:"Matching JD keywords", o:["Adding hobbies","Matching JD keywords","Using colors","Adding photo"]},
+        {q:"A resume uses uncommon section names like 'What I Know'. Why is this risky?", a:"ATS may not recognize sections", o:["Looks informal","ATS may not recognize sections","Recruiters dislike it","Increases length"]},
+        {q:"Which technical resume is better for a Java developer role?", a:"Project-centric with GitHub links", o:["Skill-heavy without projects","Project-centric with GitHub links","Education-only resume","Creative visual resume"]},
+        {q:"Why should file name be professional (e.g. Name_Resume.pdf)?", a:"Recruiter clarity", o:["ATS ranking","Recruiter clarity","File size reduction","SEO optimization"]},
+        {q:"Which action directly causes resume rejection despite strong skills?", a:"Spelling errors", o:["Missing hobbies","Spelling errors","No photo","Short length"]},
+        {q:"Which metric best fits a cloud engineer resume?", a:"Reduced server cost by 30%", o:["Designed UI","Reduced server cost by 30%","Created diagrams","Attended workshop"]},
+        {q:"Why are paragraphs discouraged in resumes?", a:"Hard to scan quickly", o:["They waste space","ATS ignores them","Hard to scan quickly","They look academic"]},
+        {q:"Which resume best fits a data science role?", a:"Projects with datasets & results", o:["Skill list only","Design aesthetics","Projects with datasets & results","Long career objective"]},
+        {q:"Why should LinkedIn and GitHub links be clickable?", a:"Recruiter convenience", o:["Design aesthetics","Recruiter convenience","ATS preference","File compression"]},
+        {q:"Which resume error impacts both ATS and humans?", a:"Inconsistent formatting", o:["No color","Inconsistent formatting","No hobbies","No references"]},
+        {q:"Why do recruiters prefer quantified internships?", a:"Shows learning impact", o:["Looks longer","Shows learning impact","ATS ranking","Certification proof"]},
+        {q:"Which project description is ATS-optimized?", a:"Keyword-aligned description", o:["Creative wording","Keyword-aligned description","Story-based paragraph","Image-based layout"]},
+        {q:"Why is resume customization important?", a:"Matches job description", o:["Design appeal","Matches job description","Increases file size","Reduces effort"]},
+        {q:"Which is a strong rejection reason?", a:"Overdesigned resume", o:["No extracurriculars","Overdesigned resume","Plain layout","Short resume"]},
+        {q:"Which resume element proves technical credibility most?", a:"Projects", o:["Certifications","Projects","Objective","Hobbies"]},
+        {q:"Why is STAR method useful in resumes?", a:"Structures quantified impact", o:["Improves grammar","Structures quantified impact","Reduces length","ATS requirement"]},
+        {q:"Which domain needs portfolio MOST?", a:"UI/UX", o:["UI/UX","LDCE","Accounts","Administration"]},
+        {q:"A resume uses abbreviations not in JD. Risk?", a:"Confuses ATS", o:["Confuses ATS","Increases score","Improves clarity","No effect"]},
+        {q:"Why do recruiters reject resumes with photos?", a:"Bias risk", o:["Bias risk","ATS failure","File size","Unprofessional look"]},
+        {q:"Which resume element should be removed first if space is limited?", a:"Personal details", o:["Projects","Skills","Personal details","Education"]},
+        {q:"Why is role-specific resume better than generic one?", a:"Higher relevance", o:["Less effort","Higher relevance","More design","Shorter"]},
+        {q:"Which best supports campus placements?", a:"Role specific resume/CV", o:["Academic CV","Role specific resume/CV","Video resume","Bio-data"]},
+        {q:"Which mistake lowers ATS score silently?", a:"Keyword mismatch", o:["Wrong margins","Keyword stuffing","Keyword mismatch","Bold headings"]},
+        {q:"Why are hyperlinks better than pasted URLs?", a:"Cleaner layout", o:["ATS ranking","Cleaner layout","Shorter resume","SEO"]},
+        {q:"Which resume factor shows problem-solving ability?", a:"Metrics-based projects", o:["Certifications","Metrics-based projects","Personal summary","Hobbies"]},
+        {q:"Which resume suits multiple job applications?", a:"Custom resume per role", o:["Static resume","Custom resume per role","Video resume","Design resume"]},
+        {q:"Why do recruiters scan resumes in 6-10 seconds?", a:"High volume", o:["ATS speed","High volume","Design preference","Short attention span"]},
+        {q:"Which resume mistake affects credibility?", a:"Fake metrics", o:["Missing hobbies","Fake metrics","Short objective","Plain font"]},
+        {q:"Which resume element helps domain switching?", a:"Projects", o:["Projects","Personal details","Hobbies","Photo"]},
+        {q:"Which resume outcome indicates ATS success?", a:"Interview call", o:["Interview call","Manual rejection","No response","Delayed reply"]},
+        {q:"Why should certifications support, not replace projects?", a:"Proof of application", o:["ATS ranking","Proof of application","Resume length","Design"]},
+        {q:"Which resume best fits startup hiring?", a:"Impact-driven resume", o:["Academic CV","Impact-driven resume","Bio-data","Video resume"]},
+        {q:"Why is resume rejection analysis useful?", a:"Improve targeting", o:["Blame ATS","Improve targeting","Increase pages","Change font"]},
+        {q:"Which resume section is read last?", a:"Personal details", o:["Projects","Education","Personal details","Skills"]},
+        {q:"Why are buzzwords risky without proof?", a:"Recruiters verify impact", o:["ATS ignores them","Recruiters verify impact","They increase length","They look fancy"]},
+        {q:"Which resume version best passes ATS and humans?", a:"Keyword-rich and readable", o:["Design-heavy","Keyword-rich and readable","Video resume","Image-based"]},
+        {q:"Which resume detail helps international recruiters?", a:"Clear role titles", o:["Local address","Clear role titles","Photo","Religion"]},
+        {q:"Which resume mistake causes instant manual rejection?", a:"Plagiarized content", o:["No hobbies","Plagiarized content","Short length","Plain design"]},
+        {q:"Which final check reduces rejection risk most?", a:"ATS simulation", o:["Spell check","Design check","ATS simulation","Color change"]}
+    ],
+    4: [
+        {q:"Which paralinguistic feature is used for showing mood/attitude?", a:"Tone", o:["Volume","Tone","Pitch","Pace"]},
+        {q:"Employers assess 'attitude' mainly to understand what?", a:"Willingness to learn and adapt", o:["Academic scores","Dressing style","Age","Willingness to learn and adapt"]},
+        {q:"How is the problem solving skill evaluated?", a:"Behavioral or situational questions", o:["Personal questions","Behavioral or situational questions","Dress code","Resume"]},
+        {q:"How is confidence judged during an interview?", a:"Body language and clarity", o:["Body language and clarity","Speed of speaking","Height","Accent"]},
+        {q:"What is the major advantage of online interview?", a:"Lower cost and time saving", o:["No preparation required","Lower cost and time saving","Less competition","Guaranteed selection"]},
+        {q:"How should you answer common interview questions?", a:"Be clear, honest, and relevant", o:["Give one word answers","Speak very fast","Be clear, honest, and relevant","Give long answers"]},
+        {q:"What should be the main focus of 'Tell me about yourself'?", a:"Professional and academic background", o:["Family history","Childhood stories","Professional and academic background","Personal problems"]},
+        {q:"What should you do if you don't know the answer?", a:"Admit honestly and try logically", o:["Remain silent","Guess randomly","Change the topic","Admit honestly and try logically"]},
+        {q:"Which gesture should be avoided during interviews?", a:"Excessive hand movements", o:["Natural hand movements","Smiling politely","Excessive hand movements","Nodding"]},
+        {q:"What does it indicate if you talk too softly in an interview?", a:"Nervousness", o:["Confidence","Lack of preparation","Nervousness","Leadership"]},
+        {q:"Top evaluation parameters in interviews?", a:"Knowledge & soft skills", o:["Only marks","Knowledge & soft skills","Only experience","Only salary"]},
+        {q:"For offline interviews, most important first step?", a:"Reach on time with all documents", o:["Talk to other candidates","Reach on time with all documents","Documents not required","Be casual"]},
+        {q:"What should you do in an online interview?", a:"Video on, clean/virtual background", o:["Video off","Video on, clean/virtual background","No background","Blur everything"]},
+        {q:"Before answering any question, freshers should?", a:"Listen carefully, pause & think", o:["Answer instantly","Listen carefully, pause & think","Talk fast","Interrupt interviewer"]},
+        {q:"Best structure for 'Tell me about yourself'?", a:"SEAT-Skills, Education, Achievements, Type of person", o:["Only name","SEAT-Skills, Education, Achievements, Type of person","Long life story","Only hobbies"]},
+        {q:"Good strengths to mention as fresher?", a:"Reliable, adaptable, problem solver, collaborator", o:["Arrogance","Reliable, adaptable, problem solver, collaborator","Laziness","Poor time management"]},
+        {q:"Common acceptable weaknesses for freshers?", a:"Delegating, public speaking, Impatience, saying no", o:["No weaknesses","Delegating, public speaking, Impatience, saying no","Being perfect","Lying"]},
+        {q:"'Why should we hire you?' Best answer focus?", a:"Less training needed, fast learner", o:["High salary","Less training needed, fast learner","I am best","No skills"]},
+        {q:"Future goals in 5 years should show?", a:"Skill growth & expertise", o:["No plans","Skill growth & expertise","Switch jobs often","Retire early"]},
+        {q:"When facing difficult question, freshers should?", a:"Stay calm, ask clarification if needed", o:["Panic","Stay calm, ask clarification if needed","Give wrong answer","Lie"]},
+        {q:"What is the STAR method used for?", a:"Behavioural questions", o:["Technical questions","Behavioural questions","Personal questions","Trick questions"]},
+        {q:"For 'What didn't you like about last job/college'?", a:"Answer positively: limited exposure, learned self-learning", o:["Complain a lot","Answer positively: limited exposure, learned self-learning","Blame everyone","Say nothing"]},
+        {q:"'What makes you unique?' Good answer?", a:"Quick learner, calm under pressure, adaptable, positive", o:["I am perfect","Quick learner, calm under pressure, adaptable, positive","Everyone same","I am lazy"]},
+        {q:"One word self-description examples?", a:"Resilient, determined, industrious, perfectionist", o:["Arrogant","Resilient, determined, industrious, perfectionist","Weak","Lazy"]},
+        {q:"How to define success?", a:"Achieving goals, learning from failures, continuous growth", o:["Only money","Achieving goals, learning from failures, continuous growth","No failures","Being famous"]},
+        {q:"If best friend copies/steals, what to do?", a:"Report to authority - uphold honesty", o:["Ignore","Report to authority - uphold honesty","Help them","Blame others"]},
+        {q:"Disagreeing with rule/policy - best response?", a:"Respectfully share concern, accept final decision", o:["Argue strongly","Respectfully share concern, accept final decision","Ignore rule","Break rule"]},
+        {q:"How to handle negative remarks?", a:"Listen, accept constructive, ignore baseless, stay calm", o:["Get angry","Listen, accept constructive, ignore baseless, stay calm","Argue back","Cry"]},
+        {q:"First impression in interview is formed mainly from?", a:"Formal attire & physical appearance", o:["Only words","Formal attire & physical appearance","Only resume","Only marks"]},
+        {q:"What does eye contact in an interview show?", a:"Confidence, conviction, trust", o:["Fear","Eye contact shows nothing","Arrogance","Disrespect"]},
+        {q:"Best facial expression at start?", a:"Smile, pleasant expression", o:["Frown","Smile, pleasant expression","No expression","Angry look"]},
+        {q:"What is the correct posture while sitting?", a:"Sit straight, no leaning back", o:["Slouch","Sit straight, no leaning back","Lean forward too much","Cross legs high"]},
+        {q:"How should a handshake be?", a:"Firm, with eye contact & greeting", o:["Too strong","Firm, with eye contact & greeting","Too weak","No handshake"]},
+        {q:"Low voice volume in interview shows?", a:"Low confidence", o:["High confidence","Low confidence","Anger","Excitement"]},
+        {q:"What is the best speaking pace in interview?", a:"Moderate speed", o:["Very slow","Moderate speed","Very fast","No speech"]},
+        {q:"Changing pitch in speech does what?", a:"Grabs attention", o:["Bores listener","Grabs attention","Shows fear","No effect"]},
+        {q:"What does a correct tone reflect?", a:"True emotion & strengthens message", o:["True emotion & strengthens message","Confusion","Weakness","Arrogance"]},
+        {q:"How do pauses help while speaking in interviews?", a:"Listener to process information", o:["Show nervousness","Listener to process information","Waste time","Speed up"]},
+        {q:"Why correct pronunciation matters?", a:"Avoids ambiguity & confusion", o:["Sounds cool","Avoids ambiguity & confusion","Shows slang","No importance"]},
+        {q:"Articulation in interview means?", a:"Expressing ideas clearly in words", o:["Confusing others","Expressing ideas clearly in words","Using jargon","Being silent"]}
+    ],
+    5: [
+        {q:"You discover a dependency failure at 6PM before 9AM deadline. First step?", a:"Inform manager with issue, impact, and recovery plan", o:["Stay late and fix quietly","Inform manager with issue, impact, and recovery plan","Wait until deadline","Submit incomplete"]},
+        {q:"You notice a safety interlock bypassed to save time. Best response?", a:"Raise concern respectfully and ask about safety approval", o:["Publicly accuse","Ignore it","Raise concern respectfully and ask about safety approval","Report to HR"]},
+        {q:"Another team claims your module caused delays. You aren't sure. Response?", a:"Suggest reviewing logs together and setting up joint debugging", o:["Defend strongly","Remain silent","Suggest reviewing logs together and setting up joint debugging","Escalate"]},
+        {q:"Need quick approval but manager is in meetings. Communication?", a:"Send a short, clear email stating the decision needed", o:["Send long email","Send casual chat","Send a short, clear email stating the decision needed","Wait for meeting"]},
+        {q:"Stuck on configuration issue after trying for hours. Professional mindset?", a:"Explain what you tried and where you are stuck", o:["Keep trying alone","Ask someone to do it","Explain what you tried and where you are stuck","Copy solution"]},
+        {q:"Notice possible flaw in senior-led design meeting. Participation?", a:"Raise it politely as a clarifying question", o:["Interrupt immediately","Stay silent","Raise it politely as a clarifying question","Message privately"]},
+        {q:"Team task fails, your part was correct. Ownership?", a:"Take shared responsibility and help resolve the issue", o:["State not your fault","Take shared responsibility and help resolve the issue","Stay silent","Blame others"]},
+        {q:"Deadline advanced without reduced scope, quality at risk. Response?", a:"Communicate impact and propose trade-offs", o:["Accept silently","Communicate impact and propose trade-offs","Push back emotionally","Ignore quality"]},
+        {q:"Client asks for unverified technical metric. Credibility?", a:"Say you will confirm and follow up", o:["Provide approximate","Redirect","Say you will confirm and follow up","Guess"]},
+        {q:"Update promised by EOD will be delayed. Reliability?", a:"Send a brief update with revised timing", o:["Stay silent","Send a brief update with revised timing","Deliver incomplete","Wait for reminder"]},
+        {q:"Dependency team not responding, deadline near. Accountability?", a:"Loop in your manager with context and evidence", o:["Escalate to leadership","Wait silently","Loop in your manager with context and evidence","Assume not needed"]},
+        {q:"Overloaded when assigned new task. Professional maturity?", a:"Communicate workload and ask for prioritization", o:["Accept and hope","Reject","Communicate workload and ask for prioritization","Delay silently"]},
+        {q:"Vague instructions received. Prevent rework?", a:"Ask clarifying questions early", o:["Assume expectation","Ask clarifying questions early","Copy past solution","Deliver quickly"]},
+        {q:"Client requests early delivery risking stability. Responsibility?", a:"Explain risks and propose alternatives", o:["Agree immediately","Refuse bluntly","Explain risks and propose alternatives","Workaround quietly"]},
+        {q:"Added last-minute to decision meeting. Professionalism?", a:"Quickly review context and listen actively", o:["Attend passively","Ask to postpone","Quickly review context and listen actively","Skip meeting"]},
+        {q:"Senior asks for quick help while on high-priority task. Prioritization?", a:"Clarify urgency and align priorities", o:["Drop task immediately","Say yes to both","Clarify urgency and align priorities","Ignore request"]},
+        {q:"Hidden dependency found that delays sprint. Ownership?", a:"Flag the risk early with mitigation", o:["Ignore until fail","Flag the risk early with mitigation","Work extra quiet","Assume not your job"]},
+        {q:"Two seniors give conflicting instructions. Judgment?", a:"Clarify priority with them or your manager", o:["Choose convenience","Follow last one","Clarify priority with them or your manager","Do both silently"]},
+        {q:"Shortcut saves time but violates guidelines. Integrity?", a:"Suggest it formally and seek approval", o:["Use quietly","Suggest it formally and seek approval","Ignore guidelines","Use for test only"]},
+        {q:"You believe approved approach is inefficient. Professionalism?", a:"Present concerns respectfully with data", o:["Ignore instructions","Complain to peers","Present concerns respectfully with data","Stay silent"]},
+        {q:"Demo fails in front of leadership. Immediate response?", a:"Acknowledge the issue and explain next steps", o:["Panic","Blame external","Acknowledge the issue and explain next steps","End demo"]},
+        {q:"Don't understand technical discussion. Learning?", a:"Ask a clear, concise question", o:["Pretend to understand","Ask a clear, concise question","Google during meeting","Ignore"]},
+        {q:"Late requirement change impacts task. Responsibility?", a:"Assess impact and communicate constraints", o:["Implement blindly","Ignore change","Assess impact and communicate constraints","Push back"]},
+        {q:"Sick and cannot complete committed task. Reliability?", a:"Send an update and handover if possible", o:["Say nothing","Work anyway","Send an update and handover if possible","Apologize later"]},
+        {q:"Best behavior for long-term success as fresher?", a:"Seek feedback and learn actively", o:["Focus only on tasks","Avoid responsibility","Seek feedback and learn actively","Compare with peers"]},
+        {q:"Teammate misses commitments but liked by seniors. Teamwork?", a:"Raise the concern privately and factually", o:["Complain to peers","Raise the concern privately and factually","Call out publicly","Ignore"]},
+        {q:"Estimate effort with incomplete info. Professional approach?", a:"Provide a range with assumptions", o:["Give exact number","Refuse","Provide a range with assumptions","Avoid answering"]},
+        {q:"Blocked by other team, manager asks status. Accountability?", a:"Explain dependency, impact, and next steps", o:["Say waiting","Blame them","Explain dependency, impact, and next steps","Say nothing changed"]},
+        {q:"Rushed solution vs stable later. Ethics?", a:"Communicate trade-offs and seek alignment", o:["Deliver rushed","Delay without informing","Communicate trade-offs and seek alignment","Cancel"]},
+        {q:"Colleague disrespectful to junior. Professionalism?", a:"Address respectfully or escalate appropriately", o:["Ignore","Join in","Address respectfully or escalate appropriately","Post about it"]},
+        {q:"Decision with incomplete data under pressure. Judgment?", a:"Decide and document assumptions", o:["Freeze","Guess","Decide and document assumptions","Avoid"]},
+        {q:"Repeated unclear instructions. Efficiency?", a:"Ask for structured clarification", o:["Adjust silently","Ignore","Ask for structured clarification","Complain"]},
+        {q:"Contacted outside hours for non-urgent task. Boundaries?", a:"Respond politely and schedule later", o:["Ignore","Respond politely and schedule later","Work immediately","Respond rudely"]},
+        {q:"Small mistake could grow. Integrity?", a:"Inform early and correct it", o:["Fix quietly","Hope unnoticed","Inform early and correct it","Blame circumstances"]},
+        {q:"Asked to assist intern while busy. Leadership?", a:"Guide briefly and set boundaries", o:["Ignore","Do their work","Guide briefly and set boundaries","Say yes to all"]},
+        {q:"Habit that builds trust early?", a:"Consistent communication and delivery", o:["Working silently","Saying yes","Consistent communication and delivery","Avoiding visibility"]},
+        {q:"Request conflicts with policy but from influential person. Integrity?", a:"Explain constraints and suggest alternatives", o:["Comply quietly","Refuse bluntly","Explain constraints and suggest alternatives","Ignore request"]},
+        {q:"Before marking task complete. Professional mindset?", a:"Is this clear and usable by others", o:["It works for me","Deadline met","Is this clear and usable by others","Someone else checks"]},
+        {q:"Stress making communication abrupt. Adjustment?", a:"Pause and respond calmly", o:["Continue as-is","Avoid comms","Pause and respond calmly","Let frustration show"]},
+        {q:"Response reflecting strong engineering mindset?", a:"Reflect and improve", o:["Avoid mistakes","Learn if forced","Reflect and improve","Focus only on instructions"]}
+    ],
+    6: [
+        {q:"Professional effectiveness mainly focuses on:", a:"Soft skills, habits, and mindset", o:["Only technical skills","Only communication skills","Soft skills, habits, and mindset","Entertainment skills"]},
+        {q:"Arriving early for meetings shows:", a:"Respect and reliability", o:["Fear","Respect and reliability","Overconfidence","Laziness"]},
+        {q:"Ideal arrival time before meetings should be:", a:"10-15 minutes early", o:["Exactly on time","10-15 minutes early","2 minutes early","30 minutes early"]},
+        {q:"Which tool is used for task tracking and management?", a:"Jira", o:["Jira","Photoshop","VLC Player","WhatsApp"]},
+        {q:"Breaking big projects into small tasks helps in:", a:"Better time management", o:["Confusion","Delay","Better time management","Laziness"]},
+        {q:"If delay is expected, what should you do?", a:"Inform team early", o:["Inform team early","Hide the problem","Ignore deadline","Quit work"]},
+        {q:"Morning planning helps in:", a:"Aligning daily priorities", o:["Sleeping more","Aligning daily priorities","Entertainment","Avoiding work"]},
+        {q:"Asking questions during code review helps to:", a:"Understand system design", o:["Waste time","Show off","Understand system design","Avoid work"]},
+        {q:"Self-learning mainly develops:", a:"Independence", o:["Laziness","Dependency","Independence","Fear"]},
+        {q:"Official documentation is useful for:", a:"Learning best practices", o:["Learning best practices","Entertainment","Gaming","Time pass"]},
+        {q:"Which platform provides online technical courses?", a:"Coursera", o:["Coursera","Netflix","Instagram","Spotify"]},
+        {q:"Open-source contribution helps in:", a:"Building network", o:["Building network","Isolation","Reducing skills","Losing confidence"]},
+        {q:"Before suggesting innovation, you should first:", a:"Understand existing process", o:["Understand existing process","Criticize system","Reject rules","Skip training"]},
+        {q:"Credibility is built by:", a:"Delivering work consistently", o:["Delivering work consistently","Taking more","Complaining","Taking leaves"]},
+        {q:"Data-backed ideas are important because they:", a:"Increase acceptance", o:["Increase acceptance","Look attractive","Waste time","Confuse management"]},
+        {q:"Best time to suggest ideas is during:", a:"Brainstorming or meetings", o:["High pressure deadlines","Brainstorming or meetings","Lunch break","Office exit time"]},
+        {q:"SOP stands for:", a:"Standard Operating Procedures", o:["Standard Operating Procedures","System Operating Plan","Software Output Program","Service Order Process"]},
+        {q:"Which behavior reflects a positive professional attitude?", a:"Accepting feedback and improving", o:["Avoiding teamwork","Complaining about tasks","Accepting feedback and improving","Ignoring mistakes"]},
+        {q:"Learning from seniors helps in:", a:"Experience gain", o:["Experience gain","Ego building","Time waste","Conflict"]},
+        {q:"Jugaad mindset means:", a:"Creative problem solving", o:["Creative problem solving","Cheating","Avoiding work","Breaking rules"]},
+        {q:"Most valuable asset for professionals is:", a:"Time", o:["Time","Mobile","Laptop","Money"]},
+        {q:"Technology growth requires professionals to:", a:"Keep learning continuously", o:["Keep learning continuously","Stop learning","Ignore trends","Avoid updates"]},
+        {q:"Reputation at workplace is built by:", a:"Consistent delivery", o:["Consistent delivery","Talking more","Arguing","Showing attitude"]},
+        {q:"Professional journey is compared to:", a:"Marathon", o:["Marathon","Race","Sprint","Game"]},
+        {q:"Positive attitude helps in:", a:"Handling challenges", o:["Handling challenges","Creating stress","Avoiding work","Losing focus"]},
+        {q:"Persistence and dedication lead to:", a:"Success", o:["Success","Failure","Confusion","Delay"]},
+        {q:"Following SOP in an organization mainly helps to:", a:"Maintain consistency and quality of work", o:["Maintain consistency and quality of work","Increase confusion","Reduce teamwork","Slow down performance"]},
+        {q:"A proactive intern will:", a:"Take initiative and learn new skills", o:["Wait for instructions always","Avoid responsibility","Take initiative and learn new skills","Only complete assigned tasks"]},
+        {q:"What should a fresher do when facing difficulty in a task?", a:"Ask for guidance and try to learn", o:["Quit the task","Ignore the problem","Ask for guidance and try to learn","Blame teammates"]},
+        {q:"Which quality helps in long-term career growth?", a:"Continuous learning attitude", o:["Continuous learning attitude","Overconfidence","Laziness","Avoiding teamwork"]}
+    ],
+    7: [
+        {q:"Why is a professional phone greeting important for freshers?", a:"It creates a positive first impression", o:["It creates a positive first impression","It saves time","It allows casual talk","It hides nervousness"]},
+        {q:"What is the best way for freshers to handle a missed call from senior/HR?", a:"Return call within working hours & apologize", o:["Ignore if not urgent","Return call within working hours & apologize","Ask 'Who is this?'","Send missed call back"]},
+        {q:"What should freshers avoid in official WhatsApp/SMS?", a:"Emojis, slang, memes", o:["Emojis, slang, memes","Polite language","Short replies","Using company group"]},
+        {q:"What must be the tone of an email?", a:"4-6 lines with clear purpose", o:["4-6 lines with clear purpose","One-liner","10+ lines","Long stories"]},
+        {q:"Correct email tone for freshers?", a:"Polite, neutral, no anger or slang", o:["Write in anger","Polite, neutral, no anger or slang","Use emojis","Include personal matters"]},
+        {q:"When should freshers use 'Reply All' in emails?", a:"Only when everyone needs the info", o:["Only when everyone needs the info","Always use it","Send Thank you to all","Reply All for fun"]},
+        {q:"What is the most important step when using AI for email drafting?", a:"Always review and edit before sending", o:["Always review and edit before sending","Copy-paste blindly","Ignore grammar","Send without checking names"]},
+        {q:"Good progress update to manager should include?", a:"Specific progress, next steps, honest delays", o:["Specific progress, next steps, honest delays","Just 'Work going on'","No update unless asked","Only good news"]},
+        {q:"Why avoid last-minute surprises in work updates?", a:"It breaks trust and causes bigger issues", o:["It breaks trust and causes bigger issues","It saves time","Managers like surprises","It shows creativity"]},
+        {q:"What does active listening mean?", a:"Full focus on speaker, no distractions", o:["Full focus on speaker, no distractions","Think of reply while listening","Multitask","Interrupt often"]},
+        {q:"What is the polite way for freshers to disagree with senior?", a:"I understand your view, however...", o:["I understand your view, however...","You are wrong","Ignore and do your way","Argue strongly"]},
+        {q:"Valuing diverse opinions helps freshers in what way?", a:"Improve ideas and show respect", o:["Stick to own opinion","Improve ideas and show respect","Avoid teamwork","Blame others"]},
+        {q:"True collaboration for freshers means?", a:"Team success > individual credit", o:["Team success > individual credit","Take all credit","Avoid helping others","Compete with team"]},
+        {q:"Work hours ethics for freshers emphasize?", a:"Productivity during office time, not late sitting", o:["Productivity during office time, not late sitting","Stay late to show hard work","Coming late is okay","Leave early daily"]},
+        {q:"What does continuous overtime lead to?", a:"Burnout and reduced performance", o:["Burnout and reduced performance","Better performance","Immediate promotion","Extra pay always"]},
+        {q:"What is the ethical duty of a fresher regarding company data?", a:"Protect confidentiality, never share passwords or post online", o:["Protect confidentiality, never share passwords or post online","Share on social media","Save on personal devices","Discuss in public"]},
+        {q:"Best response when a fresher makes a mistake?", a:"Own it early, apologize, focus on solutions", o:["Blame others","Own it early, apologize, focus on solutions","Hide it","Make excuses"]},
+        {q:"Why avoid slang abbreviations in professional emails?", a:"They make email look unprofessional", o:["They make email look unprofessional","They save time","Seniors like them","They show creativity"]},
+        {q:"What is the correct etiquette for email attachments?", a:"Mention clearly, avoid too many large files", o:["Mention clearly, avoid too many large files","Send many without mention","Attach personal photos","Ignore file size"]},
+        {q:"One email should ideally have?", a:"One clear purpose", o:["One clear purpose","Multiple topics","No subject","Long attachments"]},
+        {q:"Good subject line for fresher emails?", a:"Clear and matches content", o:["Clear and matches content","Vague or funny","Missing","Too long"]},
+        {q:"Late return of missed calls without apology can cost freshers?", a:"Internship or job opportunity", o:["Internship or job opportunity","Nothing","Extra respect","Praise"]},
+        {q:"Professional language in official WhatsApp groups shows?", a:"Maturity and respect", o:["Maturity and respect","Casual attitude","No rules needed","Being cool"]},
+        {q:"Using 'Reply All' to say 'Thank you' is poor email etiquette. Why?", a:"It clutters everyone's inbox", o:["It clutters everyone's inbox","It shows politeness","It increases internet usage","It saves time"]},
+        {q:"How does regular honest updates to manager help freshers?", a:"Build trust, avoid surprises", o:["Build trust, avoid surprises","Get extra work","Hide delays","Show independence"]},
+        {q:"What does poor active listening often cause?", a:"Misunderstandings and work errors", o:["Misunderstandings and work errors","Better understanding","Faster work","More creativity"]},
+        {q:"What must the freshers avoid in polite disagreement?", a:"Sarcasm, shouting, rude tone", o:["Sarcasm, shouting, rude tone","Using 'however'","Listen first","Respectful words"]},
+        {q:"How does owning mistakes early help freshers?", a:"Build trust and focus on growth", o:["Build trust and focus on growth","Lose respect","Avoid responsibility","Blame team"]},
+        {q:"Why protect data confidentiality even after hours?", a:"Leaks can cause serious career/legal issues", o:["Leaks can cause serious career/legal issues","No one checks","It's optional","Sharing is caring"]},
+        {q:"What is the final takeaway for freshers on etiquettes & ethics?", a:"Good behavior = skills + long-term success", o:["Good behavior = skills + long-term success","Only skills matter","Etiquette not needed","Ethics optional"]}
+    ],
+    8: [
+        {q:"Employer tries to find:", a:"All of them", o:["Technical skills","Soft skills","Desire to work","All of them"]},
+        {q:"What is True?", a:"70% Tendency to work & 30% Skills gets better opportunity", o:["70% Tendency to work & 30% Skills gets better opportunity","High Marks = Job Guarantee","More study = better job","Boasting CV gets Better Job"]},
+        {q:"Employers appreciate:", a:"Small Projects with core efforts", o:["Small Projects with core efforts","Big names of projects","Better marks only in Marksheet","So-called efforts"]},
+        {q:"What is appreciated for a fresher?", a:"Self learning ability", o:["Self learning ability","Soft skills only","Waiting for a trainer","All of them"]},
+        {q:"Which mindset is expected?", a:"I tried, failed, learned, fixed it", o:["Faculty taught me this much","I tried, failed, learned, fixed it","I studied this in college","AI can work for me"]},
+        {q:"What is a realistic expectation of a fresher?", a:"First job will be a Learning job", o:["First job will be a Learning job","High package","Luxury job","Fast Promotion"]},
+        {q:"What does NOT fit employer expectations?", a:"Unclear emails & no follow ups", o:["Learn fast","Work honestly","Grow steadily","Unclear emails & no follow ups"]},
+        {q:"Employers don't expect you to know everything. True or False?", a:"TRUE", o:["TRUE","FALSE"]},
+        {q:"What does not make you better employable as a fresher?", a:"College degree only", o:["College degree only","Positive attitude","Long term commitment","Self Learning ability"]},
+        {q:"What is the myth about high marks in college?", a:"High marks guarantee a job", o:["High marks guarantee a job","High marks may open a few opportunities","High marks get you an interview","High marks still need skills"]},
+        {q:"Employers test your problem solving by asking: 'Can you still try to solve the problem if...'", a:"Google is OFF or senior is on leave", o:["Google is OFF or senior is on leave","Google available","ChatGPT is free","Sir taught it in class"]},
+        {q:"Toxic culture in workplaces is:", a:"A real issue to pay attention to", o:["Mostly exaggerated","A real issue to pay attention to","Only in small companies","A common scenario"]},
+        {q:"Key to standing out: Show...", a:"Learning agility and positive attitude", o:["Learning agility and positive attitude","Resistance to feedback","Tardiness","Isolation"]},
+        {q:"Which of the following is a biggest red flag for employment?", a:"'I already know this'", o:["'I already know this'","I learn","Please guide me","I made a mistake"]},
+        {q:"Pressure doesn't break careers—what does?", a:"Attitude", o:["Tight deadlines","Sudden changes","Attitude","Self-learning"]},
+        {q:"Your college degree makes you:", a:"Eligible, while attitude makes you employable", o:["Eligible, while attitude makes you employable","Employable directly","Guaranteed a job","Ready for high package"]},
+        {q:"To become indispensable early, focus on being:", a:"Reliable, high-quality delivery, and proactive", o:["Reliable, high-quality delivery, and proactive","Unreliable with excuses","Invisible in team","Argumentative"]},
+        {q:"Which factor has shifted employer focus away from pure degrees?", a:"Need for outcome-focused, skills-driven hiring", o:["Need for outcome-focused, skills-driven hiring","Economic slowdown","Increase in government jobs","Decline in tech roles"]},
+        {q:"As a fresher, what should be your primary focus in the first 1-2 years?", a:"Learning, skill-building, mentorship, and good culture", o:["Learning, skill-building, mentorship, and good culture","Highest possible salary only","Immediate promotions","Remote work only"]},
+        {q:"What is often advised over salary alone for freshers?", a:"Experience positive culture", o:["Experience positive culture","Short-term high pay with no learning","Frequent job changes every 2 months","Ignoring reviews"]},
+        {q:"For internship aspirants, a good opportunity offers:", a:"Real projects, and skill exposure", o:["Real projects, and skill exposure","Only certificate without real work","No stipend & No Agreement","Isolation from team"]},
+        {q:"Legally, bonds can be enforceable if:", a:"Reasonable, protects genuine employer interest and voluntary", o:["Reasonable, protects genuine employer interest and voluntary","Extremely high penalty","Signed under pressure","Unlimited duration"]},
+        {q:"Employers don't expect freshers to:", a:"Know everything", o:["Know everything","Be honest and adaptable","Be reliable","Be hungry to learn"]},
+        {q:"Which is a common component in fresher offer letters in India?", a:"Probation period (3-6 months)", o:["Probation period (3-6 months)","Lifetime employment guarantee","No salary details","Unlimited leaves without approval"]},
+        {q:"Why do companies use Job Agreements/Service Agreements (Bonds)?", a:"To recover training, hiring costs, and losses if you leave early", o:["To recover training, hiring costs, and losses if you leave early","To give free coffee","To force high packages","To avoid interviews"]},
+        {q:"Before accepting a job offer try to understand:", a:"Bond clauses, notice period and take-home pay", o:["Bond clauses, notice period and take-home pay","Color of letterhead","Company logo only","Nothing"]},
+        {q:"Resignation from a so-called toxic culture is:", a:"A true courage", o:["A true courage","A false mental peace","An exemplary work","A loss to the company"]},
+        {q:"When might it be okay to stay in a challenging job short-term?", a:"High learning/growth potential and fixable issues", o:["High learning/growth potential and fixable issues","Severe workload","No pay","Bullying"]},
+        {q:"Frequent job hops (every 6-12 months) as a fresher can signal:", a:"Instability to some recruiters", o:["Instability to some recruiters","Always positive","No impact","Guaranteed hire"]},
+        {q:"In today's Indian market, how are 6-8 months shifts viewed?", a:"Many a times red flag", o:["Many a times red flag","Acceptable (growth, better role)","Better than long tenure","Irrelevant"]}
+    ],
+    9: [
+        {q:"Why group communication matters?", a:"Speed, clarity, alignment, decisions, accountability", o:["Wastes time","Speed, clarity, alignment, decisions, accountability","Creates confusion","Delays projects"]},
+        {q:"What happens when communication fails?", a:"Blame, confusion, delay, conflict, rework", o:["Smooth progress","Blame, confusion, delay, conflict, rework","Faster finish","No impact"]},
+        {q:"Biggest advantage of offline meetings?", a:"Body language, instant feedback + bonding", o:["Body language, instant feedback + bonding","No need to attend","Only remote","Hard to schedule"]},
+        {q:"What makes a good offline meeting?", a:"Agenda, punctuality, participation, notes", o:["No agenda","Agenda, punctuality, participation, notes","Phone scrolling","Late start"]},
+        {q:"Signs of bad offline meeting?", a:"No agenda, late, scrolling, no outcome", o:["Everyone on time","No agenda, late, scrolling, no outcome","Active participation","Clear decisions"]},
+        {q:"Advantages of online groups?", a:"Fast, remote, searchable, flexible", o:["Fast, remote, searchable, flexible","Slow and rigid","No records","Only face-to-face"]},
+        {q:"Common online meeting mistakes?", a:"Reply All misuse, emoji overload, voice notes, late replies", o:["Short clear messages","Reply All misuse, emoji overload, voice notes, late replies","No emojis","Quick responses"]},
+        {q:"Being considerate means?", a:"Empathy, listening, patience to others", o:["Ignoring others","Empathy, listening, patience to others","Being rude","Self-focused"]},
+        {q:"What shows disrespect in groups?", a:"Interrupting, ignoring, sarcasm, not listening", o:["Active listening","Interrupting, ignoring, sarcasm, not listening","Polite tone","Encouraging others"]},
+        {q:"Minutes of Meeting should include?", a:"Decisions, actions, deadlines, responsibility", o:["Only jokes","Decisions, actions, deadlines, responsibility","Personal chats","No details"]},
+        {q:"Why MoM important?", a:"Clarity, accountability, reference record", o:["Wastes time","Clarity, accountability, reference record","Confuses everyone","No one reads"]},
+        {q:"Best during meetings?", a:"Avoid gadgets, use pen & paper", o:["Scroll phone","Avoid gadgets, use pen & paper","Multitask on laptop","Record secretly"]},
+        {q:"Why avoid digital distractions?", a:"Low attention, more mistakes", o:["Improves focus","Low attention, more mistakes","Saves time","Everyone does it"]},
+        {q:"Meeting that could be email?", a:"Choose right mode - many unnecessary", o:["All","Choose right mode - many unnecessary","Emails useless","Meetings always better"]},
+        {q:"Punctuality in meetings shows?", a:"Respect for time", o:["Respect for time","Laziness","No importance","Casual attitude"]},
+        {q:"Participation helps freshers?", a:"Learn faster, show engagement", o:["Stay silent","Learn faster, show engagement","Avoid responsibility","Take credit"]},
+        {q:"Taking notes helps?", a:"Remember decisions and actions", o:["Remember decisions and actions","Wastes paper","No need","Only seniors note"]},
+        {q:"Late replies in groups cause?", a:"Team delays and frustration", o:["Faster progress","Team delays and frustration","No issue","Everyone waits"]},
+        {q:"Emoji overload looks?", a:"Unprofessional, childish", o:["Unprofessional, childish","Very mature","Appreciated","No effect"]},
+        {q:"Voice notes in work groups?", a:"Not preferred - use text", o:["Best option","Not preferred - use text","Always allowed","Mandatory"]},
+        {q:"Reply All misuse causes?", a:"Cluttered inboxes, irritation", o:["Cluttered inboxes, irritation","Better visibility","No problem","Everyone likes"]},
+        {q:"Mindful of others' feelings means?", a:"Avoid harsh words, value goals", o:["Speak rudely","Avoid harsh words, value goals","Ignore emotions","Your needs only"]},
+        {q:"Active listening shows?", a:"Respect and learning attitude", o:["Respect and learning attitude","Disinterest","Impatience","Distraction"]},
+        {q:"Patience in discussions helps?", a:"Better team relations and ideas", o:["Better team relations and ideas","Finish faster","Argue more","Ignore others"]},
+        {q:"Why avoid phone scrolling?", a:"Shows disrespect, reduces focus", o:["Shows disrespect, reduces focus","Helps multitasking","Everyone does","Saves time"]},
+        {q:"Good meeting outcome?", a:"Clear decisions, assigned actions", o:["Clear decisions, assigned actions","No decisions","Only discussion","Confusion"]},
+        {q:"Searchable online groups help?", a:"Find past decisions easily", o:["Find past decisions easily","Forget everything","Lose info","No records"]},
+        {q:"Flexibility of online groups allows?", a:"Remote work, join anywhere", o:["Remote work, join anywhere","Only office","No flexibility","Only offline"]},
+        {q:"Body language in offline helps?", a:"Understand tone, build trust", o:["Understand tone, build trust","Hide feelings","No importance","Words only"]},
+        {q:"Instant feedback in face-to-face?", a:"Clarifies doubts quickly", o:["Clarifies doubts quickly","Causes delay","No need","Slow process"]},
+        {q:"Team bonding in offline?", a:"Feel part of team, collaborate better", o:["Feel isolated","Feel part of team, collaborate better","Avoid people","Stay distant"]},
+        {q:"No agenda leads to?", a:"Wasted time, unclear outcomes", o:["Perfect meeting","Wasted time, unclear outcomes","Faster decisions","More focus"]},
+        {q:"Empathy in communication means?", a:"Understand colleagues' needs/feelings", o:["Ignore others","Understand colleagues' needs/feelings","Be selfish","Your goals only"]},
+        {q:"Why pen & paper over gadgets?", a:"Reduces distractions, improves focus", o:["Reduces distractions, improves focus","More modern","Looks old","Everyone uses phone"]},
+        {q:"Key for freshers in group communication?", a:"Respectful, considerate, clear - avoid confusion", o:["Be silent","Respectful, considerate, clear - avoid confusion","Talk more","Ignore others"]},
+        {q:"What is the primary advantage of group communication at the workplace?", a:"Faster decision-making", o:["Faster decision-making","Entertainment","Personal bonding only","Informal discussions"]},
+        {q:"Which of the following best represents an offline meeting?", a:"Face-to-face interaction", o:["Face-to-face interaction","Email discussion","WhatsApp group chat","Voice note exchange"]},
+        {q:"Which element plays a major role in offline meetings but not in online chats?", a:"Body language", o:["Body language","Emojis","Internet speed","Search history"]},
+        {q:"Instant feedback is mainly associated with:", a:"Offline meetings", o:["Offline meetings","Email communication","Recorded meetings","Notices"]},
+        {q:"Which of the following is a feature of a good offline meeting?", a:"Active participation", o:["Active participation","No agenda","Late start","Phone scrolling"]},
+        {q:"A meeting without a clear outcome is considered as:", a:"Bad meeting", o:["Bad meeting","Productive","Effective","Strategic meeting"]},
+        {q:"Which of the following is NOT a disadvantage of poor communication?", a:"Alignment", o:["Alignment","Confusion","Delay","Conflict"]},
+        {q:"Online office communication groups allow teams to work:", a:"Remotely", o:["Remotely","Only during meetings","Only from office","Only during office hours"]},
+        {q:"Which platform is primarily designed for professional team communication?", a:"Slack", o:["Slack","Instagram","Snapchat","Telegram Channels"]},
+        {q:"Which element is considered the primary advantage of offline meetings for understanding sentiment?", a:"Interpretation of body language", o:["Interpretation of body language","Searchable documentation","Asynchronous feedback","Digital participation tracking"]},
+        {q:"Most likely consequence of conducting a meeting without a predefined agenda?", a:"Ambiguous outcomes and lack of direction", o:["Ambiguous outcomes and lack of direction","Increased team bonding","Instantaneous consensus","Enhanced creative spontaneity"]},
+        {q:"Why is 'Alignment' cited as a critical reason for group communication?", a:"To ensure all members are working toward synchronized objectives", o:["To ensure all members are working toward synchronized objectives","To reduce employees","To eliminate accountability","To replace documentation"]},
+        {q:"Which characteristic of online groups provides long-term utility that offline conversations lack?", a:"Searchable archives of past discussions", o:["Searchable archives of past discussions","Emotional resonance","Physical presence","Interpretation of non-verbal cues"]},
+        {q:"What does 'Emoji Overload' signify regarding professional communication?", a:"The dilution of professional clarity through excessive informal symbols", o:["The dilution of professional clarity through excessive informal symbols","High levels of team engagement","Advanced technical proficiency","Efficient documentation"]},
+        {q:"Why is 'Flexibility' a cornerstone advantage of platforms like Slack/Teams?", a:"It allows collaboration across different time zones and locations", o:["It allows collaboration across different time zones and locations","It mandates simultaneous work","It removes respect","It prevents searchable data"]},
+        {q:"Primary risk associated with 'Late Replies' in fast-paced groups?", a:"Bottlenecks in decision-making and project stagnation", o:["Bottlenecks in decision-making and project stagnation","Increased server storage","Prioritizing personal deadlines","Increased project speed"]},
+        {q:"Which digital mistake causes notification fatigue for uninvolved stakeholders?", a:"Improper use of 'Reply All' in email or group threads", o:["Improper use of 'Reply All' in email or group threads","Sending voice notes","Using Zoom","Higher levels of accountability"]},
+        {q:"What does it mean to be 'mindful of others' needs and goals'?", a:"Actively considering how your communication affects colleagues' workflow", o:["Actively considering how your communication affects colleagues' workflow","Aggression","Apathy","Starting a meeting with introductions"]},
+        {q:"What is the likely result of a disrespectful communication style?", a:"Breakdown of collaboration and professional relationships", o:["Breakdown of collaboration and professional relationships","It allows the team to miss deadlines","It encourages emoji overload","To provide a list of latecomers"]},
+        {q:"Which psychological attribute is essential for 'Professional Courtesy'?", a:"Empathy", o:["Empathy","Taking notes on paper","Moving from offline to online","Using a technical tone"]},
+        {q:"Why is 'Patience' categorized as professional respect in diverse teams?", a:"It provides space for different perspectives and processing speeds", o:["It provides space for different perspectives and processing speeds","To record exact time","It encourages voice notes","Better retention of information"]},
+        {q:"Which behavior is explicitly cited as disrespect in a modern office?", a:"Managers making excessive demands at inappropriate times (e.g. late evening)", o:["Managers making excessive demands at inappropriate times (e.g. late evening)","Switching pen colors","Action Items","Recording a virtual meeting"]},
+        {q:"Fundamental purpose of documenting 'Decisions' in MoM?", a:"To prevent future disputes and ensure clarity on agreed-upon paths", o:["To prevent future disputes and ensure clarity on agreed-upon paths","To record every word verbatim","To replace the agenda","To eliminate MoM"]},
+        {q:"What does 'Context Switching' refer to regarding gadgets in meetings?", a:"The mental drain caused by jumping between the meeting and digital notifications", o:["The mental drain caused by jumping between the meeting and digital notifications","MoM-Discussion-Agenda","Changing agenda mid-discussion","Using a searchable database"]},
+        {q:"How does 'Active Listening' correlate with analog note-taking?", a:"It forces the brain to process and synthesize information before writing", o:["It forces the brain to process and synthesize information before writing","It prevents follow-up","Isolationism","Better documentation"]},
+        {q:"Which sequence correctly represents the flow of a productive meeting?", a:"Agenda -> Discussion -> Action Items -> MoM", o:["Agenda -> Discussion -> Action Items -> MoM","Action Items -> Agenda -> Introductions","Discussion -> MoM -> Phone Scrolling","MoM -> Discussion -> Agenda"]},
+        {q:"What does the LJET philosophy 'University with a Difference' imply?", a:"Soft skills like effective communication and courtesy are vital professional pillars", o:["Soft skills like effective communication and courtesy are vital professional pillars","Technical skills are the only requirement","Meetings should always be online","Students should not use pen and paper"]},
+        {q:"When is it appropriate to 'Just Put It In An Email'?", a:"When the information is purely for one-way dissemination and requires no discussion", o:["When the information is purely for one-way dissemination and requires no discussion","When a complex decision is required","When team bonding is the goal","When body language is essential"]},
+        {q:"'Digital Distraction' in a meeting leads to:", a:"Critical mistakes due to low attention", o:["Critical mistakes due to low attention","Better retention","Faster introductions","Increased empathy"]},
+        {q:"Ultimate goal of 'Group Communication at Workplace'?", a:"To facilitate efficient decision-making and collective success", o:["To facilitate efficient decision-making and collective success","To increase the workday","To transition all meetings to WhatsApp","To eliminate paper"]}
+    ],
+    10: [
+        {q:"Why should you think twice before quitting an internship impulsively?", a:"It maintains positive relationships and professionalism for future opportunities", o:["It maintains positive relationships and professionalism for future opportunities","It saves money on notice periods","Quit early to get high pay","It allows you to demand higher salary"]},
+        {q:"For freshers, earnings progression from Rs. 10k to Rs. 3L/month implies:", a:"Staying and growing in a role can lead to significant salary jumps over time", o:["Staying and growing in a role can lead to significant salary jumps over time","Earnings don't increase with time","It helps avoid learning new skills","Internships pay nothing"]},
+        {q:"What mindset should freshers adopt to avoid quitting?", a:"Building experience and networks through respectful exits if needed", o:["Building experience and networks through respectful exits if needed","Blaming the company for everything","Ignoring handover responsibilities","Leaving without notice"]},
+        {q:"Informing your reporting manager first before HR helps freshers to:", a:"Demonstrate professionalism and avoid burning bridges", o:["Demonstrate professionalism and avoid burning bridges","Create conflict","Get immediate approval to quit","Demand promotions"]},
+        {q:"Why is following the notice period important for freshers?", a:"It shows responsibility and allows time to reflect on your decision", o:["It shows responsibility and allows time to reflect on your decision","It lets you leave instantly","Hiding knowledge to feel important","It reduces your salary"]},
+        {q:"The handover plan includes documenting projects. For freshers, this encourages:", a:"Contributing positively, which builds a good reputation and satisfaction", o:["Contributing positively, which builds a good reputation and satisfaction","Quitting without training others","Delaying your exit","It makes the company angry"]},
+        {q:"Offering availability after resignation helps freshers:", a:"Maintain supportive networks that could lead to better opportunities later", o:["Maintain supportive networks that could lead to better opportunities later","Get paid extra forever","Avoid all future jobs","Criticize the old company"]},
+        {q:"'Leaving with Dignity & Gratitude' stops quitting by:", a:"Fostering appreciation for growth opportunities learned", o:["Fostering appreciation for growth opportunities learned","Encouraging blame games","Focusing on ego","Promoting grief"]},
+        {q:"As a fresher, 'Zero Ego, Zero Grief' means:", a:"Exiting respectfully to preserve your professional image", o:["Exiting respectfully to preserve your professional image","Being arrogant when leaving","Demanding more from the company","Causing drama"]},
+        {q:"Gratitude for opportunities helps freshers stay longer by:", a:"Recognizing value in current role and focusing on positives", o:["Recognizing value in current role and focusing on positives","Complaining about lacks","Ignoring responsibilities","Planning secret exits"]},
+        {q:"For freshers, quitting hastily could:", a:"Damage future references and collaborations", o:["Damage future references and collaborations","Increase immediate pay","Make you famous","Shorten notice periods"]},
+        {q:"For a fresher, a smooth offboarding process refers to:", a:"Handle transitions maturely, reducing urge to quit impulsively", o:["Handle transitions maturely, reducing urge to quit impulsively","Ignore stakeholders","Quit without planning","Be unprofessional"]},
+        {q:"Before initiating resignation, it is advised to take a clear decision to stop:", a:"Quitting on emotional whims without weighing pros/cons", o:["Quitting on emotional whims without weighing pros/cons","Thinking at all","Get fired faster","Staying forever"]},
+        {q:"Maintaining a positive tone during resignation discussions helps freshers:", a:"Build goodwill, making them reconsider if the issues are fixable", o:["Build goodwill, making them reconsider if the issues are fixable","Argue better","Skip work","Force overtime"]},
+        {q:"Informing well in advance allows freshers time to:", a:"Reflect and possibly resolve issues instead of quitting", o:["Reflect and possibly resolve issues instead of quitting","Pack bags quickly","Delay pay","Informing anyone"]},
+        {q:"The purpose of notice period (1-3 months) for freshers is to:", a:"Ensure smooth handover, teaching patience and commitment", o:["Ensure smooth handover, teaching patience and commitment","Punish employees","Demand hikes","Complain publicly"]},
+        {q:"The handover overview includes roles and projects. Freshers should see this as:", a:"Opportunity to organize thoughts and value their contributions", o:["Opportunity to organize thoughts and value their contributions","Extra burden to quit faster","Useless documentation","Way to hide mistakes"]},
+        {q:"Including 'Lessons learned' in handover helps freshers:", a:"Realize growth achieved, reducing desire to quit prematurely", o:["Realize growth achieved, reducing desire to quit prematurely","Blame others","Forget past","Demand bonuses"]},
+        {q:"Q&A & handover sign-off in the process encourages freshers to:", a:"Ensure clarity, fostering a sense of completion and pride", o:["Ensure clarity, fostering a sense of completion and pride","Leave loose ends","Avoid questions","Be unclear"]},
+        {q:"Phrasing availability politely shows freshers:", a:"Professionalism that strengthens networks and future prospects", o:["Professionalism that strengthens networks and future prospects","They must work free","Weakness","Indecision"]},
+        {q:"Zero Ego, Zero Grief means freshers should exit:", a:"Respectfully, focusing on growth to avoid regretful quits", o:["Respectfully, focusing on growth to avoid regretful quits","With anger","Blaming everyone","Secretly"]},
+        {q:"Expressing gratitude during exit helps freshers maintain:", a:"Positive mindset, appreciating the role's value and sticking longer", o:["Positive mindset, appreciating the role's value and sticking longer","Negative vibes","Ego battles","Grief"]},
+        {q:"Honoring commitments until the last day builds in freshers:", a:"Strong work ethic that discourages impulsive quitting", o:["Strong work ethic that discourages impulsive quitting","Laziness","Disrespect","Unreliability"]},
+        {q:"Staying connected after exit preserves networks, which for freshers means:", a:"Potential mentorship or rehiring, making staying worthwhile", o:["Potential mentorship or rehiring, making staying worthwhile","No future help","Isolation","Conflicts"]},
+        {q:"The overall soft exit process teaches freshers the value of:", a:"Professionalism, encouraging them to address issues before quitting", o:["Professionalism, encouraging them to address issues before quitting","Chaos","Rudeness","Short stints"]},
+        {q:"For internships, a smooth exit mindset prevents quitting by emphasizing:", a:"Building a strong resume through positive endings", o:["Building a strong resume through positive endings","Negative feedback","Demanding raises early","Ignoring growth"]},
+        {q:"The earnings slides suggest freshers should focus on:", a:"Patience and skill-building for higher future earnings", o:["Patience and skill-building for higher future earnings","Quitting for quick money","Haut","No learning"]},
+        {q:"Professional behavior during resignation helps freshers avoid:", a:"Bad reputation that could hinder career, promoting staying", o:["Bad reputation that could hinder career, promoting staying","All jobs","Promotions","Learning"]},
+        {q:"Writing a polite resignation message instills in freshers:", a:"Thoughtful communication, reducing knee-jerk quits", o:["Thoughtful communication, reducing knee-jerk quits","Hostility","Carelessness","Silence"]},
+        {q:"What is the first step when deciding to leave an organization?", a:"Inform reporting manager and HR", o:["Inform reporting manager and HR","Inform colleagues","Stop working immediately","Update LinkedIn profile"]},
+        {q:"Who should be informed formally about resignation?", a:"Manager and HR", o:["Manager and HR","Only HR","Only manager","Friends"]},
+        {q:"Why should the reporting manager be informed first?", a:"For smooth transition", o:["For smooth transition","For salary discussion","For office gossip","For social reason"]},
+        {q:"What is the purpose of discussing next steps during resignation?", a:"To ensure smooth exit", o:["To ensure smooth exit","To negotiate holidays","To complain","To delay resignation"]},
+        {q:"Resignation communication should be:", a:"Clear and professional", o:["Clear and professional","Delayed","Informal and casual","Emotional"]},
+        {q:"Notice period means:", a:"Time given after resignation", o:["Time given after resignation","Immediate exit","Time before joining company","Time for salary hike"]},
+        {q:"Why is informing well ahead during notice period important?", a:"Allows planning and transition", o:["Allows planning and transition","Shows irresponsibility","Creates confusion","Reduces workload"]},
+        {q:"Notice period mainly helps in:", a:"Business continuity", o:["Business continuity","Abrupt exit","Personal vacation","Avoiding KT"]},
+        {q:"Failing to serve notice period may affect:", a:"Professional reputation", o:["Professional reputation","Personal hobbies","Friends only","Salary slip"]},
+        {q:"Notice period usually mentioned in:", a:"Offer letter", o:["Offer letter","Resume","Exit email","ID card"]},
+        {q:"What does KT stand for?", a:"Knowledge Transfer", o:["Knowledge Transfer","Keep Task","Known Talent","Key Training"]},
+        {q:"Primary purpose of KT is to:", a:"Ensure smooth handover", o:["Ensure smooth handover","Show superiority","Avoid work","Get appreciation"]},
+        {q:"KT should include:", a:"Pending and ongoing tasks", o:["Pending and ongoing tasks","Only completed tasks","Personal notes","Gossip"]},
+        {q:"Who benefits most from proper KT?", a:"Organization and successor", o:["Organization and successor","Only employee","Only manager","Competitors"]},
+        {q:"KT should ideally be:", a:"Documented and clear", o:["Documented and clear","Rushed","Verbal only","Avoided"]},
+        {q:"Which is part of good KT practice?", a:"Creating handover documents", o:["Creating handover documents","Deleting files","Withholding information","Ignoring successor"]},
+        {q:"KT ensures:", a:"Smooth transition", o:["Smooth transition","Job insecurity","Delayed wait","Conflicts"]},
+        {q:"KT responsibility lies with:", a:"Resigning employee", o:["Resigning employee","Manager only","HR only","Peers"]},
+        {q:"After resigning, availability means:", a:"Helping if required", o:["Helping if required","Joining again","Ignoring calls","Blocking emails"]},
+        {q:"Post-resignation support shows:", a:"Professionalism", o:["Professionalism","Weakness","Dependency","Egoism"]},
+        {q:"Availability after resignation should be:", a:"Limited and reasonable", o:["Limited and reasonable","Unlimited","Never required","Forced"]},
+        {q:"Helping after resignation helps in:", a:"Network preservation", o:["Network preservation","Burning bridges","Loss of respect","Legal issues"]},
+        {q:"Leaving with dignity means:", a:"Showing gratitude", o:["Showing gratitude","Complaining openly","Being arrogant","Refusing KT"]},
+        {q:"Zero ego during exit means:", a:"Respecting organization", o:["Respecting organization","Demanding favors","Showing anger","Ignoring rules"]},
+        {q:"Zero grief refers to:", a:"No grudges", o:["No grudges","No emotions","Happiness only","Sadness"]},
+        {q:"Why is gratitude important while leaving?", a:"For relationships and reputation", o:["For relationships and reputation","For rejoining","Only current job","For formality"]},
+        {q:"Professional exit impacts:", a:"Future opportunities", o:["Future opportunities","Salary hike","Hobbies only","Personal life only"]},
+        {q:"Network preservation means:", a:"Maintaining professional relations", o:["Maintaining professional relations","Blocking contacts","Gossiping","Ignoring colleagues"]},
+        {q:"Which action damages dignity during exit?", a:"Public complaints", o:["Public complaints","Smooth KT","Thanking team","Serving notice"]},
+        {q:"Gracious exit helps in:", a:"Long-term career growth", o:["Long-term career growth","Burning bridges","Immediate promotion","Avoiding notice"]}
+    ]
+};
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-6 rounded-2xl border border-white/5 hover:border-primary/30 transition-all">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <span class="text-xs font-bold text-gray-500 block mb-1 tracking-widest">MODULE</span>
-                                <span class="text-4xl font-extrabold text-white">T1</span>
-                            </div>
-                            <div class="p-3 bg-gray-800 rounded-lg text-gray-400">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="viewAnswers('T1')" class="py-3 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold transition-colors flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-eye text-primary"></i> View
-                            </button>
-                            <button onclick="initQuiz('T1')" class="py-3 rounded-lg bg-white/10 hover:bg-primary hover:text-black text-white font-semibold transition-all flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-play"></i> Test
-                            </button>
-                        </div>
-                    </div>
+// --- APP STATE ---
+let currentMode = 'quiz'; // 'quiz' or 'view'
+let currentUnit = 1;
+let currentQuestionIndex = 0;
+let userAnswers = {};
+let currentQuestions = [];
 
-                    <div class="glass p-6 rounded-2xl border border-white/5 hover:border-primary/30 transition-all">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <span class="text-xs font-bold text-gray-500 block mb-1 tracking-widest">MODULE</span>
-                                <span class="text-4xl font-extrabold text-white">T2</span>
-                            </div>
-                            <div class="p-3 bg-gray-800 rounded-lg text-gray-400">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="viewAnswers('T2')" class="py-3 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold transition-colors flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-eye text-primary"></i> View
-                            </button>
-                            <button onclick="initQuiz('T2')" class="py-3 rounded-lg bg-white/10 hover:bg-primary hover:text-black text-white font-semibold transition-all flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-play"></i> Test
-                            </button>
-                        </div>
-                    </div>
+// --- DOM ELEMENTS ---
+const pages = {
+    landing: document.getElementById('landing-page'),
+    menu: document.getElementById('unit-menu'),
+    quiz: document.getElementById('quiz-interface'),
+    study: document.getElementById('study-interface'),
+    result: document.getElementById('result-screen')
+};
 
-                    <div class="glass p-6 rounded-2xl border border-white/5 hover:border-primary/30 transition-all">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <span class="text-xs font-bold text-gray-500 block mb-1 tracking-widest">MODULE</span>
-                                <span class="text-4xl font-extrabold text-white">T3</span>
-                            </div>
-                            <div class="p-3 bg-gray-800 rounded-lg text-gray-400">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="viewAnswers('T3')" class="py-3 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold transition-colors flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-eye text-primary"></i> View
-                            </button>
-                            <button onclick="initQuiz('T3')" class="py-3 rounded-lg bg-white/10 hover:bg-primary hover:text-black text-white font-semibold transition-all flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-play"></i> Test
-                            </button>
-                        </div>
-                    </div>
+function showPage(pageId) {
+    Object.values(pages).forEach(p => p.style.display = 'none');
+    pages[pageId].style.display = 'block';
+}
 
-                    <div class="glass p-6 rounded-2xl border border-white/5 hover:border-primary/30 transition-all">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <span class="text-xs font-bold text-gray-500 block mb-1 tracking-widest">MODULE</span>
-                                <span class="text-4xl font-extrabold text-white">T4</span>
-                            </div>
-                            <div class="p-3 bg-gray-800 rounded-lg text-gray-400">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="viewAnswers('T4')" class="py-3 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold transition-colors flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-eye text-primary"></i> View
-                            </button>
-                            <button onclick="initQuiz('T4')" class="py-3 rounded-lg bg-white/10 hover:bg-primary hover:text-black text-white font-semibold transition-all flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-play"></i> Test
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+function goHome() {
+    showPage('landing');
+}
 
-        <section id="study" class="section">
-            <div class="max-w-3xl mx-auto">
-                <div class="flex items-center justify-between mb-8 sticky top-24 bg-black/80 backdrop-blur-xl p-4 -mx-4 z-40 border-b border-gray-800 rounded-b-xl">
-                    <button onclick="showSection('topics')" class="text-gray-400 hover:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-left"></i> Back
-                    </button>
-                    <h2 id="study-title" class="text-xl font-bold text-white"></h2>
-                </div>
-                
-                <div id="study-content" class="space-y-8 pb-10">
-                    </div>
-            </div>
-        </section>
+function openUnitMenu(mode) {
+    currentMode = mode;
+    const unitList = document.getElementById('unit-list');
+    unitList.innerHTML = ''; // Clear previous
+    
+    // Set title
+    document.getElementById('menu-title').textContent = (mode === 'quiz') ? 'Start Quiz' : 'Study MCQs';
+    
+    // Generate Buttons
+    for (let i = 1; i <= 10; i++) {
+        const count = fullQuizData[i] ? fullQuizData[i].length : 0;
+        const btn = document.createElement('button');
+        btn.className = 'unit-btn';
+        btn.innerHTML = `<span>Unit ${i}</span> <span class="unit-tag">${count} Qs</span>`;
+        btn.onclick = () => startUnit(i);
+        unitList.appendChild(btn);
+    }
+    
+    showPage('menu');
+}
 
-        <section id="quiz" class="section">
-            <div class="max-w-3xl mx-auto">
-                <div class="flex items-center justify-between mb-6">
-                    <button onclick="showSection('topics')" class="text-gray-400 hover:text-white flex items-center gap-2 py-2">
-                        <i class="fa-solid fa-arrow-left"></i> Quit Test
-                    </button>
-                    <div class="text-sm font-mono text-gray-400">
-                        <span id="q-current" class="text-white font-bold">1</span> / <span id="q-total">10</span>
-                    </div>
-                </div>
+function startUnit(unit) {
+    currentUnit = unit;
+    currentQuestions = fullQuizData[unit];
+    
+    if (currentMode === 'quiz') {
+        startQuizMode();
+    } else {
+        startStudyMode();
+    }
+}
 
-                <div class="glass rounded-3xl p-6 md:p-10 border-t border-gray-700">
-                    <h2 id="q-text" class="text-xl md:text-2xl font-bold mb-8 leading-snug text-white"></h2>
-                    <div id="q-options" class="grid gap-3"></div>
+// --- QUIZ MODE LOGIC ---
+function startQuizMode() {
+    currentQuestionIndex = 0;
+    userAnswers = {};
+    showPage('quiz');
+    loadQuestion();
+}
 
-                    <div class="mt-8 flex justify-between items-center border-t border-gray-800 pt-6">
-                        <button id="btn-prev" onclick="prevQ()" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white disabled:opacity-50">Prev</button>
-                        <button id="btn-next" onclick="nextQ()" class="px-6 py-2 bg-gradient-to-r from-green-400 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:shadow-green-500/25 active:scale-95 transition-all">Next</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <script>
-        // --- DATA ---
-        const QUESTION_BANK = {
-            python: {
-                T1: [
-                    { q: "What is the output of print(2**3)?", options: ["6", "8", "9", "Error"], ans: 1 },
-                    { q: "Which keyword is used for function?", options: ["func", "def", "define", "fun"], ans: 1 }
-                ],
-                T2: [
-                    { q: "List is mutable?", options: ["Yes", "No"], ans: 0 },
-                    { q: "Dictionary keys must be...", options: ["Mutable", "Immutable", "Any Type", "String Only"], ans: 1 }
-                ],
-                T3: [
-                    { q: "Correct file mode for reading?", options: ["w", "r", "a", "x"], ans: 1 },
-                    { q: "Method to close a file?", options: ["end()", "exit()", "close()", "stop()"], ans: 2 }
-                ],
-                T4: [
-                    { q: "Constructor name?", options: ["__init__", "_init_", "init", "constructor"], ans: 0 },
-                    { q: "What is 'self'?", options: ["Keyword", "Class Name", "Reference to Instance", "Global Var"], ans: 2 }
-                ]
-            },
-            fsd: {
-                T1: [
-                  { q: "How HTTP is a stateless protocol?", options: ["Client and server can relate two consecutive requests", "Client and server know each other only during current request", "Client and server do not retain information between various requests of web page", "Only B & C"], ans: 3 },
-                    { q: "URL stands for", options: ["Universal Resource Locator", "Uniform Resource Locator", "Universal Resource Library", "Uniform Resource Library"], ans: 1 },
-                    { q: "Which of the following is the correct sequence to specify URL?", options: ["Method://Host:Port/Path", "Method://Path/Host:Port", "Method://Host: Path/Port", "Method://Path: Port/Host"], ans: 0 },
-                    { q: "Which of the following is used to read an HTML page and render it?", options: ["Web server", "Web network", "Web browser", "Web matrix"], ans: 2 },
-                    { q: "What does DNS stand for?", options: ["Domain Name Server", "Domain Name System", "Domain Network System", "Domain Node System"], ans: 1 },
-                    { q: "Which of the following points are for designing effective navigation?", options: ["Don't make your users guess", "Consistency is a key", "Add a Home button", "ALL"], ans: 3 },
-                    { q: "The first line of HTTP response message is called", options: ["Request line", "Header line", "Status line", "Entity line"], ans: 2 },
-                    { q: "Which of the following is present in both an HTTP request line and a status line?", options: ["HTTP version number", "URL", "Method", "None of the mentioned"], ans: 0 },
-                    { q: "Why HTTP is stateless?", options: ["It has less no of state.", "It does not maintain any connection information on previous transaction", "It is out of state", "It is less efficient"], ans: 1 },
-                    { q: "The first network that planted seeds of internet was", options: ["NSFNet", "Vnet", "ARPANET", "interanet"], ans: 2 },
-                    { q: "What does W3C stand for?", options: ["Web Council", "Work on Web Council", "World Wide Web Consortium", "World Wide Web Community"], ans: 2 },
-                    { q: "What is 200 Ok HTTP response code?", options: ["request is unsuccessful", "request is successful", "request is pending", "there is an error"], ans: 1 },
-                    { q: "A piece of icon or image on a web page associated with another webpage is called as", options: ["URL", "Hyperlink", "Plugin", "Extension"], ans: 1 },
-                    { q: "HTTP stands for?", options: ["Hidden text transfer protocol", "Hyper text transfer protocol", "Hyper text transition protocol", "Hidden text transition protocol"], ans: 1 },
-                    { q: "Which organization was founded by Tim Berners Lee?", options: ["IBM", "W3C", "Microsoft", "Google"], ans: 1 },
-                    { q: "Which of the following statements are correct about URL? (2) URL is a global address... (3) Resources accessed can be HTML file...", options: ["1", "1,2", "2,3", "1,2,3"], ans: 2 },
-                    { q: "A web page is located using a", options: ["Universal Record Linking", "Universal Record Locator", "Uniform Resource Locator", "Uniformly Reachable"], ans: 2 },
-                    { q: "Which protocol is used to send information over the web?", options: ["SMTP", "FTP", "POP", "HTTP"], ans: 3 },
-                    { q: "Which of the following HTTP status codes means 'Forbidden'?", options: ["200", "301", "403", "500"], ans: 2 },
-                    { q: "In an HTTP request message, which line specifies the method, resource, and protocol version?", options: ["Status Line", "Request Line", "Header Line", "Entity Body"], ans: 1 },
-                    { q: "ONLY UNIT 1 MCQ FOR UPLOAD UNIT 2 AND 3 MCQ READ FROM PB "},
- 
-                   
-                  ],
-                T2: [
-                  { q: "In the below code snippet, in what order will the margins be added? p {margin: 25px 50px 75px 100px;}", options: ["Top, left, right, bottom", "Top, Right, Bottom, Left", "Top, bottom, right, Left", "Left, Right, Bottom, top"], ans: 1 },
-                    { q: "Which CSS selectors are used to specify a group of elements?", options: ["id", "class", "tag", "attribute"], ans: 1 },
-                    { q: "Which of the following is/are not a pseudo element?", options: ["first-word", "first-letter", "select", "Only (A) and (C)"], ans: 3 },
-                    { q: "____ property renders 1st letters of all words capital.", options: ["text-decoration", "text-transform", "text-variant", "text-capitalize"], ans: 1 },
-                    { q: "Which CSS property is used to make the text bold?", options: ["text-align: bold", "text-decoration: bold", "font-weight: bold", "font-style: bold"], ans: 2 },
-                    { q: "What will be the output of below mentioned code snippet? p strong {background-color: yellow;}", options: ["Strong element within a p element have a yellow background", "Strong element out side p element have yellow background", "Both p and strong have yellow background", "None of these"], ans: 0 },
-                    { q: "Which of the following selectors select direct descendants?", options: ["OL>B", "OL B", "OL+B", "OL~B"], ans: 0 },
-                    { q: "The CSS property that is primarily used for giving a line over a text would be", options: ["text-decoration:overline", "text-rule:underline", "text:overline", "text-decoration:line-through"], ans: 0 },
-                    { q: "If you want to use a green dotted border around an image, which CSS property is used for that?", options: ["border-style", "border-color", "border-decoration", "Both A and B"], ans: 3 },
-                    { q: "What does 'padding: 50px 20px;' specifies?", options: ["top padding is 50px", "bottom padding is 20px", "right padding is 20px", "Both A and C"], ans: 3 },
-                    { q: "What is CSS?", options: ["CSS is a style sheet language", "CSS is the language used to style the HTML documents", "CSS is designed to separate the presentation and content", "All the mentioned"], ans: 3 },
-                    { q: "Which has introduced text, list, box, margin, border, color, and background properties?", options: ["PHP", "CSS", "HTML", "Ajax"], ans: 1 },
-                    { q: "Select the CSS property that sets the width of an element's bottom border", options: ["border-bottom-width", "border-width-down", "border-width", "border-bottom"], ans: 0 },
-                    { q: "Which CSS property sets the color of an element's all borders?", options: ["border-color", "border-background", "border-background-color", "border-bgcolor"], ans: 0 },
-                    { q: "Which is not the property of the CSS box model?", options: ["margin", "padding", "color", "border"], ans: 2 },
-                    { q: "Which property adds padding to the top of an element?", options: ["padding-top", "padding-height", "padding", "top"], ans: 0 },
-                    { q: "Which property sets a consistent margin on all four sides of the affected element?", options: ["margin", "padding", "border", "none of the mentioned"], ans: 0 },
-                    { q: "Which of the following are parts of the CSS box model?", options: ["Padding", "Borders", "Margin", "All the mentioned"], ans: 3 },
-                    { q: "Which CSS property is used to set the color of the text?", options: ["color", "pallet", "text-decoration", "colour"], ans: 0 },
-                    { q: "Which of the following are valid ways to represent a colour in CSS?", options: ["RGB Values", "HEX Values", "A valid color name", "All the mentioned"], ans: 3 },
-                    { q: "Which of the following property sets an element's background color?", options: ["background-color", "background-position", "background-image", "background-colors"], ans: 0 },
-                    { q: "Which CSS property sets what kind of line decorations are added to an element, such as underlines, overlines, etc?", options: ["text-decoration", "text-decoration-link", "text-line", "text-style"], ans: 0 },
-                    { q: "How can we specify the spacing between each letter in a text in CSS?", options: ["letter-spacing", "alpha-spacing", "character-spacing", "None of the mentioned"], ans: 0 },
-                    { q: "What type of CSS is the following code snippet? <h1 style=\"color:blue;\">A Blue Heading</h1>", options: ["Inline", "Internal", "External", "None of the mentioned"], ans: 0 },
-                    { q: "Which CSS property sets the font size of text?", options: ["font-size", "text-size", "size", "text"], ans: 0 },
-                    { q: "Which CSS Property controls how an element is positioned?", options: ["position", "static", "set", "fix"], ans: 0 },
-                    { q: "Which of the following are valid CSS position property values?", options: ["relative", "static", "fixed", "All the mentioned"], ans: 3 },
-                    { q: "What type of selector is used in this case? p {line-height: 150%;}", options: ["element Selector", "id Selectors", "Attribute Selector", "class Selectors"], ans: 0 },
-                    { q: "How can we select an element with a specific ID in CSS?", options: ["#", ".", "^", "None of the mentioned"], ans: 0 },
-                    { q: "How can we select an element with a specific Class in CSS?", options: ["#", ".", "^", "None of the mentioned"], ans: 1 },
-                    { q: "Which of the following CSS selector is used to specify a rule to bind a particular unique element?", options: ["id", "class", "tag", "bind"], ans: 0 },
-                    { q: "Which of the following CSS style property is used to specify an italic text?", options: ["font-style", "Fonts", "style", "font-weight"], ans: 0 },
-                    { q: "Which is the correct way to apply CSS Styles?", options: ["inside an HTML element", "in an external CSS file", "inside the <head> section of an HTML page", "All the mentioned"], ans: 3 },
-                    { q: "Setting an inline-block in CSS requires which one of the following properties?", options: ["display", "position", "visibility", "text-align"], ans: 0 },
-                    { q: "____ syntax helps to put an image before the content starts?", options: ["content:url(\"...\")", "content(\"...\")", "background:url(\"...\")", "image:url(\"...\")"], ans: 0 },
-                    { q: "Which of the following collection of statements are used to render bold, italic and verdana fonts.", options: ["font-family:verdana; font-style:italic; font-weight:bold;", "font:verdana; font-style:bold; font-weight:italic;", "font-style:verdana; font-family:italic; font-style:bold;", "font-family:verdana; font-style:italic; font-weight:bold;"], ans: 0 },
-                    { q: "Consider following statements... (1) margin-right:40px; (2) margin: 10px 30px; (3) margin:auto; Which is/are true?", options: ["Only 1 & 3", "Only 1", "Only 2", "Only 3"], ans: 0 },
-                    { q: "The following example inserts an image after the content of each <h1> element.", options: ["h1:after {content: url(smiley.gif);}", "h1:after {content: src(smiley.gif);}", "h1:after {content: url(smiley.gif);}", "h1:after {content: url(smiley.gif);}"], ans: 0 },
-                    { q: "What will be the output of the following CSS code? div { border-width:5px; border-style: dotted solid double dashed; }", options: ["Box having dotted top, solid right, double bottom, dashed left", "Box having dotted top, solid left, double bottom, dashed right", "Box having dotted bottom, solid left, double top, dashed left", "Box having dotted bottom, solid right, double top, dashed left"], ans: 0 },
-                    { q: "What will be the output of following CSS code snippet? h1 { color: red text-decoration: underline font-style: italic; }", options: ["only font-style: italic works", "text-decoration: underline and font-style: italic works", "color: red, text-decoration: underline works", "all works"], ans: 0 },
-                    { q: "How do you select all p elements inside a div element?", options: ["div p", "div + p", "div.p", "div > p"], ans: 0 },
-                    { q: "How will you make all paragraph elements \"BLUE\" in color?", options: ["p {color:blue;}", "p.all {color:rgb(255,0,0);}", "p.all {color:#ff0000;}", "all.p {color: rgb(255,0,0);}"], ans: 0 },
-                    { q: "In CSS, \"font-size\" can be called as?", options: ["property-name", "selector", "class", "rule"], ans: 0 },
-                    { q: "Which property is used to change the font of an element?", options: ["font-family", "font-style", "font-weight", "font-bold"], ans: 0 },
-                    { q: "What are the uses of CSS pseudo-elements?", options: ["All are correct", "Style specified parts of an element", "Content can be inserted before & after", "Style first line of an element"], ans: 0 },
-                    { q: "Which of the right syntax for text-transform?", options: ["<p style=\"text-transform:uppercase;\">hello</p>", "<p style=\"transform:caps;\">hello</p>", "<p style=\"text-transform:bold;\">hello</p>", "<p style=\"text-transform:line-through;\">hello</p>"], ans: 0 },
-                    { q: "Which of the following is the correct syntax to display the hyperlinks without any underline?", options: ["text-decoration:none", "text-decoration:underline", "text-decoration:overline", "text-decorate:line"], ans: 0 },
-                    { q: "Which of the following is correct syntax for vertically repeated background-image...?", options: ["background: pink url(\"img_tree.png\") repeat-y", "background: pink url(\"img_tree.png\") repeat-x", "background: pink content(\"img_tree.png\") repeat-y", "background: pink content(\"img_tree.png\") no-repeat"], ans: 0 },
-                    { q: "Which of the following property defines in a shorthand form the width, style, and color for the top border?", options: ["border-top", "border-top", "border-height", "border-width"], ans: 0 },
-                    { q: "What will be the output... p { border-color:black orange; border-style: double solid; }", options: ["paragraph having double top/bottom black, solid left/right orange", "paragraph having solid top/bottom black, double left/right orange", "paragraph having double top/bottom orange, solid left/right black", "paragraph having solid top/bottom orange, double left/right black"], ans: 0 },
-                    { q: "What will be the total width of the div element? width: 310px; padding: 20px; border: 5px...", options: ["360px", "310px", "320px", "340px"], ans: 0 },
-                    { q: "The ____ attribute is used to define the name(s) of the class(es) to which a particular tag belongs.", options: ["class", "element", "id", "attribute"], ans: 0 },
-                    { q: "What does the CSS box-shadow property do?", options: ["Adds one or more shadows around an element's box", "Adds padding to an element", "Sets the border color", "Applies a gradient background"], ans: 0 },
-                    { q: "Which is the correct syntax for a descendant selector in CSS?", options: [".container p", ".container > p", "container + p", "p.container"], ans: 0 },
-                    { q: "How do you select elements that are not of a specific class (e.g. inactive)?", options: [":not(.inactive)", ":not(inactive)", "::not(inactive)", ":not(.inactive)"], ans: 0 },
-                    { q: "Identify the correct code to apply 20px vertical margin & centering the element horizontally", options: ["div { margin: 20px auto; }", "div { margin: auto; }", "div { margin: auto 20px; }", "div { margin-top: auto; ... }"], ans: 0 },
-                    { q: "Which of the correct syntax for horizontally repeated background-image?", options: ["background-repeat:repeat-x", "background-repeat:repeat-y", "background-repeat:repeat", "background-repeat:no-repeat"], ans: 0 },
-                    { q: "The CSS property used to specify the transparency of an element is", options: ["opacity", "overlay", "clearfix", "hover"], ans: 0 },
-                    { q: "Which is the correct way to stretch a section half horizontally & double vertically.", options: ["scale(0.5, 2)", "scale(2, 0.5)", "scaleX(2) scaleY(0.5)", "both (a) and (c)"], ans: 0 },
-                    { q: "Which of the following CSS property is used to indicate an animation plays in reverse?", options: ["animation-direction", "animation-count", "animation-iteration", "animation-state"], ans: 0 },
-                    { q: "____ is the valid syntax to execute rounded image.", options: ["img{border-radius:5px;}", "img{border-type:5px;}", "img{border:5px;}", "img{border-width:5px;}"], ans: 0 },
-                    { q: "____ is the valid statement to run an animation in one way only for 3 times in forward direction.", options: ["animation-iteration-count: 3; animation-direction: forward;", "animation-iteration: 3; animation-way: reverse;", "animation-count:3; animation-direction:forward;", "animation-iteration-count:finite; animation-direction:normal;"], ans: 0 },
-                    { q: "____ is the valid statement to fadeout more than one colors from a center point of a circle.", options: ["background-image:radial-gradient(circle,red,yellow,green)", "background-color:radial-gradient(red,yellow,green)", "background-image:linear-gradient(circle,red,yellow,green)", "background-image:conic-gradient(circle,red,yellow,green)"], ans: 0 },
-                    { q: "Add a 2 second transition effect for width and height changes of the <div> element.", options: ["transition: width 2s, height 2s;", "transition-transform: width 2s, height 2s;", "transition: width:2s; height:2s;", "transform: width 2s, height 2s;"], ans: 0 },
-                    { q: "Which is correct syntax from following, to set a linear gradient, transitioning from \"blue\" to \"yellow\"", options: ["background-image: linear-gradient(blue,yellow);", "background-color: linear-gradient(blue,yellow);", "background-image: linear-gradient (from blue, to yellow);", "background-image: lineargradient(blue,yellow);"], ans: 0 },
-                    { q: "Set a linear gradient background for the <div> element that starts at top left (and goes to bottom right), transitioning from \"white\" to \"green\".", options: ["background-image: linear-gradient(to bottom right, white, green);", "background-image: linear-gradient(to right, white, green);", "background-image: linear-gradient(to left right, white, green);", "background-image: linear-gradient(to bottom right, green, white);"], ans: 0 },
-                    { q: "How to set a background for the <div> element, which rotate color around a center point?", options: ["background-image:conic-gradient(red,yellow,green,blue);", "background-color:linear-gradient(red,yellow,green,blue);", "background-image:linear-gradient(red,yellow,green,blue);", "background-color:conic-gradient(red,yellow,green,blue);"], ans: 0 },
-                    { q: "Which of the following property defines the style of the rule between columns in a multicolumn text flow?", options: ["column-rule-style", "column-style", "column-style-gap", "column-rule-flow"], ans: 0 },
-                    { q: "The <div> element has specified a transition effect for the width property within 8 seconds. Give the correct syntax for the same.", options: ["div {transition: width 8s;}", "div {transition-dealy: width 8s;}", "div {transition-type: width; transition-delay:8s;}", "div {transition: width: 8s;}"], ans: 0 },
-                    { q: "____ is the correct way to divide a paragraph in columns like newspaper.", options: ["column-count: 3; column-gap: 30px; column-rule-style: dashed;", "column-no:3; column-space: 30px; column-rule-style: dashed;", "column-no:3; column-spacing:30px; column-rule-style: dashed;", "column:3; column-space:30px; column-line: dashed"], ans: 0 },
-                    { q: "What are the names of different gradients in CSS?", options: ["Linear Gradients, Radial Gradients, and Conic Gradients", "Linear Gradients, Radial Gradients, and Conic Gradients", "Linear Gradients, Vertical Gradients, and Corner Gradients", "Horizontal Gradients, Vertical Gradients, and Conic Gradients"], ans: 0 },
-                    { q: "Which of the following css property is used to define the time it takes one iteration of an animation to play?", options: ["animation-duration", "control", "animation-duration", "all of the mentioned"], ans: 0 },
-                    { q: "Which of the following css property is used to indicate if an animation plays in reverse or repeats itself every other iteration?", options: ["animation-direction", "animation-iteration", "animation-check", "animation-state"], ans: 0 },
-                    { q: "Which of the following css property allows elements to be rotated, scaled, and skewed in a variety of different ways?", options: ["transform", "transform-3D", "transform-origin", "transition"], ans: 0 },
-                    { q: "Which of the following property defines the number of columns in a multicolumn text flow?", options: ["column-count", "column", "column-flow", "column-number"], ans: 0 },
-                    { q: "Which of the following property defines the gap between columns in a multicolumn text flow?", options: ["column-gap", "column-rule-flow", "column-gap", "column-rule"], ans: 0 },
-                    { q: "Which CSS property sets the opacity for the whole element?", options: ["opacity", "fade", "opacity-value", "opacity"], ans: 0 },
-                    { q: "Which of the following transform property value defines a 2D translation?", options: ["translate(x,y)", "translate(x,y)", "translate2D(x,y)", "translate3D(x,y)"], ans: 0 },
-                    { q: "Which of the following is NOT a valid value for the CSS property transition-timing-function?", options: ["smooth", "ease", "linear", "-end"], ans: 0 },
-                    { q: "Which of the following is a valid value for transition-timing-function?", options: ["ease-in-out", "smooth", "fast-slow", "case-in-out"], ans: 0 },
-                    { q: "What function is used to insert values of a CSS variable?", options: ["var()", "Var()", "rand()", "varchar()"], ans: 0 },
-                    { q: "How to rotate a div with id mydiv by 30deg?", options: ["#mydiv {transform:rotate(30deg);}", "#mydiv {rotate:30deg;}", "#mydiv {transform:30deg;}", "#mydiv {transform:rotation(30deg);}"], ans: 0 }
-                ],
-                T3: [
-                    { q: "What is the purpose of the following tag? <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">", options: ["Ensures responsive scaling on mobile devices", "Enables dark mode", "Loads Bootstrap faster", "Centers the container"], ans: 0 },
-                    { q: "What is a container in Bootstrap 5?", options: ["A fixed-width container with breakpoint-based max-widths", "Always 100% width", "Only for nesting .row", "Deprecated in v5"], ans: 0 },
-                    { q: "What is container-fluid?", options: ["100% width at all breakpoints", "100% width only on mobile", "Fixed width on xl and above", "Auto width, never full width"], ans: 0 },
-                    { q: "What does .container-lg do?", options: ["Fluid until lg, then fixed max-width from lg up", "Fixed width at all sizes", "Fixed until lg, then fluid above", "Same as .container-fluid"], ans: 0 },
-                    { q: "Which class provides the widest fixed breakpoint in Bootstrap 5?", options: ["container-xxl", ".container-xl", ".container-xxl", "container-sm"], ans: 0 },
-                    { q: "Which utility class adds margin top = 3 units?", options: ["mt-3", "mt-3", "ml-3", "mb-3"], ans: 0 },
-                    { q: "Which class makes an element behave like an inline-block?", options: ["d-inline-block", "d-inline", "d-inlineblock-", "d-flex"], ans: 0 },
-                    { q: "Which class applies Bootstrap background color?", options: ["bg-primary", "text-primary", "color-primary", "background-primary"], ans: 0 },
-                    { q: "To change the text color to success (green), which is correct?", options: ["text-success", "bg-success", "text-success", "txt-green"], ans: 0 },
-                    { q: "Which class makes an element take 100% width?", options: ["w-100", "w-auto", "max-w-100", "full-width"], ans: 0 },
-                    { q: "Which applies a border only on top?", options: ["border-top", "border-all", "border-1", "border-only-top"], ans: 0 },
-                    { q: "Which class converts text to uppercase?", options: ["text-uppercase", "text-lowercase", "text-capitalize", "text-transform"], ans: 0 },
-                    { q: "Which class applies a large shadow?", options: ["shadow-lg", "shadow-sm", "shadow-lg", "shadow-big"], ans: 0 },
-                    { q: "Which class makes background transparent?", options: ["bg-transparent", "bg-white", "bg-light", "bg-none"], ans: 0 },
-                    { q: "Which class aligns text to center?", options: ["text-center", "align-center", "text-center", "center-text"], ans: 0 },
-                    { q: "Which utility sets auto left and right margins (centers block)?", options: ["mx-auto", "m-0", "ml-auto", "my-auto"], ans: 0 },
-                    { q: "Which class applies padding left = 5 units?", options: ["px-5", "p-5", "py-5", "pt-5"], ans: 0 },
-                    { q: "Which class places flex items horizontally with space between?", options: ["justify-content-between", "m-", "justify-content-between", "align-items-between"], ans: 0 },
-                    { q: "Which class adds equal margin on left & right?", options: ["mx-", "mx-", "ml-", "ml-"], ans: 0 },
-                    { q: "Which class adds vertical padding only?", options: ["py", "px-", "pr-", "pl-"], ans: 0 },
-                    { q: "Which class is used for muted text color?", options: ["text-muted", "text-light", "text-gray", "text-secondary"], ans: 0 },
-                    { q: "Which class makes an element 50% width?", options: ["w-50", "w-50", "width-50", "max-w-50"], ans: 0 },
-                    { q: "Which class makes an element relative positioned?", options: ["position-relative", "pos-relative", "relative", "d-relative"], ans: 0 },
-                    { q: "Which class gives a warning (yellow) background?", options: ["bg-warning", "bg-alert", "background-warning", "bg-yellow"], ans: 0 },
-                    { q: "Which class arranges flex items in a column?", options: ["flex-column", "d-flex-column", "flex-column", "d-column"], ans: 0 },
-                    { q: "Which class applies the Bootstrap danger red color to text?", options: ["text-danger", "bg-danger", "color-danger", "danger-text"], ans: 0 },
-                    { q: "Which class turns an image into a perfectly circular avatar?", options: ["rounded-circle", "rounded", "rounded-circle", "img-circle"], ans: 0 },
-                    { q: "Which class adds a thin border and padding to an image (photo print)?", options: ["img-thumbnail", "img-frame", "img-bordered", "img-card"], ans: 0 },
-                    { q: "Which class gives an element slightly rounded corners?", options: ["rounded", "rounded-sm", "rounded", "rounded-all"], ans: 0 },
-                    { q: "Which table class makes a Bootstrap table have zebra-striping?", options: ["table-striped", "table-striped", "table-bordered", "table-hover"], ans: 0 },
-                    { q: "Which class will highlight a table row on hover?", options: ["table-hover", "table-active", "table-highlight", "table-hover"], ans: 0 },
-                    { q: "In Bootstrap grid, which class makes a column take up 6 of 12 columns on medium screens?", options: ["col-md-6", "col-md-6", "col-6-md", "col-lg-6"], ans: 0 },
-                    { q: "Which alert class gives an alert the standard success (green) appearance?", options: ["alert-success", "alert-info", "alert-success", "alert-primary"], ans: 0 },
-                    { q: "How do you make a Bootstrap 5 alert dismissible?", options: ["Add alert-dismissible class and include a close button", "Add dismissible attribute", "Add alert-dismissible class", "Add data-dismiss"], ans: 0 },
-                    { q: "Which class gives a Bootstrap button the large size variant?", options: ["btn-lg", "btn-lg", "btn-large", "btn-size-lg"], ans: 0 },
-                    { q: "By default, spinners in Bootstrap 5 use which color?", options: ["Blue (primary theme color)", "Gray", "Blue", "Black"], ans: 0 },
-                    { q: "Which class creates a growing spinner?", options: ["spinner-grow", "spinner-ring", "spinner-grow", "spinner-loader"], ans: 0 },
-                    { q: "Which class is used for an outline primary button?", options: ["btn-outline-primary", "btn-outline-primary", "btn-primary-outline", "btn-border-primary"], ans: 0 },
-                    { q: "Which utility makes a spinner centered?", options: ["d-flex align-items-center justify-content-center", "spinner-center", "d-flex align-items-center", "spinner-fixed"], ans: 0 },
-                    { q: "Which class is used to create a border spinner in Bootstrap 5?", options: ["spinner-border", "spinner-grow", "spinner-border", "spinner-ring"], ans: 0 },
-                    { q: "Which of the following class we have to add for vertical navigation?", options: ["flex-column", "flex-row", "flex-column", "flex-tuple"], ans: 0 },
-                    { q: "Which class is used to wrap the flex items when browser width decrease?", options: ["flex-wrap", "wrapping", "warp", "flex-wrap"], ans: 0 },
-                    { q: "Which will be used if you want your form elements to appear side by side?", options: ["class=\"row\" class=\"col\"", "class=\"row\" class=\"col\"", "class=\"row\"", "no-warp"], ans: 0 },
-                    { q: "Dropdown will not expand without which class or attribute?", options: ["dropdown-toggle", "data-bs-toggle", "dropdown-toggle", "aria-expanded"], ans: 0 },
-                    { q: "Which class is used to put a divider between two nav items in a dropdown?", options: ["dropdown-divider", "dropdown-header", "dropdown-footer", "data-target"], ans: 0 },
-                    { q: "Which of the following valid classes are used to change the alignment of flex items?", options: ["justify-content-around", "justify-items-center", "justify-content-around", "justify-align-center"], ans: 0 },
-                    { q: "Setting a grid tier of .col-sm-6 says:", options: ["Make the div 6 columns wide on sm and above", "break into 6 columns on sm and above", "break into 6 columns only on sm", "break into 6 columns on md and above"], ans: 0 },
-                    { q: "Which class arranges controls vertical if screen size goes <1400px?", options: ["col-xxl", "col-sm", "col-md", "col-lg"], ans: 0 },
-                    { q: "Which is correct method to add a close button in alert box?", options: ["<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>", "<button class=\"btn-close\"...>", "<button class=\"close\"...>", "<button id=\"close\"...>"], ans: 0 }  ,
-                      { q: "Which of the following class is used to style a select menu in Bootstrap 5?", options: ["form-select", "form-control", "form-select", "form-option"], ans: 0 },
-                    { q: "Which class arranges controls vertical if screen size goes <1400px?", options: ["col-xxl", "col-sm", "col-xxl", "col-xs"], ans: 0 },
-                    { q: "is a correct set of classes/attributes to handle collapsing mechanism of navbar with collapsible icon.", options: ["navbar-toggler, data-bs-toggle, data-bs-target, navbar-toggler-icon", "navbar-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "navbar-toggle, data-bs-toggler, data-bs-target, navbar-toggle-icon", "nav-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon"], ans: 0 },
-                    { q: "which of the following set of classes denotes bootstrap carousel next button?", options: ["carousel-control-next, carousel-control-next-icon", "carousel-control-icon, carousel-control-previous, carousel-control-inner", "carousel-control-next, carousel-inner, carousel-control-icon, carousel-control-next", "carousel-control-previous, carousel-control-next-icon"], ans: 0 },
-                    { q: "Which of the following set of classes denotes bottom indicators, slide show and arrow buttons for Bootstrap carousel respectively?", options: ["carousel-indicators, carousel-inner, carousel-control-prev-icon", "carousel-control-indicators, carousel-inner, carousel-control-prev-icon", "carousel-indicators, carousel-control-inner, carousel-control-next-icon", "carousel-indicators, carousel-item-slide, carousel-control-icon"], ans: 0 },
-                    { q: "Which of the following is correct code to render toggle switch in Bootstrap form?", options: ["<div class=\"form-check form-switch\"><label><input type=\"checkbox\" class=\"form-check-input\" checked/>ON/OFF</label></div>", "<div class=\"form-check form-switch\"><label><input type=\"checkbox\" class=\"form-check-input\" checked/>ON/OFF</label></div>", "<div class=\"form-check form-toggle\"><label><input type=\"checkbox\" class=\"form-check-input\" checked/>ON/OFF</label></div>", "<div class=\"form-check form-switch\"><label><input type=\"radio\" class=\"form-check-input\" checked/>ON/OFF</label></div>"], ans: 0 },
-                    { q: "Which of the following class is used to create a navbar with icon", options: ["navbar-brand", "navbar-brand", "navbar-img", "navbar-icon"], ans: 0 },
-                    { q: "Which attribute is used in <button> or <a> to create dialog box?", options: ["data-bs-toggle=\"modal\"", "data-bs-toggle=\"modal\"", "data-toggle=\"modal\"", "data-toggle=\"dialog\""], ans: 0 },
-                    { q: "To create standard navigation bar horizontally which of the following is the correct syntax?", options: ["<nav class=\"nav navbar-expand-sm\">", "<nav class=\"navbar\">", "<nav class=\"navbar-nav\">", "<nav class=\"nav navbar-expand-sm\">"], ans: 0 },
-                    { q: "Which of the following class be used to put a header between two items in a dropdown?", options: ["dropdown-header", "dropdown_header", "dropdown-border", "drop-header"], ans: 0 },
-                    { q: "Bootstrap 5 often specifies fonts and border sizes in terms of REMs, What is a REM equal to?", options: ["16 pixels", "12 pixels", "16 pixels", "01 sievert"], ans: 0 },
-                    { q: "Which of the following class we have to add in a code for creating link as navigation item in bootstrap-5?", options: ["nav-link", "nav-item", "nav-link", "None of these"], ans: 0 },
-                    { q: "Which of the following is an attribute in bootstrap-5?", options: ["data-bs-toggle", "nav-item", "data-ds-toggle", "nav"], ans: 0 },
-                    { q: "Which class will be used to add white text colors to all links in navbar?", options: ["navbar-dark", "navbar-dark", "navbar-light", "light-navbar"], ans: 0 },
-                    { q: "Which class will be used to add black text colors to all links in navbar?", options: ["navbar-light", "dark-navbar", "navbar-light", "light-navbar"], ans: 0 },
-                    { q: "If you want your checkbox to be styled as a toggle switch, then which class will be used with which container?", options: ["form-switch .form-check", "form-switch .form-check", "form-switched .form-checked", "None of these"], ans: 0 },
-                    { q: "Which of the following class will be used with form to show what is missing before submitting the form?", options: ["was-validated", "needs-validated", "valid-feedback", "None of these"], ans: 0 },
-                    { q: "Which of the following are components of Modal?", options: ["All of these", "modal-header", "modal-body", "All of these"], ans: 0 },
-                    { q: "The plugin used to create a cycle through elements as a slideshow is -", options: ["carousel", "slideshow", "scrollspy", "None of these"], ans: 0 },
-                    { q: "Which of the following class is used to create a carousel?", options: ["carousel", "Icarousel", "carousel-extern", "None of these"], ans: 0 },
-                    { q: "Which attribute should be mentioned for the element that should be used as a scrollable area.", options: ["data-bs-spy=\"scroll\"", "data-bs-spy=\"scroll\"", "data-bs-spy=\"dropdown\"", "data-bs-toggle=\"scroll\""], ans: 0 },
-                    { q: "Which of the following valid classes are used to change the alignment of flex items?", options: ["All of these", "justify-content-center", "justify-content-between", "All of these"], ans: 0 },
-                    { q: "How many grid tiers, over which Bootstrap's layout system can adapt, are available in version 5?", options: ["6", "4", "5", "12"], ans: 0 },
-                    { q: "Which Bootstrap 5 class is required to create a floating label inside a form control?", options: ["form-floating", "form-floating", "form-label", "floating-label"], ans: 0 },
-                    { q: "Which of the following input types does NOT support floating labels in Bootstrap 5?", options: ["file", "text", "password", "email"], ans: 0 },
-                    { q: "To align a Bootstrap 5 pagination component to the center horizontally, which correct utility class should be applied?", options: ["justify-content-center on <ul class=\"pagination\">", "pagination-center on <ul>", "justify-content-center on <ul class=\"pagination\">", "text-center on <nav>"], ans: 0 },
-                    { q: "If you want to highlight the current pagination page in Bootstrap 5, which is the correct method?", options: ["Add active class to <li class=\"page-item\">", "Add active class to <a class=\"page-link\">", "Add active class to <li class=\"page-item\">", "Add selected attribute to <li>"], ans: 0 },
-                    { q: "In Bootstrap 5, which attribute is mandatory on the trigger element to open an offcanvas sidebar?", options: ["data-bs-toggle=\"offcanvas\"", "data-bs-trigger=\"offcanvas\"", "data-bs-toggle=\"offcanvas\"", "data-bs-open=\"sidebar\""], ans: 0 },
-                    { q: "Which Bootstrap 5 class is used to make a sidebar offcanvas slide from the right side of the screen?", options: ["offcanvas-end", "offcanvas-right", "offcanvas-end", "offcanvas-rightside"], ans: 0 },
-                    { q: "is a correct set of classes/attributes to handle collapsing mechanism of navbar with collapsible icon.", options: ["navbar-toggler, data-bs-toggle, data-bs-target, navbar-toggler-icon", "navbar-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "nav-toggle, data-bs-toggle, data-bs-target, navbar-toggle-icon", "navbar-toggler, data-bs-toggle, data-bs-target, navbar-toggler-icon"], ans: 0 },
-                    ],
-                T4: [
-                    { q: "Output of: a=5+\"9\"; document.write(a);", options: ["59", "0", "compilation error", "runtime error"], ans: 0 },
-                    { q: "Output for: const number = undefined + 11; if(number == NaN)...", options: ["11", "NAN", "other", "error"], ans: 2 },
-                    { q: "Output: a=\"This\"+50+80+\"Is\"+\"Demo\"+of+100;", options: ["This 5080IsDemoof 100", "This 50Is Demoof100", "This5080Demoof 100", "This 50801sDemo 100"], ans: 0 },
-                    { q: "Output: s1=10+20+\"javascript\"+40+50+\"example\"+60;", options: ["30javascript4050example60", "1020javascript4050example60", "30javascript90example60", "1020javascript90example60"], ans: 0 },
-                    { q: "Output: console.log(2+2+\"2\"+2+2)", options: ["4222", "10", "2224", "22222"], ans: 0 },
-                    { q: "Output if a=20, b=3: console.log(a%b);", options: ["2", "5", "NaN", "undefined"], ans: 0 },
-                    { q: "Output: var a = true + true + true * 3;", options: ["5", "0", "3", "Error"], ans: 0 },
-                    { q: "Output: var a=3; var b=a++; var c=++a; write(a,b,c);", options: ["5 3 5", "4 5 2", "4 5 3", "5 3 5"], ans: 0 },
-                    { q: "What will be logged? var $a=5; let _b=10;", options: ["undefined", "5", "ReferenceError", "10"], ans: 0 },
-                    { q: "Which code throws ReferenceError?", options: ["console.log(d); let d=20;", "console.log(d); var d=20;", "let d=20; console.log(d);", "const c=15;"], ans: 0 },
-                    { q: "Output: { let x=10; { let x=20; console.log(x); } console.log(x); }", options: ["20 then 10", "10 then 20", "20 then 20", "Error"], ans: 0 },
-                    { q: "Output: const obj={val:100}; obj.val=200; log(obj.val);", options: ["200", "100", "Error", "undefined"], ans: 0 },
-                    { q: "What happens: const x=10; x=20;", options: ["Throws TypeError", "Logs 20", "SyntaxError", "Logs undefined"], ans: 0 },
-                    { q: "Output: const name='Alice'; const msg=`Hello, ${name}!`;", options: ["Hello, Alice!", "Hello, ${name}!", "Hello, undefined!", "Error"], ans: 0 },
-                    { q: "const myArr=[1,2,3]; Which is valid?", options: ["myArr.push(4);", "myArr=[4,5,6];", "myArr='hello';", "None"], ans: 0 },
-                    { q: "Output: let name='Alice', age=25; log(`${name} is ${age+5} years old`);", options: ["Alice is 30 years old", "Alice is 25 years old", "Alice is age+5 years old", "Error"], ans: 0 },
-                    { q: "Length of: let greeting = `Hello\nWorld`;", options: ["11", "10", "12", "Error"], ans: 0 },
-                    { q: "Output: const price=50; `The price is ${price>30?'high':'low'}`", options: ["The price is high", "The price is low", "The price is 50", "Error"], ans: 0 },
-                    { q: "Output: let arr=[1,2,3]; let res=arr.push(4,5); log(res, arr);", options: ["5 [1,2,3,4,5]", "5 [1,2,3]", "Error", "[1,2,3,4,5] 5"], ans: 0 },
-                    { q: "Which returns true? let arr=[10,20,30];", options: ["arr.includes(20)", "arr.includes(25)", "arr.includes('20')", "arr.includes(20,2)"], ans: 0 },
-                    { q: "Output: let nums=[1,2,3]; let out=nums.pop(); log(out, nums);", options: ["3 [1,2]", "[1,2] 3", "[1,2,3] 2", "Error"], ans: 0 },
-                    { q: "Output: let arr=[2,4,6]; let mapped=arr.map((x,i)=>x+i);", options: [" [2,5,8]", "[2,4,6]", "[3,6,9]", "undefined"], ans: 0 },
-                    { q: "Output: let arr=[1,2,3,4]; filter(x=>x%2===0);", options: [" [2,4]", "[1,3]", "[1,2,3,4]", "[]"], ans: 0 },
-                    { q: "Output: let res=arr.forEach(x=>x*2); log(res);", options: ["undefined", "[2,4,6]", "[1,2,3]", "Error"], ans: 0 },
-                    { q: "Result of numbers.pop() on [1,2,3,4,5]?", options: ["Returns 5, array [1,2,3,4]", "Returns [1,2,3,4]", "Returns 1", "Returns undefined"], ans: 0 },
-                    { q: "How to find object with id:2 in data array?", options: ["data.find(item=>item.id==2)", "data.filter(item=>item.id==2)", "data.includes(id:2)", "data.forEach"], ans: 0 },
-                    { q: "What does filter() return if no match?", options: ["An empty array []", "undefined", "null", "The original array"], ans: 0 },
-                    { q: "products=['apple'...]. products.includes('Apple')?", options: ["false", "true", "undefined", "Error"], ans: 0 },
-                    { q: "Output: arr=['a','b','c']; loop print arr[i]", options: ["abc", "cba", "ach", "bac"], ans: 0 },
-                    { q: "Output: book[1]=2; book[10]=10; print book[1], book[10]", options: ["2 10", "2 1", "1 10", "1 1"], ans: 0 },
-                    { q: "Output: loop i<2, j<2. if(i==j) continue;", options: ["01 and 10", "0011", "01 10", "Nothing"], ans: 0 },
-                    { q: "Output: for(let k in obj={a:1,b:2}) log(k);", options: ["ab", "12", "undefined", "Error"], ans: 0 },
-                    { q: "Output: for(let v of ['x','y']) v+='z';", options: ["['x','y']", "['xz','yz']", "['z','z']", "Error"], ans: 0 },
-                    { q: "Output: switch('1') { case 1: ... case '1': log('str'); }", options: ["str", "num", "undefined", "Error"], ans: 0 },
-                    { q: "while loop with always true condition?", options: ["Infinite loop", "SyntaxError", "Executes once", "Ignored"], ans: 0 },
-                    { q: "for...of loop on string 'hello'?", options: ["Iterates characters h,e,l,l,o", "Iterates indices", "TypeError", "Treats as single value"], ans: 0 },
-                    { q: "Correct snippet to check a is not NULL?", options: ["if(a != null)", "if(a!)", "if(a!null)", "None"], ans: 0 },
-                    { q: "Output: x=9; y=9; if(x<y) true else false;", options: ["FALSE", "TRUE", "Error", "compilation error"], ans: 0 },
-                    { q: "Output: num=10; if(num<10) true else false;", options: ["FALSE", "TRUE", "Error", "compilation error"], ans: 0 },
-                    { q: "Output: while(count<10) log(count);", options: ["0 to 9 displayed", "1 to 10", "Error", "0"], ans: 0 },
-                    { q: "Output: for(var i=10; i>0; i--) doc.write(i);", options: ["10987654321", "012345678910", "1 to 10", "Error"], ans: 0 },
-                    { q: "Output: i=1; while(i<5) { print i*2; i+=2; }", options: ["2 6", "2 4 6 8", "1 3 5", "1 2 3"], ans: 0 },
-                    { q: "Output: fun(3) { loop i<le doc.write(2) }", options: ["222", "2", "22", "3"], ans: 0 },
-                    { q: "Output: foo() { return 'hi' }", options: ["hi", "undefined", "Error", "Nothing"], ans: 0 },
-                    { q: "Output: add(x,y) return arguments.length; add(5)", options: ["1", "2", "undefined", "Error"], ans: 0 },
-                    { q: "Output: obj method: ()=>this.val. (val:42)", options: ["undefined", "42", "Error", "null"], ans: 0 },
-                    { q: "Output: obj method: function(){ return this.val }. (val:42)", options: ["42", "undefined", "Error", "null"], ans: 0 },
-                    { q: "Output: f(x=10, y=x+5) return y; f()", options: ["15", "10", "undefined", "Error"], ans: 0 },
-                    { q: "Output: var a=10; (function(){ var a=20; })(); result=a;", options: ["10", "20", "undefined", "null"], ans: 0 },
-                    { q: "Result of outer() where inner returns x=10?", options: ["10, due to closure", "undefined", "null", "Error"], ans: 0 },
-                    { q: "Function with optional parameter default 10?", options: ["function calc(x, y=10)", "function calc(x, y)", "function calc(x=10)", "None"], ans: 0 },
-                    { q: "Output: (function(a){ return (function(){ write(a); a=5; })() })(10);", options: ["10", "5", "15", "Error"], ans: 0 },
-                    { q: "Difference in 'this' between arrow and regular?", options: ["Arrow is lexically scoped", "Arrow is dynamic", "Regular is lexical", "No difference"], ans: 0 },
-                    { q: "Output: demo(a, b=5) return a+b; demo(3, undefined)", options: ["8", "3", "NaN", "Error"], ans: 0 },
-                    { q: "Output: f(a, ...rest) return rest.length; f(1,2,3,4)", options: ["3", "4", "1", "Error"], ans: 0 },
-                    { q: "Output: sum(x, y=10, ...rest) return x+y+rest.len; sum(5)", options: ["15", "16", "5", "undefined"], ans: 0 },
-                    { q: "Value of others in myFunc(10, 20, 30, 40)?", options: ["[20, 30, 40]", "[10, 20, 30]", "10", "Error"], ans: 0 },
-                    { q: "Invalid use of spread operator?", options: ["Spread object to array [...obj]", "Spread string to array", "Spread object to object", "Spread array in func"], ans: 0 },
-                    { q: "Statement about prompt, alert, confirm?", options: ["All are synchronous/blocking", "Only alert is sync", "All async", "Only confirm sync"], ans: 0 },
-                    { q: "Value if user clicks Cancel on prompt?", options: ["null", "false", "empty string", "undefined"], ans: 0 },
-                    { q: "Which box for yes/no question?", options: ["confirm", "alert", "prompt", "None"], ans: 0 },
-                    { q: "Order: alert('Step 1'); console.log('Step 2');", options: ["Alert first, log after close", "Log first", "Simultaneous", "Error"], ans: 0 },
-                    { q: "Difference in return of confirm vs alert?", options: ["confirm returns boolean, alert undefined", "confirm string", "Both same", "confirm boolean, alert null"], ans: 0 },
-                    { q: "Box to get user name?", options: ["prompt", "confirm", "alert", "None"], ans: 0 },
-                    { q: "Output if cancel pressed on prompt?", options: ["null", "NaN", "0", "Entered value"], ans: 0 },
-                    { q: "What does prompt() return?", options: ["String", "Number", "Boolean", "Object"], ans: 0 },
-                    { q: "Output of spread/rest calculation code?", options: ["140", "110", "250", "30"], ans: 0 },
-                    { q: "Output of numbers.entries() loop code?", options: ["23", "3", "6", "9"], ans: 0 },
-                    { q: "Output of rest param length code?", options: ["Total = 6", "Total = 7", "Total = 27", "NaN"], ans: 0 },{ q: "textContent of hidden div?", options: ["Hidden", "(empty string)", "undefined", "Error"], ans: 0 },
-                    { q: "Length of querySelectorAll('test') after removing elements?", options: ["1", "0", "undefined", "Error"], ans: 0 },
-                    { q: "Length of getElementsByClassName after adding element?", options: ["1", "0", "undefined", "Error"], ans: 0 },
-                    { q: "Output: querySelector('#x') && nodeType?", options: ["1 if exists, null if not", "1", "0", "undefined"], ans: 0 },
-                    { q: "Output: getElementById('a').innerHTML?", options: ["Hi", "undefined", "null", "Error"], ans: 0 },
-                    { q: "Output: getElementById('nonexistent')?", options: ["null", "undefined", "Error", "0"], ans: 0 },
-                    { q: "Length of getElementsByClassName('x') (2 divs)?", options: ["2", "1", "0", "undefined"], ans: 0 },
-                    { q: "Length of getElementsByClassName('y') (0 divs)?", options: ["0", "undefined", "null", "Error"], ans: 0 },
-                    { q: "nodeName of div?", options: ["DIV", "div", "HTML", "undefined"], ans: 0 },
-                    { q: "Length of querySelectorAll('div') (2 divs)?", options: ["2", "1", "0", "undefined"], ans: 0 },
-                    { q: "Length of querySelectorAll('span') (0 spans)?", options: ["0", "undefined", "null", "Error"], ans: 0 },
-                    { q: "innerHTML of div containing Hello<b>JS</b>?", options: ["Hello<b>JS</b>", "Hello JS", "Hello", "undefined"], ans: 0 },
-                    { q: "innerText of div containing Hello<b>JS</b>?", options: ["HelloJS", "Hello", "<b>JS</b>", "Error"], ans: 0 },
-                    { q: "innerText of hidden div?", options: ["(empty string)", "Hidden", "undefined", "null"], ans: 0 },
-                    { q: "Output: setAttribute('title','demo'). title?", options: ["demo", "undefined", "null", "Hidden"], ans: 0 },
-                    { q: "Output: getAttribute('data-x') where data-x=5?", options: ["5", "undefined", "null", "false"], ans: 0 },
-                    { q: "Output: removeAttribute('checked'). checked property?", options: ["false", "true", "undefined", "null"], ans: 0 },
-                    { q: "Output: style.color where color:red?", options: ["red", "undefined", "null", "Error"], ans: 0 },
-                    { q: "Output: document.body.nodeName?", options: ["BODY", "HTML", "Document", "undefined"], ans: 0 },
-                    { q: "Output on button click innerHTML=data?", options: ["new data", "data", "comment", "Error"], ans: 0 },
-                    { q: "Output: txt1+txt2 concatenation?", options: ["FullstackdevelopmentJavascriptmcq", "Fullstackdevelopment", "Javascriptmcq", "Error"], ans: 0 },
-                    { q: "Output of cube function with value 3?", options: ["27", "9", "3", "Error"], ans: 0 },
-                    { q: "Output of function modifying table cells?", options: ["All previous cells disappear, text Thanks", "All cells remain", "No change", "Error"], ans: 0 },
-                    { q: "Correct syntax to change background color?", options: ["getElementById('fsd').style.backgroundColor='red'", "style.backgroundcolor", "style.style", "None"], ans: 0 },
-                    { q: "Correct syntax to change text to 'Hello World!'?", options: ["getElementById('...').innerHTML='Hello World!'", "textContent", "innerText", "All"], ans: 0 },
-                    { q: "Syntax to change text of para1 DOM object?", options: ["para1.innerHTML='New Text'", "para1.nodeValue", "para1.firstChild", "Error"], ans: 0 },
-                    { q: "Method to access HTML elements?", options: ["Both A and B", "getElementById", "getElementsByClassName", "None"], ans: 0 },
-                    { q: "Which event triggers when button clicked?", options: ["click", "input", "submit", "change"], ans: 0 },
-                    { q: "Output when typing 'JS'?", options: ["Console shows 'Typed: J' then 'Typed: JS'", "Shows nothing", "Shows only JS", "Error"], ans: 0 },
-                    { q: "Method to attach event listener?", options: ["addEventListener()", "onClick()", "attach()", "listenEvent()"], ans: 0 },
-                    { q: "What does event.target refer to?", options: ["The element triggering event", "The event type", "The parent", "The window"], ans: 0 },
-                    { q: "Event when form is submitted?", options: ["submit", "click", "input", "keydown"], ans: 0 },
-                    { q: "Event when key pressed down?", options: ["keydown", "keypress", "input", "enter"], ans: 0 },
-                    { q: "Property for event type?", options: ["event.type", "event.key", "event.target", "eventName"], ans: 0 },
-                    { q: "Property for key pressed?", options: ["event.key", "event.char", "event.type", "event.code"], ans: 0 },
-                    { q: "What does event.preventDefault() do?", options: ["Prevents default browser action", "Removes handler", "Stops script", "Stops page"], ans: 0 },
-                    { q: "Event best for real-time search?", options: ["oninput", "onchange", "onsubmit", "onclick"], ans: 0 },
-                    { q: "Output: btn.addEventListener('click', log('Hi'))?", options: ["Prints 'Hi' on click", "Error", "Nothing", "Prints 'btn'"], ans: 0 },
-                    { q: "Output: input.addEventListener('input', log value)?", options: ["Logs typed value", "Logs input", "Nothing", "Error"], ans: 0 },
-                    { q: "Output: onchange event typing 'World'?", options: ["Shows 'World' only after focus is lost", "Shows while typing", "Shows after Enter", "Nothing"], ans: 0 },
-                    { q: "Mouse event fires when hovering?", options: ["mousehover", "mousedown", "click", "None"], ans: 0 },
-                    { q: "Event to cancel form submission?", options: ["event.preventDefault()", "return false", "stopPropagation", "cancelEvent"], ans: 0 },
-                    { q: "Output: keydown 'A' log key?", options: ["a or A depending on key", "Nothing", "Error", "Keycode"], ans: 0 },
-                    { q: "Event fires immediately on input change?", options: ["oninput", "onchange", "onkeyup", "onkeypress"], ans: 0 },
-                    { q: "Method to remove event listener?", options: ["removeEventListener()", "removeEvent()", "off()", "detachEvent()"], ans: 0 },
-                    { q: "Regex matches digits only?", options: ["/^\\d+$/", "/[a-z]/", "/\\w+$/", "/[0-9a-z]/"], ans: 0 },
-                    { q: "Which string accepted by /^[A-Z]\\w$/?", options: ["A9", "hello", "Hello", "123Hello"], ans: 0 },
-                    { q: "Regex matches 3-digit number only?", options: ["/^\\d{3}$/", "/\\d+$/", "/[0-9]{1,3}/", "/\\w{3}/"], ans: 0 },
-                    { q: "Output: /^\\d+$/.test('45a')?", options: ["FALSE", "TRUE", "Error", "undefined"], ans: 0 },
-                    { q: "Which string NOT accepted by /^\\w\\d+$/?", options: ["a", "a1", "A99", "_0"], ans: 0 },
-                    { q: "Regex matches valid email?", options: ["/\\S+@\\S+\\.\\S+/", "/\\w+$/", "/^@\\w+$/", "/\\S+/"], ans: 0 },
-                    { q: "localStorage persists for?", options: ["Forever until cleared", "Until reload", "Page only", "Session only"], ans: 0 },
-                    { q: "sessionStorage persists for?", options: ["Session/tab only", "Forever", "Reload only", "Day"], ans: 0 },
-                    { q: "Method to save data in localStorage?", options: ["setItem()", "saveData()", "put()", "None"], ans: 0 },
-                    { q: "Method to retrieve data?", options: ["getItem()", "load()", "fetchItem()", "getData()"], ans: 0 },
-                    { q: "Output: setItem('u','Sam'); getItem('u')?", options: ["Sam", "undefined", "Error", "null"], ans: 0 },
-                    { q: "Method to remove single item?", options: ["removeItem()", "clearItem()", "delete()", "None"], ans: 0 },
-                    { q: "Method to clear all storage?", options: ["clear()", "cleared()", "deleteAll()", "reset()"], ans: 0 },
-                    { q: "Can localStorage store objects directly?", options: ["No, only strings", "Yes", "No with arrays", "Strings and array"], ans: 0 },
-                    { q: "Regex matches alphabets only?", options: ["/^[A-Za-z]+$/", "/[0-9]/", "/\\w+/", "/\\d/"], ans: 0 },
-                    { q: "Output: sessionStorage.setItem('x',10); alert(x)?", options: ["10", "undefined", "Error", "null"], ans: 0 },
-                    { q: "Regex /^\\d{10}$/ used for?", options: ["Mobile number", "Password", "Age", "None"], ans: 0 },
-                    { q: "A Promise represents?", options: ["Future value/result", "Event loop", "Nothing", "Error"], ans: 0 },
-                    { q: "Method to handle error in Promise?", options: ["catch()", "done()", "finally()", "then()"], ans: 0 },
-                    { q: "Method always executes in Promise?", options: ["finally()", "catch()", "then()", "Nothing"], ans: 0 },
-                    { q: "Correct async/await syntax?", options: ["async function f(){ await x }", "async function f(){ async x }", "async await f", "None"], ans: 0 },
-                    { q: "Output: Promise.resolve(5).then(x=>x*2)?", options: ["10", "undefined", "Error", "25"], ans: 0 },
-                    { q: "Output: async f() returns 7. f().then(log)?", options: ["hello (or 7)", "undefined", "Error", "null"], ans: 0 },
-                    { q: "Output: forEach async loop values?", options: ["2 6", "4", "6", "2 4 6"], ans: 0 },
-                    { q: "Output: for loop setTimeout log(i)?", options: ["123", "333", "012", "undefined"], ans: 0 },
-                    { q: "Output: async loop await log?", options: ["10 20", "21", "Error", "20 10"], ans: 0 },
-                    { q: "Output: Promise.reject('fail').catch?", options: ["fail", "Error", "null", "failed"], ans: 0 },
-                    { q: "What does await do?", options: ["Pauses async function", "Stops script", "Removes event loop", "Ignores Promise"], ans: 0 },
-                    { q: "Output: Promise resolve A, sync log B?", options: ["BA", "AB", "Only A", "Only B"], ans: 0 },
-                    { q: "Method converts response to JSON?", options: ["res.json()", "res.text()", "JSON.parse", "parse.json"], ans: 0 },
-                    { q: "Default method of fetch?", options: ["GET", "POST", "PUT", "DELETE"], ans: 0 },
-                    { q: "Alert output for input '#ab'?", options: ["Hii", "Hey", "Error", "None"], ans: 0 },
-                    { q: "Header sends JSON?", options: ["Content-Type: application/json", "Accept: xml", "None", "text"], ans: 0 }
-                ]
-            }
-        };
-
-        let currentSubject = ''; 
-        let currentQuizData = [];
-        let currentQIdx = 0;
-        let answers = {};
-        let answeredState = {};
-
-        // --- NAVIGATION ---
-
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(el => {
-                el.classList.remove('active');
-                el.style.display = 'none';
-            });
-            const target = document.getElementById(id);
-            target.style.display = 'block';
-            setTimeout(() => target.classList.add('active'), 10);
-            
-            // Auto close menu
-            document.getElementById('nav-content').classList.add('hidden');
-            document.getElementById('menu-icon').classList.replace('fa-xmark', 'fa-bars');
+function loadQuestion() {
+    const q = currentQuestions[currentQuestionIndex];
+    document.getElementById('quiz-unit-indicator').textContent = `Unit ${currentUnit}`;
+    document.getElementById('q-counter').textContent = `Q ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+    
+    // Progress
+    const progress = ((currentQuestionIndex) / currentQuestions.length) * 100;
+    document.getElementById('progress').style.width = `${progress}%`;
+    
+    // Text & Options
+    document.getElementById('question').textContent = q.q;
+    const optionsContainer = document.getElementById('options');
+    optionsContainer.innerHTML = '';
+    
+    const savedAnswer = userAnswers[currentQuestionIndex];
+    
+    q.o.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        
+        if (savedAnswer) {
+            btn.disabled = true;
+            if (opt === q.a) btn.classList.add('selected-correct');
+            else if (opt === savedAnswer) btn.classList.add('selected-incorrect');
+        } else {
+            btn.onclick = () => selectAnswer(btn, opt, q.a);
         }
+        
+        optionsContainer.appendChild(btn);
+    });
 
-        function toggleMenu() {
-            const nav = document.getElementById('nav-content');
-            const icon = document.getElementById('menu-icon');
-            if(nav.classList.contains('hidden')) {
-                nav.classList.remove('hidden');
-                icon.classList.replace('fa-bars', 'fa-xmark');
-            } else {
-                nav.classList.add('hidden');
-                icon.classList.replace('fa-xmark', 'fa-bars');
-            }
+    // Nav Buttons
+    document.getElementById('prev-btn').disabled = (currentQuestionIndex === 0);
+    const nextBtn = document.getElementById('next-btn');
+    if (savedAnswer) {
+        nextBtn.style.display = 'inline-block';
+        nextBtn.textContent = (currentQuestionIndex === currentQuestions.length - 1) ? 'Finish' : 'Next';
+    } else {
+        nextBtn.style.display = 'none';
+    }
+}
+
+function selectAnswer(btn, selected, correct) {
+    userAnswers[currentQuestionIndex] = selected;
+    
+    // Highlight UI
+    const buttons = document.getElementById('options').querySelectorAll('.option-btn');
+    buttons.forEach(b => {
+        b.disabled = true;
+        if (b.textContent === correct) b.classList.add('correct-highlight');
+        if (b === btn) {
+            if (selected === correct) b.classList.add('selected-correct');
+            else b.classList.add('selected-incorrect');
         }
+    });
+    
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.style.display = 'inline-block';
+    nextBtn.textContent = (currentQuestionIndex === currentQuestions.length - 1) ? 'Finish' : 'Next';
+}
 
-        function selectSubject(subject) {
-            currentSubject = subject;
-            document.getElementById('topic-subtitle').innerHTML = 
-                `Select a <span class="text-${subject === 'python' ? 'yellow' : 'blue'}-400 font-bold uppercase">${subject}</span> module`;
-            showSection('topics');
-        }
+function nextQuestion() {
+    if (currentQuestionIndex < currentQuestions.length - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+    } else {
+        showResults();
+    }
+}
 
-        // --- VIEW ANSWERS MODE (NEW) ---
-        function viewAnswers(topic) {
-            const topicData = QUESTION_BANK[currentSubject][topic];
-            if(!topicData || topicData.length === 0) {
-                alert("No questions added for this topic yet.");
-                return;
-            }
+function prevQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion();
+    }
+}
 
-            const container = document.getElementById('study-content');
-            document.getElementById('study-title').innerText = `${currentSubject.toUpperCase()} - ${topic} Answer Key`;
-            
-            let html = '';
-            topicData.forEach((item, index) => {
-                html += `
-                    <div class="glass p-6 rounded-2xl border border-white/5">
-                        <div class="flex gap-4 mb-4">
-                            <span class="text-primary font-bold text-lg">Q${index+1}.</span>
-                            <h3 class="text-lg font-semibold text-white leading-relaxed">${item.q}</h3>
-                        </div>
-                        <div class="space-y-2 ml-0 md:ml-10">
-                `;
-                
-                item.options.forEach((opt, optIdx) => {
-                    const isCorrect = (optIdx === item.ans);
-                    const styleClass = isCorrect ? 'study-answer-correct' : 'study-answer-normal';
-                    const icon = isCorrect ? '<i class="fa-solid fa-check ml-auto"></i>' : '';
-                    
-                    html += `
-                        <div class="p-3 rounded-lg text-sm flex items-center ${styleClass}">
-                            <span>${opt}</span>
-                            ${icon}
-                        </div>
-                    `;
-                });
+function showResults() {
+    let score = 0;
+    currentQuestions.forEach((q, index) => {
+        if (userAnswers[index] === q.a) score++;
+    });
+    const percent = Math.round((score / currentQuestions.length) * 100);
+    
+    document.getElementById('final-score').textContent = `${percent}%`;
+    
+    const feedback = document.getElementById('feedback-text');
+    if (percent === 100) feedback.textContent = "Perfect! 🏆";
+    else if (percent >= 80) feedback.textContent = "Excellent work! 🌟";
+    else if (percent >= 50) feedback.textContent = "Good job! 👍";
+    else feedback.textContent = "Keep practicing! 💪";
+    
+    showPage('result');
+}
 
-                html += `</div></div>`;
-            });
-
-            container.innerHTML = html;
-            showSection('study');
-        }
-
-        // --- TEST/QUIZ MODE ---
-        function initQuiz(topic) {
-            const topicData = QUESTION_BANK[currentSubject][topic];
-            if(!topicData || topicData.length === 0) {
-                alert("No questions added for this topic yet.");
-                return;
-            }
-
-            currentQuizData = topicData;
-            currentQIdx = 0;
-            answers = {};
-            answeredState = {};
-            
-            document.getElementById('q-total').innerText = currentQuizData.length;
-            showSection('quiz');
-            renderQuestion();
-        }
-
-        function renderQuestion() {
-            const qData = currentQuizData[currentQIdx];
-            document.getElementById('q-current').innerText = currentQIdx + 1;
-            const qText = document.getElementById('q-text');
-            const container = document.getElementById('q-options');
-            
-            qText.innerText = qData.q;
-            container.innerHTML = '';
-            
-            const hasAnswered = answeredState[currentQIdx];
-
-            qData.options.forEach((opt, idx) => {
-                const btn = document.createElement('div');
-                let classes = `option-btn p-4 rounded-xl border border-gray-700 bg-gray-800/50 text-base text-gray-300`;
-
-                if (hasAnswered) {
-                    classes += " cursor-default";
-                    if (idx === qData.ans) classes += " correct";
-                    else if (answers[currentQIdx] === idx) classes += " wrong";
-                    else classes += " opacity-50";
-                }
-
-                btn.className = classes;
-                btn.innerText = opt;
-                
-                if (!hasAnswered) {
-                    btn.onclick = () => {
-                        answers[currentQIdx] = idx;
-                        answeredState[currentQIdx] = true;
-                        renderQuestion();
-                    };
-                }
-                container.appendChild(btn);
-            });
-
-            document.getElementById('btn-prev').disabled = (currentQIdx === 0);
-            document.getElementById('btn-next').innerText = (currentQIdx === currentQuizData.length - 1) ? "Finish" : "Next";
-        }
-
-        function nextQ() {
-            if (currentQIdx < currentQuizData.length - 1) {
-                currentQIdx++;
-                renderQuestion();
-            } else {
-                let score = 0;
-                currentQuizData.forEach((q, i) => { if(answers[i] === q.ans) score++; });
-                alert(`Quiz Finished! Score: ${score}/${currentQuizData.length}`);
-                showSection('topics');
-            }
-        }
-
-        function prevQ() {
-            if (currentQIdx > 0) {
-                currentQIdx--;
-                renderQuestion();
-            }
-        }
-
-        // Init background
-        setTimeout(() => {
-            const canvas = document.getElementById('bg-canvas');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.position.z = 5;
-            
-            const count = window.innerWidth < 768 ? 200 : 500;
-            const geo = new THREE.BufferGeometry();
-            const pos = new Float32Array(count * 3);
-            for(let i=0; i<count*3; i++) pos[i] = (Math.random()-0.5)*15;
-            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            const mat = new THREE.PointsMaterial({ size: 0.02, color: 0x00f2ea, transparent: true, opacity: 0.6 });
-            const mesh = new THREE.Points(geo, mat);
-            scene.add(mesh);
-
-            function animate() {
-                requestAnimationFrame(animate);
-                mesh.rotation.y += 0.001;
-                renderer.render(scene, camera);
-            }
-            animate();
-        }, 100);
-    </script>
+// --- STUDY MODE LOGIC ---
+function startStudyMode() {
+    showPage('study');
+    document.getElementById('study-unit-indicator').textContent = `Unit ${currentUnit} - Study Mode`;
+    
+    const container = document.getElementById('study-content');
+    container.innerHTML = '';
+    
+    currentQuestions.forEach((q, index) => {
+        const card = document.createElement('div');
+        card.className = 'study-card';
+        
+        let optionsHTML = '';
+        q.o.forEach(opt => {
+            const isCorrect = (opt === q.a) ? 'correct' : '';
+            optionsHTML += `<div class="study-option ${isCorrect}">${opt}</div>`;
+        });
+        
+        card.innerHTML = `
+            <div class="study-question">${index + 1}. ${q.q}</div>
+            <div>${optionsHTML}</div>
+        `;
+        container.appendChild(card);
+    });
+}
+</script>
 </body>
 </html>
-
